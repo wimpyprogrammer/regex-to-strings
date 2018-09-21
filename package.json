@@ -1,0 +1,25 @@
+{
+  "name": "expand-regex-char-set",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wimpyprogrammer/expand-regex-char-set.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wimpyprogrammer/expand-regex-char-set/issues"
+  },
+  "homepage": "https://github.com/wimpyprogrammer/expand-regex-char-set#readme",
+  "description": "Expand a regular expression pattern into a set of words",
+  "author": "Drew Keller <drew@wimpyprogrammer.com>",
+  "license": "MIT",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
