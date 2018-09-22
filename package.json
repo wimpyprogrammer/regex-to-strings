@@ -23,6 +23,7 @@
     "build": "npm run clean && babel src -d lib --extensions '.js,.ts'",
     "clean": "rimraf lib/*",
     "format": "prettier --write 'src/**'",
+    "lint": "tsc",
     "precommit": "pretty-quick --staged",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
