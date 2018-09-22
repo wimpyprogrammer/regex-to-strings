@@ -4,7 +4,6 @@
 		"allowSyntheticDefaultImports": true,
 		"baseUrl": "./",
 		"rootDir": "./",
-		"lib": [],
 		"module": "es2015",
 		"noEmit": true,
 		"noImplicitAny": true,
