@@ -23,7 +23,7 @@
     "build": "npm run clean && babel src -d lib --extensions '.js,.ts'",
     "clean": "rimraf lib/*",
     "format": "prettier --write 'src/**'",
-    "lint": "tsc",
+    "lint": "tsc; tslint -p ./",
     "precommit": "pretty-quick --staged",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -36,6 +36,7 @@
     "prettier": "1.14.3",
     "pretty-quick": "1.7.0",
     "rimraf": "^2.6.2",
+    "tslint": "^5.11.0",
     "typescript": "^3.0.3"
   }
 }
