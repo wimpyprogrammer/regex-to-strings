@@ -1,3 +1,7 @@
 module.exports = {
-	transform: {},
+	moduleFileExtensions: ['js', 'json', 'ts'],
+	testMatch: ['**/src/**/?*.spec.(js|ts)'],
+	transform: {
+		'^.+\\.ts$': 'ts-jest',
+	},
 };
