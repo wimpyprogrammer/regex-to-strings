@@ -25,7 +25,7 @@
     "format": "prettier --write 'src/**'",
     "lint": "tsc; tslint -p ./",
     "precommit": "pretty-quick --staged",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
