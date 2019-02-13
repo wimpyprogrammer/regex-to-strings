@@ -12,11 +12,15 @@ declare namespace Node {
 		value: string;
 		kind: 'simple';
 		escaped?: true;
+		codePoint: number;
+		symbol: string;
 	}
 
 	interface SpecialChar extends Base<'Char'> {
 		value: string;
 		kind: 'meta' | 'control' | 'hex' | 'decimal' | 'oct' | 'unicode';
+		codePoint: number;
+		symbol: string;
 	}
 
 	type Char = SimpleChar | SpecialChar;
@@ -36,7 +40,8 @@ declare namespace Node {
 	}
 
 	interface Disjunction extends Base<'Disjunction'> {
-		expressions: (Expression | null)[];
+		left: Expression | null;
+		right: Expression | null;
 	}
 
 	interface CapturingGroup extends Base<'Group'> {
@@ -73,7 +78,7 @@ declare namespace Node {
 	}
 
 	interface SimpleQuantifier extends Base<'Quantifier'> {
-		kind: '+' | '*';
+		kind: '+' | '*' | '?';
 		greedy: boolean;
 	}
 
