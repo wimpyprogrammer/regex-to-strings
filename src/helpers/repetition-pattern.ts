@@ -24,6 +24,9 @@ function getNumOccurrences(quantifier: Node.Quantifier): [number, number] {
 		if ('to' in quantifier) {
 			maxOccurrences = quantifier.to;
 		}
+	} else {
+		/* istanbul ignore next */
+		throw new Error(`Unknown quantifier ${quantifier}`);
 	}
 
 	return [minOccurrences, maxOccurrences];

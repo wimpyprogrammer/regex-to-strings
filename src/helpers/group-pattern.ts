@@ -17,6 +17,7 @@ export function* expandBackreference(
 	} else if (isNumericBackreference(node)) {
 		yield numberedGroups[node.number];
 	} else {
+		/* istanbul ignore next */
 		throw new Error('Unexpected backreference');
 	}
 }

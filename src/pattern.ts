@@ -36,6 +36,7 @@ export function* expandNode(node: Node.Expression): IterableIterator<string> {
 	} else if (Guards.isRepetition(node)) {
 		yield* expandRepetition(node);
 	} else {
+		/* istanbul ignore next */
 		throw new Error('Unexpected node type');
 	}
 }

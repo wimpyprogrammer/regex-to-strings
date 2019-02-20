@@ -34,8 +34,8 @@ function getMetaCharOptions(metaChar: string): string {
 			return optionsWhitespace;
 		case '\\S':
 			return optionsWord + optionsOther;
+		/* istanbul ignore next */
 		default:
-			/* istanbul ignore next */
 			throw new Error(`Unhandled character "${metaChar}"`);
 	}
 }
