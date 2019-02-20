@@ -233,4 +233,66 @@ describe('expand', () => {
 			expect(result[0]).toMatch(controlCharacter);
 		}
 	);
+
+	it('expands static numbered backreferences', () => {
+		const result = expandAll('(a) \\1 (z) \\2');
+		expect(result).toEqual(['a a z z']);
+	});
+
+	it('expands static numbered backreferences with noncapturing groups', () => {
+		const result = expandAll('(?:ignored) (a) \\1');
+		expect(result).toEqual(['ignored a a']);
+	});
+
+	it('expands static named backreferences', () => {
+		const result = expandAll('(?<foo>a) \\k<foo> (?<bar>z) \\k<bar>');
+		expect(result).toEqual(['a a z z']);
+	});
+
+	it('expands static named backreferences with noncapturing groups', () => {
+		const result = expandAll('(?:ignored) (?<foo>a) \\k<foo>');
+		expect(result).toEqual(['ignored a a']);
+	});
+
+	it('expands static named and numbered backreferences', () => {
+		const result = expandAll('(?<foo>a) \\k<foo> \\1 (?<bar>z) \\2 \\k<bar>');
+		expect(result).toEqual(['a a a z z z']);
+	});
+
+	it('expands alternation group numbered backreferences', () => {
+		const result = expandAll('(a|b) \\1 (y|z) \\2');
+		expect(result).toEqual(['a a y y', 'a a z z', 'b b y y', 'b b z z']);
+	});
+
+	it('expands alternation group numbered backreferences with noncapturing groups', () => {
+		const result = expandAll('(?:ignored) (a|z) \\1');
+		expect(result).toEqual(['ignored a a', 'ignored z z']);
+	});
+
+	it('expands alternation group named backreferences', () => {
+		const result = expandAll('(?<foo>a|b) \\k<foo> (?<bar>y|z) \\k<bar>');
+		expect(result).toEqual(['a a y y', 'a a z z', 'b b y y', 'b b z z']);
+	});
+
+	it('expands alternation group named backreferences with noncapturing groups', () => {
+		const result = expandAll('(?:ignored) (?<foo>a|z) \\k<foo>');
+		expect(result).toEqual(['ignored a a', 'ignored z z']);
+	});
+
+	it('expands alternation group named and numbered backreferences', () => {
+		const result = expandAll(
+			'(?<foo>a|b) \\k<foo> \\1 (?<bar>y|z) \\2 \\k<bar>'
+		);
+		expect(result).toEqual([
+			'a a a y y y',
+			'a a a z z z',
+			'b b b y y y',
+			'b b b z z z',
+		]);
+	});
+
+	it('expands backreferences with numeric names', () => {
+		const result = expandAll('(?<20>a) \\k<20> (?<50>z) \\k<50>');
+		expect(result).toEqual(['a a z z']);
+	});
 });

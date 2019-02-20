@@ -7,9 +7,9 @@ function* traverseTree(tree: Node.Expression[]): IterableIterator<string> {
 	}
 
 	const firstBranch = expandNode(tree[0]);
-	const restOfTree = traverseTree(tree.slice(1));
 
 	for (const firstBranchPermutation of firstBranch) {
+		const restOfTree = traverseTree(tree.slice(1));
 		let restOfTreeHasPermutations = false;
 
 		for (const restOfTreePermutation of restOfTree) {

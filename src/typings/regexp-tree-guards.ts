@@ -14,6 +14,12 @@ export function isBackreference(
 	return node.type === 'Backreference';
 }
 
+export function isCapturingGroup(
+	node: Node.Group
+): node is Node.CapturingGroup {
+	return node.capturing;
+}
+
 export function isChar(node: Node.Expression): node is Node.Char {
 	return node.type === 'Char';
 }
@@ -36,6 +42,18 @@ export function isDisjunction(node: Node.Expression): node is Node.Disjunction {
 
 export function isGroup(node: Node.Expression): node is Node.Group {
 	return node.type === 'Group';
+}
+
+export function isNamedBackreference(
+	node: Node.Backreference
+): node is Node.NamedBackreference {
+	return node.kind === 'name';
+}
+
+export function isNumericBackreference(
+	node: Node.Backreference
+): node is Node.NumericBackreference {
+	return node.kind === 'number';
 }
 
 export function isRangeQuantifier(

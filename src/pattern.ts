@@ -2,7 +2,7 @@ import { parse } from 'regexp-tree';
 import { expandAlternative } from './helpers/alternative-pattern';
 import { expandChar } from './helpers/char-pattern';
 import { expandCharacterClass } from './helpers/character-class-pattern';
-import { expandGroup } from './helpers/group-pattern';
+import { expandBackreference, expandGroup } from './helpers/group-pattern';
 import { expandRepetition } from './helpers/repetition-pattern';
 import { Node } from './typings/regexp-tree';
 import * as Guards from './typings/regexp-tree-guards';
@@ -22,6 +22,8 @@ export function* expandNode(node: Node.Expression): IterableIterator<string> {
 		yield* expandAlternative(node);
 	} else if (Guards.isAssertion(node)) {
 		yield '';
+	} else if (Guards.isBackreference(node)) {
+		yield* expandBackreference(node);
 	} else if (Guards.isChar(node)) {
 		yield* expandChar(node);
 	} else if (Guards.isCharacterClass(node)) {
