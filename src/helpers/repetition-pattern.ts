@@ -18,9 +18,8 @@ function getNumOccurrences(quantifier: Node.Quantifier): [number, number] {
 			throw new Error(`Unknown kind ${quantifier.kind}`);
 		}
 	} else if (Guards.isRangeQuantifier(quantifier)) {
-		if ('from' in quantifier) {
-			minOccurrences = quantifier.from;
-		}
+		minOccurrences = quantifier.from;
+
 		if ('to' in quantifier) {
 			maxOccurrences = quantifier.to;
 		}
