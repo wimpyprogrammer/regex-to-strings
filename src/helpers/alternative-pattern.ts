@@ -1,7 +1,7 @@
+import { Alternative, Expression } from 'regexp-tree/ast';
 import { expandNode } from '../pattern';
-import { Node } from '../typings/regexp-tree';
 
-function* traverseTree(tree: Node.Expression[]): IterableIterator<string> {
+function* traverseTree(tree: Expression[]): IterableIterator<string> {
 	if (!tree.length) {
 		return;
 	}
@@ -24,7 +24,7 @@ function* traverseTree(tree: Node.Expression[]): IterableIterator<string> {
 }
 
 export function* expandAlternative(
-	node: Node.Alternative
+	node: Alternative
 ): IterableIterator<string> {
 	yield* traverseTree(node.expressions);
 }

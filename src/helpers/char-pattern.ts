@@ -1,4 +1,4 @@
-import { Node } from '../typings/regexp-tree';
+import { Char } from 'regexp-tree/ast';
 import * as Guards from '../typings/regexp-tree-guards';
 
 const optionsAlpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -10,7 +10,7 @@ const optionsOther = '~`!@#$%^&*()-=+<,>.?/[{]}|\\:;"\'';
 
 const alphaOffsetCharCode = 'a'.charCodeAt(0) - 1;
 
-function translateEscapedControlChar(escapedControlChar: Node.Char): string {
+function translateEscapedControlChar(escapedControlChar: Char): string {
 	const controlChar = escapedControlChar.value.substr(-1);
 	const controlCharCodeLower = controlChar.toLowerCase().charCodeAt(0);
 	const controlCharCodeTranslated = controlCharCodeLower - alphaOffsetCharCode;
@@ -46,7 +46,7 @@ function pickRandomChar(charOptions: string): string {
 	return charOptions[iRandom];
 }
 
-export function* expandChar(node: Node.Char): IterableIterator<string> {
+export function* expandChar(node: Char): IterableIterator<string> {
 	if (Guards.isSimpleChar(node)) {
 		yield node.value;
 	} else if (['oct', 'hex', 'unicode'].includes(node.kind)) {

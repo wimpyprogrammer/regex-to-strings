@@ -1,8 +1,8 @@
+import { Quantifier, Repetition } from 'regexp-tree/ast';
 import { expandNode } from '../pattern';
-import { Node } from '../typings/regexp-tree';
 import * as Guards from '../typings/regexp-tree-guards';
 
-function getNumOccurrences(quantifier: Node.Quantifier): [number, number] {
+function getNumOccurrences(quantifier: Quantifier): [number, number] {
 	let minOccurrences = 0;
 	let maxOccurrences = 100;
 
@@ -31,9 +31,7 @@ function getNumOccurrences(quantifier: Node.Quantifier): [number, number] {
 	return [minOccurrences, maxOccurrences];
 }
 
-export function* expandRepetition(
-	node: Node.Repetition
-): IterableIterator<string> {
+export function* expandRepetition(node: Repetition): IterableIterator<string> {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 
 	const generator = expandNode(node.expression);

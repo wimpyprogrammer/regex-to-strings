@@ -1,4 +1,4 @@
-import { Node } from '../typings/regexp-tree';
+import { CharacterClass } from 'regexp-tree/ast';
 import * as Guards from '../typings/regexp-tree-guards';
 
 function* fill(start: number, end: number): IterableIterator<number> {
@@ -13,7 +13,7 @@ const codePointOptions: number[] = [].concat(
 );
 
 export function* expandCharacterClass(
-	node: Node.CharacterClass
+	node: CharacterClass
 ): IterableIterator<string> {
 	for (const expression of node.expressions) {
 		if (node.negative) {

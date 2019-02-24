@@ -1,77 +1,89 @@
-import { Node } from './regexp-tree';
+import {
+	Alternative,
+	Assertion,
+	Backreference,
+	CapturingGroup,
+	Char,
+	CharacterClass,
+	ClassRange,
+	Disjunction,
+	Expression,
+	Group,
+	NamedBackreference,
+	NumericBackreference,
+	Quantifier,
+	RangeQuantifier,
+	Repetition,
+	SimpleChar,
+	SimpleQuantifier,
+} from 'regexp-tree/ast';
 
-export function isAlternative(node: Node.Expression): node is Node.Alternative {
+export function isAlternative(node: Expression): node is Alternative {
 	return node.type === 'Alternative';
 }
 
-export function isAssertion(node: Node.Expression): node is Node.Assertion {
+export function isAssertion(node: Expression): node is Assertion {
 	return node.type === 'Assertion';
 }
 
-export function isBackreference(
-	node: Node.Expression
-): node is Node.Backreference {
+export function isBackreference(node: Expression): node is Backreference {
 	return node.type === 'Backreference';
 }
 
-export function isCapturingGroup(
-	node: Node.Group
-): node is Node.CapturingGroup {
+export function isCapturingGroup(node: Group): node is CapturingGroup {
 	return node.capturing;
 }
 
-export function isChar(node: Node.Expression): node is Node.Char {
+export function isChar(node: Expression): node is Char {
 	return node.type === 'Char';
 }
 
-export function isCharacterClass(
-	node: Node.Expression
-): node is Node.CharacterClass {
+export function isCharacterClass(node: Expression): node is CharacterClass {
 	return node.type === 'CharacterClass';
 }
 
 export function isClassRange(
-	node: Node.CharacterClass['expressions'][0]
-): node is Node.ClassRange {
+	node: CharacterClass['expressions'][0]
+): node is ClassRange {
 	return node.type === 'ClassRange';
 }
 
-export function isDisjunction(node: Node.Expression): node is Node.Disjunction {
+export function isDisjunction(node: Expression): node is Disjunction {
 	return node.type === 'Disjunction';
 }
 
-export function isGroup(node: Node.Expression): node is Node.Group {
+export function isGroup(node: Expression): node is Group {
 	return node.type === 'Group';
 }
 
 export function isNamedBackreference(
-	node: Node.Backreference
-): node is Node.NamedBackreference {
+	node: Backreference
+): node is NamedBackreference {
 	return node.kind === 'name';
 }
 
 export function isNumericBackreference(
-	node: Node.Backreference
-): node is Node.NumericBackreference {
+	node: Backreference
+): node is NumericBackreference {
 	return node.kind === 'number';
 }
 
 export function isRangeQuantifier(
-	quantifier: Node.Quantifier
-): quantifier is Node.RangeQuantifier {
+	quantifier: Quantifier
+): quantifier is RangeQuantifier {
 	return quantifier.kind === 'Range';
 }
 
-export function isRepetition(node: Node.Expression): node is Node.Repetition {
+export function isRepetition(node: Expression): node is Repetition {
 	return node.type === 'Repetition';
 }
 
-export function isSimpleChar(char: Node.Char): char is Node.SimpleChar {
+export function isSimpleChar(char: Char): char is SimpleChar {
 	return char.kind === 'simple';
 }
 
 export function isSimpleQuantifier(
-	quantifier: Node.Quantifier
-): quantifier is Node.SimpleQuantifier {
+	quantifier: Quantifier
+): quantifier is SimpleQuantifier {
 	return ['+', '*', '?'].includes(quantifier.kind);
 }

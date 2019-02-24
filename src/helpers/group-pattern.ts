@@ -1,5 +1,5 @@
+import { Backreference, Group } from 'regexp-tree/ast';
 import { expandNode } from '../pattern';
-import { Node } from '../typings/regexp-tree';
 import {
 	isCapturingGroup,
 	isNamedBackreference,
@@ -10,7 +10,7 @@ const namedGroups: { [name: string]: string } = {};
 const numberedGroups: { [num: number]: string } = {};
 
 export function* expandBackreference(
-	node: Node.Backreference
+	node: Backreference
 ): IterableIterator<string> {
 	if (isNamedBackreference(node)) {
 		yield namedGroups[node.reference];
@@ -22,7 +22,7 @@ export function* expandBackreference(
 	}
 }
 
-export function* expandGroup(node: Node.Group): IterableIterator<string> {
+export function* expandGroup(node: Group): IterableIterator<string> {
 	const generator = expandNode(node.expression);
 
 	for (const expression of generator) {
