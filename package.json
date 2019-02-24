@@ -43,6 +43,6 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "regexp-tree": "0.0.85"
+    "regexp-tree": "^0.1.5"
   }
 }
