@@ -1,10 +1,11 @@
-import { parse } from 'regexp-tree';
-import { AstRegExp, Expression } from 'regexp-tree/ast';
+import { parse, transform } from 'regexp-tree';
+import { Expression } from 'regexp-tree/ast';
 import { expandAlternative } from './helpers/alternative-pattern';
 import { expandChar } from './helpers/char-pattern';
 import { expandCharacterClass } from './helpers/character-class-pattern';
 import { expandBackreference, expandGroup } from './helpers/group-pattern';
 import { expandRepetition } from './helpers/repetition-pattern';
+import transforms from './transforms/index';
 import * as Guards from './typings/regexp-tree-guards';
 
 export function* expand(pattern: string): IterableIterator<string> {
@@ -12,7 +13,9 @@ export function* expand(pattern: string): IterableIterator<string> {
 		return [];
 	}
 
-	const parsed: AstRegExp = parse(`/${pattern}/`);
+	const transformed = transform(`/${pattern}/`, transforms);
+
+	const parsed = parse(transformed.toString());
 
 	yield* expandNode(parsed.body);
 }

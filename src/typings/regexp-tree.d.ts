@@ -130,10 +130,18 @@ declare module 'regexp-tree/ast' {
 		body: Expression | null;
 		flags: string;
 	}
+
+	export interface TransformResult {
+		getAST(): AstRegExp;
+		getBodyString(): string;
+		getFlags(): string;
+		toRegExp(): RegExp;
+		toString(): string;
+	}
 }
 
 declare module 'regexp-tree' {
-	import { AstRegExp } from 'regexp-tree/ast';
+	import { AstClass, AstRegExp, Base, TransformResult } from 'regexp-tree/ast';
 	interface ParserOptions {
 		captureLocations?: boolean;
 	}
@@ -143,4 +151,13 @@ declare module 'regexp-tree' {
 	export function generate(ast: AstRegExp): string;
 
 	export function toRegExp(regexp: string): RegExp;
+
+	type Handler = { [nodeType in AstClass]?: (path: Base<nodeType>) => void };
+
+	type Handlers = Array<Handler> | Handler;
+
+	export function transform(
+		s: string | RegExp | AstRegExp,
+		handlers: Handlers
+	): TransformResult;
 }
