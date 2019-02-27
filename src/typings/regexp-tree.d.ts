@@ -146,6 +146,29 @@ declare module 'regexp-tree' {
 		captureLocations?: boolean;
 	}
 
+	type Optimizations =
+		| 'charCaseInsensitiveLowerCaseTransform'
+		| 'charClassClassrangesMerge'
+		| 'charClassClassrangesToChars'
+		| 'charClassRemoveDuplicates'
+		| 'charClassToMeta'
+		| 'charClassToSingleChar'
+		| 'charCodeToSimpleChar'
+		| 'charEscapeUnescape'
+		| 'charSurrogatePairToSingleUnicode'
+		| 'combineRepeatingPatterns'
+		| 'disjunctionRemoveDuplicates'
+		| 'groupSingleCharsToCharClass'
+		| 'quantifierRangeToSymbol'
+		| 'quantifiersMerge'
+		| 'removeEmptyGroup'
+		| 'ungroup';
+
+	export function optimize(
+		regexp: string | RegExp | AstRegExp,
+		transformsWhitelist?: Array<Optimizations>
+	): TransformResult;
+
 	export function parse(s: string | RegExp, options?: ParserOptions): AstRegExp;
 
 	export function generate(ast: AstRegExp): string;
