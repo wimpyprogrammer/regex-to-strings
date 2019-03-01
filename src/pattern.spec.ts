@@ -180,7 +180,7 @@ describe('expand', () => {
 		'expands the single character class %p',
 		(charClass: RegExp) => {
 			const result = expandAll(charClass.source);
-			expect(result).toHaveLength(1);
+			expect(result.length).toBeGreaterThan(1);
 			expect(result[0]).toHaveLength(1);
 			expect(result[0]).toMatch(charClass);
 		}
@@ -190,7 +190,7 @@ describe('expand', () => {
 		'expands the multiple character class %p',
 		(charClassSet: RegExp) => {
 			const result = expandAll(charClassSet.source);
-			expect(result).toHaveLength(1);
+			expect(result.length).toBeGreaterThan(1);
 			expect(result[0]).toHaveLength(3);
 			expect(result[0]).toMatch(charClassSet);
 		}

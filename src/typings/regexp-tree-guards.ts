@@ -16,6 +16,7 @@ import {
 	Repetition,
 	SimpleChar,
 	SimpleQuantifier,
+	SpecialChar,
 } from 'regexp-tree/ast';
 
 export function isAlternative(node: Expression): node is Alternative {
@@ -66,6 +67,10 @@ export function isNumericBackreference(
 	node: Backreference
 ): node is NumericBackreference {
 	return node.kind === 'number';
+}
+
+export function isMetaChar(char: Char): char is SpecialChar {
+	return char.kind === 'meta';
 }
 
 export function isRangeQuantifier(

@@ -175,7 +175,27 @@ declare module 'regexp-tree' {
 
 	export function toRegExp(regexp: string): RegExp;
 
-	type Handler = { [nodeType in AstClass]?: (path: Base<nodeType>) => void };
+	interface NodePath<T extends AstClass> {
+		node: Base<T>;
+		parent?: Base<any>;
+		parentPath?: NodePath<any>;
+		property?: string;
+		index?: number;
+
+		remove(): void;
+		replace(node: Base<any>): NodePath<any> | null;
+		update(nodeProps: Object): void;
+		getPreviousSibling(): NodePath<any> | null;
+		getNextSibling(): NodePath<any> | null;
+		getChild(n?: number): NodePath<any> | null;
+		getParent(): NodePath<any> | null;
+		hasEqualSource(path: NodePath<any>): boolean;
+		jsonEncode(options?: { format: string | number; useLoc: boolean }): string;
+	}
+
+	type Handler = {
+		[nodeType in AstClass]?: (path: NodePath<nodeType>) => void
+	};
 
 	type Handlers = Array<Handler> | Handler;
 
