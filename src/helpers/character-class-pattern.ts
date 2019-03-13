@@ -7,41 +7,42 @@ function* fill(start: number, end: number): IterableIterator<number> {
 	}
 }
 
-const codePointOptions: number[] = [].concat(
-	/* A-Z */ [...fill(65, 90)],
-	/* a-z */ [...fill(97, 122)]
-);
+function getReferencedCodePoints(
+	expression: CharacterClass['expressions'][0]
+): number[] {
+	if (Guards.isClassRange(expression)) {
+		const minCodePoint = expression.from.codePoint;
+		const maxCodePoint = expression.to.codePoint;
+		return [...fill(minCodePoint, maxCodePoint)];
+	}
+
+	return [expression.codePoint];
+}
+
+const allCharOptions =
+	' \t\r\n' +
+	'abcdefghijklmnopqrstuvwwxyz' +
+	'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+	'0123456789' +
+	'~`!@#$%^&*()-_=+<,>.?/[]{}|\\:;"\'';
+
+const allCodePointOptions = allCharOptions
+	.split('')
+	.map(char => char.charCodeAt(0));
 
 export function* expandCharacterClass(
 	node: CharacterClass
 ): IterableIterator<string> {
-	for (const expression of node.expressions) {
-		if (node.negative) {
-			const isCodePointAllowed = (codePoint: number): boolean => {
-				if (Guards.isClassRange(expression)) {
-					const minCodePoint = expression.from.codePoint;
-					const maxCodePoint = expression.to.codePoint;
+	const referencedCodePoints = node.expressions.reduce(
+		(accumulator, expression) => {
+			const codePoints = getReferencedCodePoints(expression);
+			return accumulator.concat(codePoints);
+		},
+		[]
+	);
 
-					return codePoint < minCodePoint || maxCodePoint < codePoint;
-				} else {
-					return !node.expressions.some(
-						exp => !Guards.isClassRange(exp) && exp.codePoint === codePoint
-					);
-				}
-			};
-
-			yield* codePointOptions
-				.filter(isCodePointAllowed)
-				.map(codePoint => String.fromCodePoint(codePoint));
-		} else if (Guards.isClassRange(expression)) {
-			const minCodePoint = expression.from.codePoint;
-			const maxCodePoint = expression.to.codePoint;
-
-			for (let i = minCodePoint; i <= maxCodePoint; i++) {
-				yield String.fromCodePoint(i);
-			}
-		} else {
-			yield String.fromCodePoint(expression.codePoint);
-		}
-	}
+	yield* allCodePointOptions
+		.filter(option => !node.negative || !referencedCodePoints.includes(option))
+		.filter(option => node.negative || referencedCodePoints.includes(option))
+		.map(codePoint => String.fromCodePoint(codePoint));
 }

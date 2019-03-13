@@ -161,6 +161,17 @@ describe('expand', () => {
 		result.forEach(testExpansion);
 	});
 
+	it('expands negated character set with multiple ranges', () => {
+		function testExpansion(expansion: string) {
+			expect(expansion).toHaveLength(1);
+			expect(expansion).toMatch(/[^aeiou0-5A-T]/);
+		}
+
+		const result = expandAll('[^aeiou0-5A-T]');
+		expect(result.length).toBeGreaterThan(1);
+		result.forEach(testExpansion);
+	});
+
 	it('expands exact quantifier patterns', () => {
 		const result = expandAll('a{5}');
 		expect(result).toEqual(['aaaaa']);
@@ -186,6 +197,48 @@ describe('expand', () => {
 		}
 	);
 
+	it.each([/[\w]/, /[\W]/, /[\d]/, /[\D]/, /[\s]/, /[\S]/])(
+		'expands the single character class %p in set',
+		(charClassSet: RegExp) => {
+			function testExpansion(expansion: string) {
+				expect(expansion).toHaveLength(1);
+				expect(expansion).toMatch(charClassSet);
+			}
+
+			const result = expandAll(charClassSet.source);
+			expect(result.length).toBeGreaterThan(1);
+			result.forEach(testExpansion);
+		}
+	);
+
+	it.each([/[^\w]/, /[^\W]/, /[^\d]/, /[^\D]/, /[^\s]/, /[^\S]/])(
+		'expands the single character class %p in negated set',
+		(charClassSet: RegExp) => {
+			function testExpansion(expansion: string) {
+				expect(expansion).toHaveLength(1);
+				expect(expansion).toMatch(charClassSet);
+			}
+
+			const result = expandAll(charClassSet.source);
+			expect(result.length).toBeGreaterThan(1);
+			result.forEach(testExpansion);
+		}
+	);
+
+	it.each([/(\w)/, /(\W)/, /(\d)/, /(\D)/, /(\s)/, /(\S)/])(
+		'expands the single character class %p in group',
+		(charClassSet: RegExp) => {
+			function testExpansion(expansion: string) {
+				expect(expansion).toHaveLength(1);
+				expect(expansion).toMatch(charClassSet);
+			}
+
+			const result = expandAll(charClassSet.source);
+			expect(result.length).toBeGreaterThan(1);
+			result.forEach(testExpansion);
+		}
+	);
+
 	it.each([/\w\w\w/, /\w\d\s/, /\W\w\w/, /\W\D\S/, /\s\w\S/, /\d\W\D/])(
 		'expands the multiple character class %p',
 		(charClassSet: RegExp) => {
@@ -193,6 +246,57 @@ describe('expand', () => {
 			expect(result.length).toBeGreaterThan(1);
 			expect(result[0]).toHaveLength(3);
 			expect(result[0]).toMatch(charClassSet);
+		}
+	);
+
+	it.each([/[\w\d\s]/, /[\W\w\S]/, /[\W\D\S]/, /[\s\w\S]/, /[\d\W\D]/])(
+		'expands the multiple character class %p in set',
+		(charClassSet: RegExp) => {
+			function testExpansion(expansion: string) {
+				expect(expansion).toHaveLength(1);
+				expect(expansion).toMatch(charClassSet);
+			}
+
+			const result = expandAll(charClassSet.source);
+			expect(result.length).toBeGreaterThan(1);
+			result.forEach(testExpansion);
+		}
+	);
+
+	it.each([/[^\w\d\s]/, /[^\W\d\s]/, /[^\W\D\s]/, /[^\w\d\S]/])(
+		'expands the multiple character class %p in negated set',
+		(charClassSet: RegExp) => {
+			function testExpansion(expansion: string) {
+				expect(expansion).toHaveLength(1);
+				expect(expansion).toMatch(charClassSet);
+			}
+
+			const result = expandAll(charClassSet.source);
+			expect(result.length).toBeGreaterThan(1);
+			result.forEach(testExpansion);
+		}
+	);
+
+	it.each([/[^\w\W]/, /[^\d\D]/, /[^\s\S]/, /[^\w\D]/, /[^\W\S]/, /[^0-9\D]/])(
+		'returns zero expansions for impossible set %p',
+		(charClassSet: RegExp) => {
+			const result = expandAll(charClassSet.source);
+			expect(result).toHaveLength(0);
+		}
+	);
+
+	it.each([/(\w\d\s)/, /(\W\w\S)/, /(\W\D\S)/, /(\s\w\S)/, /(\d\W\D)/])(
+		'expands the multiple character class %p in group',
+		(charClassSet: RegExp) => {
+			function testExpansion(expansion: string) {
+				expect(expansion).toHaveLength(3);
+				expect(expansion).toMatch(charClassSet);
+			}
+
+			// Too many possible combinations - limit to 1,000
+			const result = expandSome(charClassSet.source, 1000);
+			expect(result).toHaveLength(1000);
+			result.forEach(testExpansion);
 		}
 	);
 

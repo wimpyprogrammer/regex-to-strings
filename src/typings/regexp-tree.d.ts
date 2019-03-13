@@ -12,7 +12,7 @@ declare module 'regexp-tree/ast' {
 		| 'Assertion'
 		| 'RegExp';
 
-	interface Base<T> {
+	interface Base<T extends AstClass> {
 		type: T;
 		loc?: {
 			source: string;
@@ -177,19 +177,19 @@ declare module 'regexp-tree' {
 
 	interface NodePath<T extends AstClass> {
 		node: Base<T>;
-		parent?: Base<any>;
-		parentPath?: NodePath<any>;
+		parent?: Base<AstClass>;
+		parentPath?: NodePath<AstClass>;
 		property?: string;
 		index?: number;
 
 		remove(): void;
-		replace(node: Base<any>): NodePath<any> | null;
+		replace<TNew extends AstClass>(node: Base<TNew>): NodePath<TNew> | null;
 		update(nodeProps: Object): void;
-		getPreviousSibling(): NodePath<any> | null;
-		getNextSibling(): NodePath<any> | null;
-		getChild(n?: number): NodePath<any> | null;
-		getParent(): NodePath<any> | null;
-		hasEqualSource(path: NodePath<any>): boolean;
+		getPreviousSibling(): NodePath<AstClass> | null;
+		getNextSibling(): NodePath<AstClass> | null;
+		getChild(n?: number): NodePath<AstClass> | null;
+		getParent(): NodePath<AstClass> | null;
+		hasEqualSource(path: NodePath<AstClass>): boolean;
 		jsonEncode(options?: { format: string | number; useLoc: boolean }): string;
 	}
 
