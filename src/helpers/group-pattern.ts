@@ -6,6 +6,11 @@ import {
 	isNumericBackreference,
 } from '../typings/regexp-tree-guards';
 
+/* istanbul ignore next */
+function assertNever(x: never): never {
+	throw new Error('Unexpected backreference: ' + x);
+}
+
 const namedGroups: { [name: string]: string } = {};
 const numberedGroups: { [num: number]: string } = {};
 
@@ -18,7 +23,7 @@ export function* expandBackreference(
 		yield numberedGroups[node.number];
 	} else {
 		/* istanbul ignore next */
-		throw new Error('Unexpected backreference');
+		assertNever(node);
 	}
 }
 

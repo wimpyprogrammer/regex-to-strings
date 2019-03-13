@@ -8,6 +8,11 @@ import { expandRepetition } from './helpers/repetition-pattern';
 import transforms from './transforms/index';
 import * as Guards from './typings/regexp-tree-guards';
 
+/* istanbul ignore next */
+function assertNever(x: never): never {
+	throw new Error('Unexpected node type: ' + x);
+}
+
 export function* expand(pattern: string): IterableIterator<string> {
 	if (!pattern) {
 		return [];
@@ -40,6 +45,6 @@ export function* expandNode(node: Expression): IterableIterator<string> {
 		yield* expandRepetition(node);
 	} else {
 		/* istanbul ignore next */
-		throw new Error('Unexpected node type');
+		assertNever(node);
 	}
 }

@@ -2,6 +2,11 @@ import { Quantifier, Repetition } from 'regexp-tree/ast';
 import { expandNode } from '../pattern';
 import * as Guards from '../typings/regexp-tree-guards';
 
+/* istanbul ignore next */
+function assertNever(x: never): never {
+	throw new Error('Unexpected quantifier: ' + x);
+}
+
 function getNumOccurrences(quantifier: Quantifier): [number, number] {
 	let minOccurrences = 0;
 	let maxOccurrences = 100;
@@ -25,7 +30,7 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
 		}
 	} else {
 		/* istanbul ignore next */
-		throw new Error(`Unknown quantifier ${quantifier}`);
+		assertNever(quantifier);
 	}
 
 	return [minOccurrences, maxOccurrences];
