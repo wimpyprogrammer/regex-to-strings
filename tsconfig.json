@@ -15,7 +15,8 @@
 			"regexp-tree": ["src/typings/regexp-tree.d.ts"]
 		},
 		"pretty": true,
-		"sourceMap": true
+		"sourceMap": true,
+		"strictNullChecks": true
 	},
 	"include": ["src"]
 }

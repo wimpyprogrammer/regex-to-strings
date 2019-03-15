@@ -25,8 +25,10 @@ export function* expand(pattern: string): IterableIterator<string> {
 	yield* expandNode(parsed.body);
 }
 
-export function* expandNode(node: Expression): IterableIterator<string> {
-	if (Guards.isAlternative(node)) {
+export function* expandNode(node: Expression | null): IterableIterator<string> {
+	if (node === null) {
+		yield '';
+	} else if (Guards.isAlternative(node)) {
 		yield* expandAlternative(node);
 	} else if (Guards.isAssertion(node)) {
 		yield '';

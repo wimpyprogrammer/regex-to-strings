@@ -2,7 +2,7 @@ import { ClassRange, SimpleChar } from 'regexp-tree/ast';
 
 export function createSimpleChar(value: string): SimpleChar {
 	return {
-		codePoint: value.codePointAt(0),
+		codePoint: value.codePointAt(0)!,
 		kind: 'simple',
 		symbol: value,
 		type: 'Char',

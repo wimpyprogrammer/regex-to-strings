@@ -38,7 +38,7 @@ export function* expandCharacterClass(
 			const codePoints = getReferencedCodePoints(expression);
 			return accumulator.concat(codePoints);
 		},
-		[]
+		[] as number[]
 	);
 
 	yield* allCodePointOptions

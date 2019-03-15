@@ -68,6 +68,10 @@ const metaToCharClassTransform: Handler = {
 		const { index, node, parent, parentPath } = charPath;
 		const char = node as Char;
 
+		if (!parent || !parentPath || !replacer[parent.type]) {
+			return;
+		}
+
 		if (!Guards.isMetaChar(char)) {
 			return;
 		}
@@ -83,35 +87,35 @@ const metaToCharClassTransform: Handler = {
 			type: 'CharacterClass',
 		};
 
-		const parentReplacer = replacer[parent.type];
-		parentReplacer(parentPath, index, characterClass);
+		const parentReplacer = replacer[parent.type]!;
+		parentReplacer(parentPath, characterClass, index);
 	},
 };
 
 type NodeReplacer = {
 	[parentType in AstClass]?: (
 		parent: NodePath<AstClass>,
-		iChild: number,
-		replacement: CharacterClass
+		replacement: CharacterClass,
+		iChild?: number
 	) => void
 };
 
 const replacer: NodeReplacer = {
-	Alternative: (parent, iChild, replacement) => {
-		parent.getChild(iChild).replace(replacement);
+	Alternative: (parent, replacement, iChild) => {
+		parent.getChild(iChild)!.replace(replacement);
 	},
 
-	CharacterClass: (parent, iChild, replacement) => {
+	CharacterClass: (parent, replacement, iChild) => {
 		const parentNode = parent.node as CharacterClass;
-		parentNode.expressions.splice(iChild, 1, ...replacement.expressions);
+		parentNode.expressions.splice(iChild!, 1, ...replacement.expressions);
 	},
 
-	Group: (parent, _, replacement) => {
+	Group: (parent, replacement) => {
 		const parentNode = parent.node as Group;
 		parentNode.expression = replacement;
 	},
 
-	RegExp: (parent, _, replacement) => {
+	RegExp: (parent, replacement) => {
 		const parentNode = parent.node as AstRegExp;
 		parentNode.body = replacement;
 	},

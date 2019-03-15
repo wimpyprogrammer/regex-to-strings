@@ -8,17 +8,16 @@ function assertNever(x: never): never {
 }
 
 function getNumOccurrences(quantifier: Quantifier): [number, number] {
-	/* istanbul ignore else */
-	if (Guards.isRangeQuantifier(quantifier)) {
-		const { from, to } = quantifier;
-		return [from, to !== undefined ? to : 100];
-	} else if (Guards.isSimpleQuantifier(quantifier)) {
+	/* istanbul ignore next */
+	if (Guards.isSimpleQuantifier(quantifier)) {
 		const transformer = 'simpleQuantifierToRangeQuantifierTransform';
 		throw new Error(`"${quantifier.kind}" not removed by ${transformer}`);
-	} else {
-		/* istanbul ignore next */
+	} else if (!Guards.isRangeQuantifier(quantifier)) {
 		assertNever(quantifier);
 	}
+
+	const { from, to } = quantifier;
+	return [from, to !== undefined ? to : 100];
 }
 
 export function* expandRepetition(node: Repetition): IterableIterator<string> {
