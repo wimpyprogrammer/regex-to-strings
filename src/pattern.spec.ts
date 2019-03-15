@@ -67,6 +67,16 @@ describe('expand', () => {
 		expect(result).toEqual(['Maine', 'Maryland', 'Massachusetts']);
 	});
 
+	it('expands empty alternation groups', () => {
+		const result = expandAll('foo(|)');
+		expect(result).toEqual(['foo', 'foo']);
+	});
+
+	it('expands partially empty alternation groups', () => {
+		const result = expandAll('ba(|r)');
+		expect(result).toEqual(['ba', 'bar']);
+	});
+
 	it('expands optional characters', () => {
 		const result = expandAll('abc?');
 		expect(result).toEqual(['ab', 'abc']);
