@@ -365,6 +365,16 @@ describe('expand', () => {
 		}
 	);
 
+	it.each(['\t', '\n', '\r', '\v', '\f', '\0'])(
+		'verbatim expands literal control character %#',
+		(literalControlCharacter: string) => {
+			const result = expandAll(literalControlCharacter);
+			expect(result).toHaveLength(1);
+			expect(result[0]).toHaveLength(1);
+			expect(result[0]).toMatch(new RegExp(literalControlCharacter));
+		}
+	);
+
 	it.each([/\cJ/, /\cj/, /\cK/, /\ck/, /\cL/, /\cl/, /\cM/, /\cm/])(
 		'verbatim expands escaped control character %p',
 		(controlCharacter: RegExp) => {
