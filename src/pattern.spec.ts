@@ -77,35 +77,53 @@ describe('expand', () => {
 		expect(result).toEqual(['ba', 'bar']);
 	});
 
-	it('expands optional characters', () => {
-		const result = expandAll('abc?');
-		expect(result).toEqual(['ab', 'abc']);
-	});
+	it.each([/abc?/, /abc??/])(
+		'expands optional character %p',
+		(optional: RegExp) => {
+			const result = expandAll(optional.source);
+			expect(result).toEqual(['ab', 'abc']);
+		}
+	);
 
-	it('expands optional groups', () => {
-		const result = expandAll('a(bc)?');
-		expect(result).toEqual(['a', 'abc']);
-	});
+	it.each([/a(bc)?/, /a(bc)??/])(
+		'expands optional group %p',
+		(optionalGroup: RegExp) => {
+			const result = expandAll(optionalGroup.source);
+			expect(result).toEqual(['a', 'abc']);
+		}
+	);
 
-	it('expands optionally repeating characters', () => {
-		const result = expandSome('abc*', 5);
-		expect(result).toEqual(['ab', 'abc', 'abcc', 'abccc', 'abcccc']);
-	});
+	it.each([/abc*/, /abc*?/])(
+		'expands optionally repeating character %p',
+		(optionalRepeat: RegExp) => {
+			const result = expandSome(optionalRepeat.source, 5);
+			expect(result).toEqual(['ab', 'abc', 'abcc', 'abccc', 'abcccc']);
+		}
+	);
 
-	it('expands optionally repeating groups', () => {
-		const result = expandSome('a(bc)*', 4);
-		expect(result).toEqual(['a', 'abc', 'abcbc', 'abcbcbc']);
-	});
+	it.each([/a(bc)*/, /a(bc)*?/])(
+		'expands optionally repeating group %p',
+		(optionalRepeatGroup: RegExp) => {
+			const result = expandSome(optionalRepeatGroup.source, 4);
+			expect(result).toEqual(['a', 'abc', 'abcbc', 'abcbcbc']);
+		}
+	);
 
-	it('expands repeating characters', () => {
-		const result = expandSome('abc+', 5);
-		expect(result).toEqual(['abc', 'abcc', 'abccc', 'abcccc', 'abccccc']);
-	});
+	it.each([/abc+/, /abc+?/])(
+		'expands repeating character %p',
+		(repeat: RegExp) => {
+			const result = expandSome(repeat.source, 5);
+			expect(result).toEqual(['abc', 'abcc', 'abccc', 'abcccc', 'abccccc']);
+		}
+	);
 
-	it('expands repeating groups', () => {
-		const result = expandSome('a(bc)+', 4);
-		expect(result).toEqual(['abc', 'abcbc', 'abcbcbc', 'abcbcbcbc']);
-	});
+	it.each([/a(bc)+/, /a(bc)+?/])(
+		'expands repeating group %p',
+		(repeat: RegExp) => {
+			const result = expandSome(repeat.source, 4);
+			expect(result).toEqual(['abc', 'abcbc', 'abcbcbc', 'abcbcbcbc']);
+		}
+	);
 
 	it('expands alphabetic single-character set', () => {
 		const result = expandAll('[aeiou]');
@@ -182,20 +200,29 @@ describe('expand', () => {
 		result.forEach(testExpansion);
 	});
 
-	it('expands exact quantifier patterns', () => {
-		const result = expandAll('a{5}');
-		expect(result).toEqual(['aaaaa']);
-	});
+	it.each([/a{5}/, /a{5}?/])(
+		'expands exact quantifier pattern %p',
+		(exactQuantifier: RegExp) => {
+			const result = expandAll(exactQuantifier.source);
+			expect(result).toEqual(['aaaaa']);
+		}
+	);
 
-	it('expands range quantifier patterns', () => {
-		const result = expandAll('a{2,6}');
-		expect(result).toEqual(['aa', 'aaa', 'aaaa', 'aaaaa', 'aaaaaa']);
-	});
+	it.each([/a{2,6}/, /a{2,6}?/])(
+		'expands range quantifier pattern %p',
+		(rangeQuantifier: RegExp) => {
+			const result = expandAll(rangeQuantifier.source);
+			expect(result).toEqual(['aa', 'aaa', 'aaaa', 'aaaaa', 'aaaaaa']);
+		}
+	);
 
-	it('expands range quantifier patterns without upper bound', () => {
-		const result = expandSome('a{3,}', 5);
-		expect(result).toEqual(['aaa', 'aaaa', 'aaaaa', 'aaaaaa', 'aaaaaaa']);
-	});
+	it.each([/a{3,}/, /a{3,}?/])(
+		'expands range quantifier pattern without upper bound %p',
+		(rangeQuantifierNoUpper: RegExp) => {
+			const result = expandSome(rangeQuantifierNoUpper.source, 5);
+			expect(result).toEqual(['aaa', 'aaaa', 'aaaaa', 'aaaaaa', 'aaaaaaa']);
+		}
+	);
 
 	it.each([/./, /\w/, /\W/, /\d/, /\D/, /\s/, /\S/])(
 		'expands the single character class %p',
