@@ -347,7 +347,7 @@ describe('expand', () => {
 		expect(result).toEqual(['foo bar']);
 	});
 
-	it.each([/\+/, /\053/, /\x2B/, /\u002B/])(
+	it.each([/\+/, /\43/, /\053/, /\x2B/, /\u002B/])(
 		'expands escaped character %p',
 		(escapedPlus: RegExp) => {
 			const result = expandAll(escapedPlus.source);
