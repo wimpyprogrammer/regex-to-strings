@@ -1,5 +1,5 @@
 import { CharacterClass } from 'regexp-tree/ast';
-import * as Guards from '../typings/regexp-tree-guards';
+import * as Guards from '../types/regexp-tree-guards';
 
 function* fill(start: number, end: number): IterableIterator<number> {
 	for (let i = start; i <= end; i++) {

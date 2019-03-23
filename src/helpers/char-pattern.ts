@@ -1,5 +1,5 @@
 import { Char } from 'regexp-tree/ast';
-import * as Guards from '../typings/regexp-tree-guards';
+import * as Guards from '../types/regexp-tree-guards';
 
 const alphaOffsetCharCode = 'a'.charCodeAt(0) - 1;
 

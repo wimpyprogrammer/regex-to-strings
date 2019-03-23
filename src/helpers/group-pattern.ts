@@ -4,7 +4,7 @@ import {
 	isCapturingGroup,
 	isNamedBackreference,
 	isNumericBackreference,
-} from '../typings/regexp-tree-guards';
+} from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {

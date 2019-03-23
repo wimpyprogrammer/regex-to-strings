@@ -7,7 +7,7 @@ import {
 	Group,
 	SpecialChar,
 } from 'regexp-tree/ast';
-import * as Guards from '../typings/regexp-tree-guards';
+import * as Guards from '../types/regexp-tree-guards';
 import {
 	createClassRange,
 	createEscapedSimpleChar,

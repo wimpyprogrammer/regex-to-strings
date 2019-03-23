@@ -6,7 +6,7 @@ import { expandCharacterClass } from './helpers/character-class-pattern';
 import { expandBackreference, expandGroup } from './helpers/group-pattern';
 import { expandRepetition } from './helpers/repetition-pattern';
 import transforms from './transforms/index';
-import * as Guards from './typings/regexp-tree-guards';
+import * as Guards from './types/regexp-tree-guards';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {

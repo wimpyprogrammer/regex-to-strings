@@ -1,6 +1,6 @@
 import { Quantifier, Repetition } from 'regexp-tree/ast';
 import { expandNode } from '../pattern';
-import * as Guards from '../typings/regexp-tree-guards';
+import * as Guards from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {

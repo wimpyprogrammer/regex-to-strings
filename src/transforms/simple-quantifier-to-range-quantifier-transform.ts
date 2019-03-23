@@ -1,6 +1,6 @@
 import { Handler } from 'regexp-tree';
 import { Quantifier, RangeQuantifier, SimpleQuantifier } from 'regexp-tree/ast';
-import * as Guards from '../typings/regexp-tree-guards';
+import * as Guards from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
