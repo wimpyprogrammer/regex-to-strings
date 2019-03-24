@@ -347,6 +347,26 @@ describe('expand', () => {
 		expect(result).toEqual(['foo bar']);
 	});
 
+	it('ignores positive lookahead', () => {
+		const result = expandAll('foo (?=\\w+)');
+		expect(result).toEqual(['foo ']);
+	});
+
+	it('ignores negative lookahead', () => {
+		const result = expandAll('foo (?!\\w+)');
+		expect(result).toEqual(['foo ']);
+	});
+
+	it('ignores positive lookbehind', () => {
+		const result = expandAll('foo (?<=\\w+)');
+		expect(result).toEqual(['foo ']);
+	});
+
+	it('ignores negative lookbehind', () => {
+		const result = expandAll('foo (?<!\\w+)');
+		expect(result).toEqual(['foo ']);
+	});
+
 	it.each([/\+/, /\43/, /\053/, /\x2B/, /\u002B/])(
 		'expands escaped character %p',
 		(escapedPlus: RegExp) => {
