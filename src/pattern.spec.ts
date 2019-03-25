@@ -466,4 +466,629 @@ describe('expand', () => {
 		const result = expandAll('(?<20>a) \\k<20> (?<50>z) \\k<50>');
 		expect(result).toEqual(['a a z z']);
 	});
+
+	describe('unsupported RegEx features, for reference', () => {
+		it.each([
+			// From https://www.regular-expressions.info/refrepeat.html
+			['possessive optional quantifier', 'a?+'],
+			['possessive optional repeating quantifier', 'a*+'],
+			['possessive repeating quantifier', 'a++'],
+			['possessive fixed range quantifier', 'a{1,2}+'],
+			['possessive range quantifier without upper bound', 'a{1,}+'],
+
+			// From https://www.regular-expressions.info/refext.html
+			['capture group', "(?'x'abc)"],
+			['capture group', '(?P<x>abc)'],
+			['capture group with duplicate names', '(?<x>a)|(?<x>b)'],
+			['capture group with negative number name', '(?<-17>abc)'],
+			['backreference', '(?<x>a) (?P=x)'],
+			['backreference nested with group', '(?<x>a\\k<x>?)'],
+			['nested backreference', '(?<x>a\\k<x>?){3}'],
+			['forward reference', '(\\k<x>?(?<x>a)){3}'],
+
+			// From https://www.regular-expressions.info/posixbrackets.html#coll
+			['POSIX collation sequence', '[[.span-ll.]]'],
+
+			// From https://www.regular-expressions.info/refadv.html
+			['pattern with comment', 'a(?#foobar)b'],
+			['branch reset group', '(x)(?|(a)|(bc)|(def))\\2'],
+			['atomic group', 'a(?>bc|b)c'],
+			['lookaround conditional', '(?(?<=a)b|c)'],
+			['implicit lookahead conditional', '(?(\\d{2})7|c)'],
+			['conditional', '(a)?(?(1)b|c)'],
+			['conditional', '(a)?(?(+1)b|c)'],
+			['relative conditional', '(a)?(?(-1)b|c)'],
+			['named conditional', '(?<one>a)?(?(one)b|c)'],
+			['named conditional', '(?<one>a)?(?(<one>)b|c)'],
+			['named conditional', "(?'one'a)?(?('one')b|c)"],
+
+			// From https://www.regular-expressions.info/refrecurse.html
+			['balancing group', '(?<l>\\w)+\\w?(\\k<l>(?<-l>))+(?(l)(?!))'],
+			['balancing group', "(?'l'\\w)+\\w?(\\k'l'(?'-l'))+(?(l)(?!))"],
+			['recursion', 'a(?R)?z'],
+			['recursion', 'a(?0)?z'],
+			['subroutine call', 'a(b(?1)?y)z'],
+			['relative subroutine call', 'a(b(?-1)?y)z'],
+			['forward subroutine call', '(?+1)x([ab])'],
+			['named subroutine call', 'a(?<x>b(?&x)?y)z'],
+			['named subroutine call', 'a(?P<x>b(?P>x)?y)z'],
+			['named subroutine call', "a(?'x'b\\g'x'?y)z"],
+			['subroutine definitions', '(?(DEFINE)([ab]))x(?1)y(?1)z'],
+		])('throws on RegEx syntax: %s /%s/', (_: string, input: string) => {
+			expect(() => expandAll(input)).toThrow();
+		});
+
+		[
+			// From https://www.regular-expressions.info/refmodifiers.html
+			'^', // Reset
+			'i', // Case insensitive
+			'c', // Case sensitive
+			'x', // Free-spacing
+			'xx', // Free-spacing
+			't', // Exact spacing
+			's', // Single-line, Tcl single-line
+			'm', // Multi-line, Single-line, Tcl multi-line
+			'n', // Tcl multi-line, Explicit capture
+			'p', // Tcl "partial" newline-sensitive
+			'd', // Tcl "weird" newline-sensitive, UNIX lines
+			'J', // Duplicate named groups
+			'U', // Ungreedy quantifiers
+			'b', // POSIX BRE
+			'e', // POSIX ERE
+			'q', // Literal
+			'X', // Extra syntax
+		].forEach(modeModifier => {
+			it.each([
+				['positive at start', `(?${modeModifier})test`],
+				['positive in middle', `te(?${modeModifier})st`],
+				['negative at start', `(?-${modeModifier})test`],
+				['negative in middle', `te(?-${modeModifier})st`],
+				['positive with other modifiers', `(?${modeModifier}-i)test`],
+				['negative with other modifiers', `(?i-${modeModifier})test`],
+				['group', `(?${modeModifier}te)st`],
+				['group as positive modifier', `(?${modeModifier}-i:te)st`],
+				['group as negative modifier', `(?i-${modeModifier}:te)st`],
+			])(
+				'throws on RegEx mode modifier: %s /%s/',
+				(_: string, input: string) => {
+					expect(() => expandAll(input)).toThrow();
+				}
+			);
+		});
+
+		it('does not recognize RegEx syntax: hexadecimal escaped character', () => {
+			const result = expandAll(/\x{2B}/.source);
+			expect(result).toEqual(['x{2B}']);
+		});
+
+		it('does not recognize RegEx syntax: unicode escaped character', () => {
+			const result = expandAll(/\u{002B}/.source);
+			expect(result).toEqual(['u{002B}']);
+		});
+
+		it.each([/a{,5}/, /a{,5}?/])(
+			'does not recognize RegEx syntax: range quantifier pattern without lower bound %p',
+			(rangeQuantifierNoLower: RegExp) => {
+				const result = expandAll(rangeQuantifierNoLower.source);
+				expect(result.pop()).toEqual('a{,5}');
+			}
+		);
+
+		it('does not recognize RegEx syntax: line break character \\R', () => {
+			const result = expandAll(/\R/.source);
+			expect(result).toEqual(['R']);
+		});
+
+		it('does not recognize RegEx syntax: not a line break character \\N', () => {
+			const result = expandAll(/\N/.source);
+			expect(result).toEqual(['N']);
+		});
+
+		it.each([
+			// From https://www.regular-expressions.info/refcharclass.html
+			['Character class subtraction', /[c-m-[j-z]]/],
+			['Character class intersection', /[a-i&&c-z]/],
+			['Character class nested intersection', /[a-i&&[c-z]]/],
+		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
+			const result = expandAll(input.source);
+			expect(result).not.toEqual(['c', 'd', 'e', 'f', 'g', 'h', 'i']);
+		});
+
+		[
+			// From https://www.regular-expressions.info/posixbrackets.html#class
+			'alnum',
+			'alpha',
+			'ascii',
+			'blank',
+			'cntrl',
+			'digit',
+			'graph',
+			'lower',
+			'print',
+			'punct',
+			'space',
+			'upper',
+			'word',
+			'xdigit',
+
+			// From https://www.regular-expressions.info/refcharclass.html
+			'd', // digit
+			's', // space
+			'w', // word
+			'l', // lower
+			'u', // upper
+			'h', // blank
+			'V', // vertical whitespace
+		].forEach(posixClass => {
+			it.each([
+				['POSIX class', `[[:${posixClass}:]]`],
+				['negative POSIX class', `[[:^${posixClass}:]]`],
+			])(
+				'does not recognize RegEx syntax: %s /%s/',
+				(_: string, input: string) => {
+					const result = expandAll(input);
+					expect(result.pop()).toEqual(':]');
+				}
+			);
+		});
+
+		[
+			// From https://www.regular-expressions.info/posixbrackets.html#class
+			'Alnum',
+			'Alpha',
+			'ASCII',
+			'Blank',
+			'Cntrl',
+			'Digit',
+			'Graph',
+			'Lower',
+			'Print',
+			'Punct',
+			'Space',
+			'Upper',
+			'Word',
+			'XDigit',
+		].forEach(javaPosixClass => {
+			it.each([
+				['Java POSIX class', `\p{${javaPosixClass}}`],
+				['Java POSIX class', `\p{Is${javaPosixClass}}`],
+			])(
+				'does not recognize RegEx syntax: %s /%s/',
+				(_: string, input: string) => {
+					const result = expandAll(input);
+					expect(result).toHaveLength(1);
+					expect(result[0]).toMatch(/^p{/);
+				}
+			);
+		});
+
+		[
+			// From https://www.regular-expressions.info/unicode.html#script
+			'Common',
+			'Arabic',
+			'Armenian',
+			'Bengali',
+			'Bopomofo',
+			'Braille',
+			'Buhid',
+			'Canadian_Aboriginal',
+			'Cherokee',
+			'Cyrillic',
+			'Devanagari',
+			'Ethiopic',
+			'Georgian',
+			'Greek',
+			'Gujarati',
+			'Gurmukhi',
+			'Han',
+			'Hangul',
+			'Hanunoo',
+			'Hebrew',
+			'Hiragana',
+			'Inherited',
+			'Kannada',
+			'Katakana',
+			'Khmer',
+			'Lao',
+			'Latin',
+			'Limbu',
+			'Malayalam',
+			'Mongolian',
+			'Myanmar',
+			'Ogham',
+			'Oriya',
+			'Runic',
+			'Sinhala',
+			'Syriac',
+			'Tagalog',
+			'Tagbanwa',
+			'TaiLe',
+			'Tamil',
+			'Telugu',
+			'Thaana',
+			'Thai',
+			'Tibetan',
+			'Yi',
+		].forEach(unicodeScript => {
+			it.each([`\p{${unicodeScript}}`, `\p{Is${unicodeScript}}`])(
+				'does not recognize RegEx syntax: Unicode script /%s/',
+				(input: string) => {
+					const result = expandAll(input);
+					expect(result).toHaveLength(1);
+					expect(result[0]).toMatch(/^p{/);
+				}
+			);
+		});
+
+		[
+			// From https://www.regular-expressions.info/unicode.html#block
+			'Basic_Latin',
+			'Latin-1_Supplement',
+			'Latin_Extended-A',
+			'Latin_Extended-B',
+			'IPA_Extensions',
+			'Spacing_Modifier_Letters',
+			'Combining_Diacritical_Marks',
+			'Greek_and_Coptic',
+			'Cyrillic',
+			'Cyrillic_Supplementary',
+			'Armenian',
+			'Hebrew',
+			'Arabic',
+			'Syriac',
+			'Thaana',
+			'Devanagari',
+			'Bengali',
+			'Gurmukhi',
+			'Gujarati',
+			'Oriya',
+			'Tamil',
+			'Telugu',
+			'Kannada',
+			'Malayalam',
+			'Sinhala',
+			'Thai',
+			'Lao',
+			'Tibetan',
+			'Myanmar',
+			'Georgian',
+			'Hangul_Jamo',
+			'Ethiopic',
+			'Cherokee',
+			'Unified_Canadian_Aboriginal_Syllabics',
+			'Ogham',
+			'Runic',
+			'Tagalog',
+			'Hanunoo',
+			'Buhid',
+			'Tagbanwa',
+			'Khmer',
+			'Mongolian',
+			'Limbu',
+			'Tai_Le',
+			'Khmer_Symbols',
+			'Phonetic_Extensions',
+			'Latin_Extended_Additional',
+			'Greek_Extended',
+			'General_Punctuation',
+			'Superscripts_and_Subscripts',
+			'Currency_Symbols',
+			'Combining_Diacritical_Marks_for_Symbols',
+			'Letterlike_Symbols',
+			'Number_Forms',
+			'Arrows',
+			'Mathematical_Operators',
+			'Miscellaneous_Technical',
+			'Control_Pictures',
+			'Optical_Character_Recognition',
+			'Enclosed_Alphanumerics',
+			'Box_Drawing',
+			'Block_Elements',
+			'Geometric_Shapes',
+			'Miscellaneous_Symbols',
+			'Dingbats',
+			'Miscellaneous_Mathematical_Symbols-A',
+			'Supplemental_Arrows-A',
+			'Braille_Patterns',
+			'Supplemental_Arrows-B',
+			'Miscellaneous_Mathematical_Symbols-B',
+			'Supplemental_Mathematical_Operators',
+			'Miscellaneous_Symbols_and_Arrows',
+			'CJK_Radicals_Supplement',
+			'Kangxi_Radicals',
+			'Ideographic_Description_Characters',
+			'CJK_Symbols_and_Punctuation',
+			'Hiragana',
+			'Katakana',
+			'Bopomofo',
+			'Hangul_Compatibility_Jamo',
+			'Kanbun',
+			'Bopomofo_Extended',
+			'Katakana_Phonetic_Extensions',
+			'Enclosed_CJK_Letters_and_Months',
+			'CJK_Compatibility',
+			'CJK_Unified_Ideographs_Extension_A',
+			'Yijing_Hexagram_Symbols',
+			'CJK_Unified_Ideographs',
+			'Yi_Syllables',
+			'Yi_Radicals',
+			'Hangul_Syllables',
+			'High_Surrogates',
+			'High_Private_Use_Surrogates',
+			'Low_Surrogates',
+			'Private_Use_Area',
+			'CJK_Compatibility_Ideographs',
+			'Alphabetic_Presentation_Forms',
+			'Arabic_Presentation_Forms-A',
+			'Variation_Selectors',
+			'Combining_Half_Marks',
+			'CJK_Compatibility_Forms',
+			'Small_Form_Variants',
+			'Arabic_Presentation_Forms-B',
+			'Halfwidth_and_Fullwidth_Forms',
+			'Specials',
+		].forEach(unicodeBlock => {
+			function testUnicodeBlock(_: string, input: string) {
+				const result = expandAll(input);
+				expect(result).toHaveLength(1);
+				expect(result[0]).toMatch(/^p{/);
+			}
+
+			it.each([
+				['', `\p{${unicodeBlock}}`],
+				['', `\p{Is${unicodeBlock}}`],
+				['', `\p{In${unicodeBlock}}`],
+				['lowercase', `\p{In${unicodeBlock.toLowerCase()}}`],
+			])(
+				'does not recognize RegEx syntax: Unicode block %s /%s/',
+				testUnicodeBlock
+			);
+
+			if (unicodeBlock.includes('_')) {
+				it.each([
+					['no underscores', `\p{${unicodeBlock.replace('_', '')}}`],
+					['hyphens for underscores', `\p{${unicodeBlock.replace('_', '-')}}`],
+					['spaces for underscores', `\p{${unicodeBlock.replace('_', ' ')}}`],
+				])(
+					'does not recognize RegEx syntax: Unicode block %s /%s/',
+					testUnicodeBlock
+				);
+			}
+
+			if (unicodeBlock.includes('-')) {
+				it.each([
+					['no hyphens', `\p{${unicodeBlock.replace('-', '')}}`],
+					['underscores for hyphens', `\p{${unicodeBlock.replace('-', '_')}}`],
+					['spaces for hyphens', `\p{${unicodeBlock.replace('-', ' ')}}`],
+				])(
+					'does not recognize RegEx syntax: Unicode block %s /%s/',
+					testUnicodeBlock
+				);
+			}
+		});
+
+		[
+			// From https://www.regular-expressions.info/unicode.html#category
+			'Letter',
+			'L',
+			'Lowercase_Letter',
+			'Ll',
+			'Uppercase_Letter',
+			'Lu',
+			'Titlecase_Letter',
+			'Lt',
+			'Cased_Letter',
+			'L&',
+			'Modifier_Letter',
+			'Lm',
+			'Other_Letter',
+			'Lo',
+			'Mark',
+			'M',
+			'Non_Spacing_Mark',
+			'Mn',
+			'Spacing_Combining_Mark',
+			'Mc',
+			'Enclosing_Mark',
+			'Me',
+			'Separator',
+			'Z',
+			'Space_Separator',
+			'Zs',
+			'Line_Separator',
+			'Zl',
+			'Paragraph_Separator',
+			'Zp',
+			'Symbol',
+			'S',
+			'Math_Symbol',
+			'Sm',
+			'Currency_Symbol',
+			'Sc',
+			'Modifier_Symbol',
+			'Sk',
+			'Other_Symbol',
+			'So',
+			'Number',
+			'N',
+			'Decimal_Digit_Number',
+			'Nd',
+			'Letter_Number',
+			'Nl',
+			'Other_Number',
+			'No',
+			'Punctuation',
+			'P',
+			'Dash_Punctuation',
+			'Pd',
+			'Open_Punctuation',
+			'Ps',
+			'Close_Punctuation',
+			'Pe',
+			'Initial_Punctuation',
+			'Pi',
+			'Final_Punctuation',
+			'Pf',
+			'Connector_Punctuation',
+			'Pc',
+			'Other_Punctuation',
+			'Po',
+			'Other',
+			'C',
+			'Control',
+			'Cc',
+			'Format',
+			'Cf',
+			'Private_Use',
+			'Co',
+			'Surrogate',
+			'Cs',
+			'Unassigned',
+			'Cn',
+		].forEach(unicodeCategory => {
+			it.each([
+				['Longhand format', `\p{${unicodeCategory}}`],
+				['Longhand format', `\p{Is${unicodeCategory}}`],
+				['Longhand negative format', `\p{^${unicodeCategory}}`],
+			])(
+				'does not recognize RegEx syntax: Unicode category %s /%s/',
+				(_: string, input: string) => {
+					const result = expandAll(input);
+					expect(result).toHaveLength(1);
+					expect(result[0]).toMatch(/^p{/);
+				}
+			);
+
+			it.each([
+				['Longhand negative format', `\P{${unicodeCategory}}`],
+				['Longhand double negative format', `\P{^${unicodeCategory}}`],
+			])(
+				'does not recognize RegEx syntax: Unicode category %s /%s/',
+				(_: string, input: string) => {
+					const result = expandAll(input);
+					expect(result).toHaveLength(1);
+					expect(result[0]).toMatch(/^P{/);
+				}
+			);
+		});
+
+		// From https://www.regular-expressions.info/unicode.html#category
+		['L', 'M', 'Z', 'S', 'N', 'P', 'C'].forEach(unicodeCategory => {
+			it.each([['Shorthand format', `\p${unicodeCategory}`]])(
+				'does not recognize RegEx syntax: Unicode category %s /%s/',
+				(_: string, input: string) => {
+					const result = expandAll(input);
+					expect(result).toHaveLength(1);
+					expect(result[0]).toMatch(/^p/);
+				}
+			);
+
+			it.each([['Shorthand negative format', `\P${unicodeCategory}`]])(
+				'does not recognize RegEx syntax: Unicode category %s /%s/',
+				(_: string, input: string) => {
+					const result = expandAll(input);
+					expect(result).toHaveLength(1);
+					expect(result[0]).toMatch(/^P/);
+				}
+			);
+		});
+
+		// From https://www.regular-expressions.info/posixbrackets.html#eq
+		it('does not recognize RegEx syntax: POSIX character equivalent', () => {
+			const result = expandAll('[[=e=]]');
+			expect(result).toEqual(['e]', '=]', '[]']);
+		});
+
+		it('does not recognize RegEx syntax: line break character \\R', () => {
+			const result = expandAll(/\R/.source);
+			expect(result.length).toEqual(1);
+			expect(result[0]).not.toContain('\n');
+		});
+
+		it('does not recognize RegEx syntax: grapheme \\X', () => {
+			const result = expandAll(/\X/.source);
+			expect(result).toEqual(['X']);
+		});
+
+		it.each([
+			// From https://www.regular-expressions.info/refcharacters.html
+			['Escape sequence', /Qab abE/],
+			['Octal escape sequence', /\o{141}\o{142} \o{141}\o{142}/],
+
+			// From https://www.regular-expressions.info/refanchors.html
+			['Start attempt anchor', /\Aab \Aab/],
+			['Start attempt anchor', /\Gab \Gab/],
+			['Start string anchor', /\`ab ab/],
+			['End string anchor', /ab ab\z/],
+			['End string anchor', /ab ab\Z/],
+			['End string anchor', /ab ab\'/],
+
+			// From https://www.regular-expressions.info/refwordboundaries.html
+			['Tcl boundary anchor', /ab\y \yab/],
+			['Tcl negated boundary anchor', /a\Yb a\Yb/],
+			['Tcl start boundary anchor', /a\mb a\mb/],
+			['Tcl end boundary anchor', /ab\M ab\M/],
+			['GNU start boundary anchor', /\<ab \<ab/],
+			['GNU end boundary anchor', /ab\> ab\>/],
+			['POSIX start boundary anchor', /[[:<:]]ab [[:<:]]ab/],
+			['POSIX end boundary anchor', /ab[[:>:]] ab[[:>:]]/],
+
+			// From https://www.regular-expressions.info/refadv.html
+			['backreference in lookbehind', /(ab) (?<=\1)/],
+			['marker to ignore preceeding text', /ignore this \Kab ab/],
+		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
+			const result = expandAll(input.source);
+			expect(result).not.toEqual(['ab ab']);
+		});
+
+		it.each([
+			// From https://www.regular-expressions.info/refext.html
+			['numbered backreference before group', '\\1 (ab)'],
+			['named backreference before group', '\\k<x> (?<x>ab)'],
+			['backreference', "(?<x>ab) \\k'x'"],
+			['backreference', '(?<x>ab) \\k{x}'],
+			['backreference', '(?<x>ab) \\g{x}'],
+			['capture groups override numbered index', '(?<17>ab) \\17'],
+			['failed backreference', '(?<x>ab)? \\k<x>'],
+		])(
+			'does not recognize RegEx syntax: %s /%s/',
+			(_: string, input: string) => {
+				const result = expandAll(input);
+				expect(result).not.toEqual(['ab ab']);
+			}
+		);
+
+		it.each([
+			// From https://www.regular-expressions.info/refrecurse.html
+			['recursion', /a\g<0>?z/],
+			['recursion', /ag'0'?z/],
+		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
+			const result = expandSome(input.source, 3);
+			expect(result).not.toEqual(['az', 'aazz', 'aaazzz']);
+		});
+
+		it.each([
+			// From https://www.regular-expressions.info/refrecurse.html
+			['subroutine call', 'a(b\\g<1>?y)z'],
+			['subroutine call', "a(b\\g'1'?y)z"],
+			['relative subroutine call', 'a(b\\g<-1>?y)z'],
+			['relative subroutine call', "a(b\\g'-1'?y)z"],
+			['named subroutine call', 'a(?<x>b\\g<x>?y)z'],
+		])(
+			'does not recognize RegEx syntax: %s /%s/',
+			(_: string, input: string) => {
+				const result = expandSome(input, 3);
+				expect(result).not.toEqual(['abyz', 'abbyyz', 'abbbyyyz']);
+			}
+		);
+
+		it.each([
+			// From https://www.regular-expressions.info/refrecurse.html
+			['forward subroutine call', /\g<+1>x([ab])/],
+			['forward subroutine call', /\g'+1'x([ab])/],
+		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
+			const result = expandAll(input.source);
+			expect(result).not.toEqual(['axa', 'axb', 'bxa', 'bxb']);
+		});
+	});
 });
