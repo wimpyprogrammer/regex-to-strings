@@ -30,9 +30,7 @@ const allCodePointOptions = allCharOptions
 	.split('')
 	.map(char => char.charCodeAt(0));
 
-export function* expandCharacterClass(
-	node: CharacterClass
-): IterableIterator<string> {
+export function* expandCharacterClass(node: CharacterClass) {
 	const referencedCodePoints = node.expressions.reduce(
 		(accumulator, expression) => {
 			const codePoints = getReferencedCodePoints(expression);

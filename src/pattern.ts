@@ -13,7 +13,7 @@ function assertNever(x: never): never {
 	throw new Error('Unexpected node type: ' + x);
 }
 
-export function* expand(pattern: string): IterableIterator<string> {
+export function* expand(pattern: string) {
 	if (!pattern) {
 		return [];
 	}

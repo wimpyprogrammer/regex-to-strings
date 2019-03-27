@@ -14,9 +14,7 @@ function assertNever(x: never): never {
 const namedGroups: { [name: string]: string } = {};
 const numberedGroups: { [num: number]: string } = {};
 
-export function* expandBackreference(
-	node: Backreference
-): IterableIterator<string> {
+export function* expandBackreference(node: Backreference) {
 	if (isNamedBackreference(node)) {
 		yield namedGroups[node.reference];
 	} else if (isNumericBackreference(node)) {
@@ -27,7 +25,7 @@ export function* expandBackreference(
 	}
 }
 
-export function* expandGroup(node: Group): IterableIterator<string> {
+export function* expandGroup(node: Group) {
 	const generator = expandNode(node.expression);
 
 	for (const expression of generator) {

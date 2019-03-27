@@ -16,7 +16,7 @@ function translateEscapedControlChar(escapedControlChar: Char): string {
 	return String.fromCharCode(controlCharCodeTranslated);
 }
 
-export function* expandChar(node: Char): IterableIterator<string> {
+export function* expandChar(node: Char) {
 	if (Guards.isSimpleChar(node)) {
 		yield node.value;
 	} else if (['oct', 'hex', 'unicode'].includes(node.kind)) {

@@ -23,8 +23,6 @@ function* traverseTree(tree: Expression[]): IterableIterator<string> {
 	}
 }
 
-export function* expandAlternative(
-	node: Alternative
-): IterableIterator<string> {
+export function* expandAlternative(node: Alternative) {
 	yield* traverseTree(node.expressions);
 }

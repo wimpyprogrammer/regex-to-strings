@@ -20,7 +20,7 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
 	return [from, to !== undefined ? to : 100];
 }
 
-export function* expandRepetition(node: Repetition): IterableIterator<string> {
+export function* expandRepetition(node: Repetition) {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 
 	const generator = expandNode(node.expression);
