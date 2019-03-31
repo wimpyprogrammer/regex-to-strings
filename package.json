@@ -31,7 +31,7 @@
     "@babel/cli": "^7.1.0",
     "@babel/core": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
-    "@babel/preset-typescript": "^7.1.0",
+    "@babel/preset-typescript": "^7.3.3",
     "@types/jest": "^23.3.2",
     "husky": "0.14.3",
     "jest": "^23.6.0",
