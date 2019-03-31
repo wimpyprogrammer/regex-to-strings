@@ -1,15 +1,18 @@
 import { Alternative, Expression } from 'regexp-tree/ast';
-import { expandNode } from '../pattern';
+import Expander from '../Expander';
 
-function* traverseTree(tree: Expression[]): IterableIterator<string> {
+function* traverseTree(
+	this: Expander,
+	tree: Expression[]
+): IterableIterator<string> {
 	if (!tree.length) {
 		return;
 	}
 
-	const firstBranch = expandNode(tree[0]);
+	const firstBranch = this.expandNode(tree[0]);
 
 	for (const firstBranchPermutation of firstBranch) {
-		const restOfTree = traverseTree(tree.slice(1));
+		const restOfTree = traverseTree.call(this, tree.slice(1));
 		let restOfTreeHasPermutations = false;
 
 		for (const restOfTreePermutation of restOfTree) {
@@ -23,6 +26,6 @@ function* traverseTree(tree: Expression[]): IterableIterator<string> {
 	}
 }
 
-export function* expandAlternative(node: Alternative) {
-	yield* traverseTree(node.expressions);
+export function* expandAlternative(this: Expander, node: Alternative) {
+	yield* traverseTree.call(this, node.expressions);
 }

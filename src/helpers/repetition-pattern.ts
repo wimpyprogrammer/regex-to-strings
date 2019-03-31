@@ -1,5 +1,5 @@
 import { Quantifier, Repetition } from 'regexp-tree/ast';
-import { expandNode } from '../pattern';
+import Expander from '../Expander';
 import * as Guards from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
@@ -20,10 +20,10 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
 	return [from, to !== undefined ? to : 100];
 }
 
-export function* expandRepetition(node: Repetition) {
+export function* expandRepetition(this: Expander, node: Repetition) {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 
-	const generator = expandNode(node.expression);
+	const generator = this.expandNode(node.expression);
 
 	for (const expansion of generator) {
 		for (let i = minOccurrences; i <= maxOccurrences; i++) {

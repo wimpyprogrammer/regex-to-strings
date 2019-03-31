@@ -1,5 +1,5 @@
 import { Backreference, Group } from 'regexp-tree/ast';
-import { expandNode } from '../pattern';
+import Expander from '../Expander';
 import {
 	isCapturingGroup,
 	isNamedBackreference,
@@ -25,8 +25,8 @@ export function* expandBackreference(node: Backreference) {
 	}
 }
 
-export function* expandGroup(node: Group) {
-	const generator = expandNode(node.expression);
+export function* expandGroup(this: Expander, node: Group) {
+	const generator = this.expandNode(node.expression);
 
 	for (const expression of generator) {
 		if (isCapturingGroup(node)) {

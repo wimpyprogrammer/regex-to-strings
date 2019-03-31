@@ -1,10 +1,6 @@
 import { parse, transform } from 'regexp-tree';
 import { Expression } from 'regexp-tree/ast';
-import { expandAlternative } from './helpers/alternative-pattern';
-import { expandChar } from './helpers/char-pattern';
-import { expandCharacterClass } from './helpers/character-class-pattern';
-import { expandBackreference, expandGroup } from './helpers/group-pattern';
-import { expandRepetition } from './helpers/repetition-pattern';
+import Expander from './Expander';
 import transforms from './transforms/index';
 import * as Guards from './types/regexp-tree-guards';
 
@@ -22,29 +18,33 @@ export function* expand(pattern: string) {
 
 	const parsed = parse(transformed.toString());
 
-	yield* expandNode(parsed.body);
+	const expander = new Expander();
+	yield* expander.expandNode(parsed.body);
 }
 
-export function* expandNode(node: Expression | null): IterableIterator<string> {
+export function* expandNode(
+	this: Expander,
+	node: Expression | null
+): IterableIterator<string> {
 	if (node === null) {
 		yield '';
 	} else if (Guards.isAlternative(node)) {
-		yield* expandAlternative(node);
+		yield* this.expandAlternative(node);
 	} else if (Guards.isAssertion(node)) {
 		yield '';
 	} else if (Guards.isBackreference(node)) {
-		yield* expandBackreference(node);
+		yield* this.expandBackreference(node);
 	} else if (Guards.isChar(node)) {
-		yield* expandChar(node);
+		yield* this.expandChar(node);
 	} else if (Guards.isCharacterClass(node)) {
-		yield* expandCharacterClass(node);
+		yield* this.expandCharacterClass(node);
 	} else if (Guards.isDisjunction(node)) {
-		yield* expandNode(node.left);
-		yield* expandNode(node.right);
+		yield* this.expandNode(node.left);
+		yield* this.expandNode(node.right);
 	} else if (Guards.isGroup(node)) {
-		yield* expandGroup(node);
+		yield* this.expandGroup(node);
 	} else if (Guards.isRepetition(node)) {
-		yield* expandRepetition(node);
+		yield* this.expandRepetition(node);
 	} else {
 		/* istanbul ignore next */
 		assertNever(node);
