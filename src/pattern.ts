@@ -9,14 +9,20 @@ function assertNever(x: never): never {
 	throw new Error('Unexpected node type: ' + x);
 }
 
-export function* expand(pattern: string) {
+export function* expand(pattern: string | RegExp) {
 	if (!pattern) {
 		return [];
 	}
 
-	const transformed = transform(`/${pattern}/`, transforms);
+	let parsed;
 
-	const parsed = parse(transformed.toString());
+	if (pattern instanceof RegExp) {
+		const transformed = transform(pattern, transforms);
+		parsed = parse(transformed.toRegExp());
+	} else {
+		const transformed = transform(`/${pattern}/`, transforms);
+		parsed = parse(transformed.toString());
+	}
 
 	const expander = new Expander();
 	yield* expander.expandNode(parsed.body);

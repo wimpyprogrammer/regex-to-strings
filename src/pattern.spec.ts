@@ -1,11 +1,11 @@
 import { expand } from './pattern';
 
 describe('expand', () => {
-	function expandAll(input: string) {
+	function expandAll(input: string | RegExp) {
 		return [...expand(input)];
 	}
 
-	function expandSome(input: string, maxExpansions: number) {
+	function expandSome(input: string | RegExp, maxExpansions: number) {
 		const results = [];
 		const generator = expand(input);
 
@@ -80,7 +80,7 @@ describe('expand', () => {
 	it.each([/abc?/, /abc??/])(
 		'expands optional character %p',
 		(optional: RegExp) => {
-			const result = expandAll(optional.source);
+			const result = expandAll(optional);
 			expect(result).toEqual(['ab', 'abc']);
 		}
 	);
@@ -88,7 +88,7 @@ describe('expand', () => {
 	it.each([/a(bc)?/, /a(bc)??/])(
 		'expands optional group %p',
 		(optionalGroup: RegExp) => {
-			const result = expandAll(optionalGroup.source);
+			const result = expandAll(optionalGroup);
 			expect(result).toEqual(['a', 'abc']);
 		}
 	);
@@ -96,7 +96,7 @@ describe('expand', () => {
 	it.each([/abc*/, /abc*?/])(
 		'expands optionally repeating character %p',
 		(optionalRepeat: RegExp) => {
-			const result = expandSome(optionalRepeat.source, 5);
+			const result = expandSome(optionalRepeat, 5);
 			expect(result).toEqual(['ab', 'abc', 'abcc', 'abccc', 'abcccc']);
 		}
 	);
@@ -104,7 +104,7 @@ describe('expand', () => {
 	it.each([/a(bc)*/, /a(bc)*?/])(
 		'expands optionally repeating group %p',
 		(optionalRepeatGroup: RegExp) => {
-			const result = expandSome(optionalRepeatGroup.source, 4);
+			const result = expandSome(optionalRepeatGroup, 4);
 			expect(result).toEqual(['a', 'abc', 'abcbc', 'abcbcbc']);
 		}
 	);
@@ -112,7 +112,7 @@ describe('expand', () => {
 	it.each([/abc+/, /abc+?/])(
 		'expands repeating character %p',
 		(repeat: RegExp) => {
-			const result = expandSome(repeat.source, 5);
+			const result = expandSome(repeat, 5);
 			expect(result).toEqual(['abc', 'abcc', 'abccc', 'abcccc', 'abccccc']);
 		}
 	);
@@ -120,7 +120,7 @@ describe('expand', () => {
 	it.each([/a(bc)+/, /a(bc)+?/])(
 		'expands repeating group %p',
 		(repeat: RegExp) => {
-			const result = expandSome(repeat.source, 4);
+			const result = expandSome(repeat, 4);
 			expect(result).toEqual(['abc', 'abcbc', 'abcbcbc', 'abcbcbcbc']);
 		}
 	);
@@ -203,7 +203,7 @@ describe('expand', () => {
 	it.each([/a{5}/, /a{5}?/])(
 		'expands exact quantifier pattern %p',
 		(exactQuantifier: RegExp) => {
-			const result = expandAll(exactQuantifier.source);
+			const result = expandAll(exactQuantifier);
 			expect(result).toEqual(['aaaaa']);
 		}
 	);
@@ -211,7 +211,7 @@ describe('expand', () => {
 	it.each([/a{2,6}/, /a{2,6}?/])(
 		'expands range quantifier pattern %p',
 		(rangeQuantifier: RegExp) => {
-			const result = expandAll(rangeQuantifier.source);
+			const result = expandAll(rangeQuantifier);
 			expect(result).toEqual(['aa', 'aaa', 'aaaa', 'aaaaa', 'aaaaaa']);
 		}
 	);
@@ -219,7 +219,7 @@ describe('expand', () => {
 	it.each([/a{3,}/, /a{3,}?/])(
 		'expands range quantifier pattern without upper bound %p',
 		(rangeQuantifierNoUpper: RegExp) => {
-			const result = expandSome(rangeQuantifierNoUpper.source, 5);
+			const result = expandSome(rangeQuantifierNoUpper, 5);
 			expect(result).toEqual(['aaa', 'aaaa', 'aaaaa', 'aaaaaa', 'aaaaaaa']);
 		}
 	);
@@ -227,7 +227,7 @@ describe('expand', () => {
 	it.each([/./, /\w/, /\W/, /\d/, /\D/, /\s/, /\S/])(
 		'expands the single character class %p',
 		(charClass: RegExp) => {
-			const result = expandAll(charClass.source);
+			const result = expandAll(charClass);
 			expect(result.length).toBeGreaterThan(1);
 			expect(result[0]).toHaveLength(1);
 			expect(result[0]).toMatch(charClass);
@@ -242,7 +242,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet.source);
+			const result = expandAll(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -256,7 +256,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet.source);
+			const result = expandAll(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -270,7 +270,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet.source);
+			const result = expandAll(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -279,7 +279,7 @@ describe('expand', () => {
 	it.each([/\w\w\w/, /\w\d\s/, /\W\w\w/, /\W\D\S/, /\s\w\S/, /\d\W\D/])(
 		'expands the multiple character class %p',
 		(charClassSet: RegExp) => {
-			const result = expandAll(charClassSet.source);
+			const result = expandAll(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			expect(result[0]).toHaveLength(3);
 			expect(result[0]).toMatch(charClassSet);
@@ -294,7 +294,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet.source);
+			const result = expandAll(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -308,7 +308,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet.source);
+			const result = expandAll(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -317,7 +317,7 @@ describe('expand', () => {
 	it.each([/[^\w\W]/, /[^\d\D]/, /[^\s\S]/, /[^\w\D]/, /[^\W\S]/, /[^0-9\D]/])(
 		'returns zero expansions for impossible set %p',
 		(charClassSet: RegExp) => {
-			const result = expandAll(charClassSet.source);
+			const result = expandAll(charClassSet);
 			expect(result).toHaveLength(0);
 		}
 	);
@@ -331,7 +331,7 @@ describe('expand', () => {
 			}
 
 			// Too many possible combinations - limit to 1,000
-			const result = expandSome(charClassSet.source, 1000);
+			const result = expandSome(charClassSet, 1000);
 			expect(result).toHaveLength(1000);
 			result.forEach(testExpansion);
 		}
@@ -370,7 +370,7 @@ describe('expand', () => {
 	it.each([/\+/, /\43/, /\053/, /\x2B/, /\u002B/])(
 		'expands escaped character %p',
 		(escapedPlus: RegExp) => {
-			const result = expandAll(escapedPlus.source);
+			const result = expandAll(escapedPlus);
 			expect(result).toEqual(['+']);
 		}
 	);
@@ -378,7 +378,7 @@ describe('expand', () => {
 	it.each([/\t/, /\n/, /\r/, /\v/, /\f/, /\0/])(
 		'verbatim expands control character %p',
 		(controlCharacter: RegExp) => {
-			const result = expandAll(controlCharacter.source);
+			const result = expandAll(controlCharacter);
 			expect(result).toHaveLength(1);
 			expect(result[0]).toHaveLength(1);
 			expect(result[0]).toMatch(controlCharacter);
@@ -398,7 +398,7 @@ describe('expand', () => {
 	it.each([/\cJ/, /\cj/, /\cK/, /\ck/, /\cL/, /\cl/, /\cM/, /\cm/])(
 		'verbatim expands escaped control character %p',
 		(controlCharacter: RegExp) => {
-			const result = expandAll(controlCharacter.source);
+			const result = expandAll(controlCharacter);
 			expect(result).toHaveLength(1);
 			expect(result[0]).toHaveLength(1);
 			expect(result[0]).toMatch(controlCharacter);
@@ -557,30 +557,30 @@ describe('expand', () => {
 		});
 
 		it('does not recognize RegEx syntax: hexadecimal escaped character', () => {
-			const result = expandAll(/\x{2B}/.source);
+			const result = expandAll(/\x{2B}/);
 			expect(result).toEqual(['x{2B}']);
 		});
 
 		it('does not recognize RegEx syntax: unicode escaped character', () => {
-			const result = expandAll(/\u{002B}/.source);
+			const result = expandAll(/\u{002B}/);
 			expect(result).toEqual(['u{002B}']);
 		});
 
 		it.each([/a{,5}/, /a{,5}?/])(
 			'does not recognize RegEx syntax: range quantifier pattern without lower bound %p',
 			(rangeQuantifierNoLower: RegExp) => {
-				const result = expandAll(rangeQuantifierNoLower.source);
+				const result = expandAll(rangeQuantifierNoLower);
 				expect(result.pop()).toEqual('a{,5}');
 			}
 		);
 
 		it('does not recognize RegEx syntax: line break character \\R', () => {
-			const result = expandAll(/\R/.source);
+			const result = expandAll(/\R/);
 			expect(result).toEqual(['R']);
 		});
 
 		it('does not recognize RegEx syntax: not a line break character \\N', () => {
-			const result = expandAll(/\N/.source);
+			const result = expandAll(/\N/);
 			expect(result).toEqual(['N']);
 		});
 
@@ -590,7 +590,7 @@ describe('expand', () => {
 			['Character class intersection', /[a-i&&c-z]/],
 			['Character class nested intersection', /[a-i&&[c-z]]/],
 		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandAll(input.source);
+			const result = expandAll(input);
 			expect(result).not.toEqual(['c', 'd', 'e', 'f', 'g', 'h', 'i']);
 		});
 
@@ -1000,13 +1000,13 @@ describe('expand', () => {
 		});
 
 		it('does not recognize RegEx syntax: line break character \\R', () => {
-			const result = expandAll(/\R/.source);
+			const result = expandAll(/\R/);
 			expect(result.length).toEqual(1);
 			expect(result[0]).not.toContain('\n');
 		});
 
 		it('does not recognize RegEx syntax: grapheme \\X', () => {
-			const result = expandAll(/\X/.source);
+			const result = expandAll(/\X/);
 			expect(result).toEqual(['X']);
 		});
 
@@ -1037,7 +1037,7 @@ describe('expand', () => {
 			['backreference in lookbehind', /(ab) (?<=\1)/],
 			['marker to ignore preceeding text', /ignore this \Kab ab/],
 		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandAll(input.source);
+			const result = expandAll(input);
 			expect(result).not.toEqual(['ab ab']);
 		});
 
@@ -1063,7 +1063,7 @@ describe('expand', () => {
 			['recursion', /a\g<0>?z/],
 			['recursion', /ag'0'?z/],
 		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandSome(input.source, 3);
+			const result = expandSome(input, 3);
 			expect(result).not.toEqual(['az', 'aazz', 'aaazzz']);
 		});
 
@@ -1087,7 +1087,7 @@ describe('expand', () => {
 			['forward subroutine call', /\g<+1>x([ab])/],
 			['forward subroutine call', /\g'+1'x([ab])/],
 		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandAll(input.source);
+			const result = expandAll(input);
 			expect(result).not.toEqual(['axa', 'axb', 'bxa', 'bxb']);
 		});
 	});
