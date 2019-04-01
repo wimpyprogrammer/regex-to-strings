@@ -24,7 +24,7 @@ export function* expand(pattern: string | RegExp) {
 		parsed = parse(transformed.toString());
 	}
 
-	const expander = new Expander();
+	const expander = new Expander(parsed.flags);
 	yield* expander.expandNode(parsed.body);
 }
 

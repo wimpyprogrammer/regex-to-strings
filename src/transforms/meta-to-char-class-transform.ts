@@ -11,6 +11,7 @@ import * as Guards from '../types/regexp-tree-guards';
 import {
 	createClassRange,
 	createEscapedSimpleChar,
+	createSimpleChar,
 	createSimpleChars,
 } from './utils';
 
@@ -28,18 +29,23 @@ const optionsOther = [
 	createEscapedSimpleChar('-'),
 	createEscapedSimpleChar('\\'),
 ];
+const optionsNewLine = createSimpleChar('\n');
 
 function getMetaCharExpressions(
-	metaChar: SpecialChar
+	metaChar: SpecialChar,
+	regExpFlags: string
 ): CharacterClass['expressions'] {
 	switch (metaChar.value) {
 		case '.':
+			const dotAllOptions = regExpFlags.includes('s') ? [optionsNewLine] : [];
+
 			return [
 				...optionsAlpha,
 				optionsDigit,
 				...optionsWhitespaceNoBreak,
 				...optionsOther,
 				optionUnderscore,
+				...dotAllOptions,
 			];
 		case '\\w':
 			return [...optionsAlpha, optionsDigit, optionUnderscore];
@@ -64,6 +70,10 @@ function getMetaCharExpressions(
 }
 
 const metaToCharClassTransform: Handler = {
+	init(ast: AstRegExp) {
+		this.flags = ast.flags;
+	},
+
 	Char(charPath) {
 		const { index, node, parent, parentPath } = charPath;
 		const char = node as Char;
@@ -76,7 +86,7 @@ const metaToCharClassTransform: Handler = {
 			return;
 		}
 
-		const charClassExpressions = getMetaCharExpressions(char);
+		const charClassExpressions = getMetaCharExpressions(char, this.flags);
 
 		if (!charClassExpressions.length) {
 			return;

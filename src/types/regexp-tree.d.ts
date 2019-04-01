@@ -195,6 +195,8 @@ declare module 'regexp-tree' {
 
 	type Handler = {
 		[nodeType in AstClass]?: (path: NodePath<nodeType>) => void
+	} & {
+		init?: (ast: AstRegExp) => void;
 	};
 
 	type Handlers = Array<Handler> | Handler;

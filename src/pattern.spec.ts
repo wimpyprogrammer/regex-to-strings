@@ -467,6 +467,21 @@ describe('expand', () => {
 		expect(result).toEqual(['a a z z']);
 	});
 
+	describe('RegEx flags', () => {
+		it.each(['.', /./])(
+			'does not expand the dot character to a newline when the dotall flag is omitted %#',
+			(input: string | RegExp) => {
+				const result = expandAll(input);
+				expect(result).not.toContain('\n');
+			}
+		);
+
+		it('expands the dot character to a newline when the dotall flag is included', () => {
+			const result = expandAll(/./s);
+			expect(result).toContain('\n');
+		});
+	});
+
 	describe('unsupported RegEx features, for reference', () => {
 		it.each([
 			// From https://www.regular-expressions.info/refrepeat.html

@@ -13,6 +13,8 @@ class Expander {
 	protected expandCharacterClass = expandCharacterClass;
 	protected expandGroup = expandGroup;
 	protected expandRepetition = expandRepetition;
+
+	constructor(protected readonly flags: string) {}
 }
 
 export default Expander;
