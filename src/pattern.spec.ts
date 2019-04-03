@@ -468,6 +468,30 @@ describe('expand', () => {
 	});
 
 	describe('RegEx flags', () => {
+		it.each([/aB/, /\97\66/, /\x61\x42/, /\u0061\u0042/])(
+			'expands exact casing when the case-insensitive flag is omitted: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['aB']);
+			}
+		);
+
+		it.each([/aB/i, /\97\66/i, /\x61\x42/i, /\u0061\u0042/i])(
+			'expands casing variants when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['ab', 'aB', 'Ab', 'AB']);
+			}
+		);
+
+		it.each([/4%/i, /\52\37/i, /\x34\x25/i, /\u0034\u0025/i])(
+			'does not expand uncased characters when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['4%']);
+			}
+		);
+
 		it.each(['.', /./])(
 			'does not expand the dot character to a newline when the dotall flag is omitted %#',
 			(input: string | RegExp) => {
