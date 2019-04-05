@@ -643,6 +643,16 @@ describe('expand', () => {
 			);
 		});
 
+		// From https://javascript.info/regexp-unicode#the-u-flag
+		it('does not support RegEx "u" flag for static character set', () => {
+			const result = expandAll(/[𝒳𝒴]/u);
+			expect(result).not.toEqual(['𝒳', '𝒴']);
+		});
+
+		it('does not support RegEx "u" flag for range character set', () => {
+			expect(() => expandAll(/[𝒳-𝒵]/u)).toThrow();
+		});
+
 		it('does not recognize RegEx syntax: hexadecimal escaped character', () => {
 			const result = expandAll(/\x{2B}/);
 			expect(result).toEqual(['x{2B}']);
