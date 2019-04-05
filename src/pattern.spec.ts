@@ -492,6 +492,54 @@ describe('expand', () => {
 			}
 		);
 
+		it.each([/[aB]/, /[\97\66]/, /[\x61\x42]/, /[\u0061\u0042]/])(
+			'expands exact casing in static set when the case-insensitive flag is omitted: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['a', 'B']);
+			}
+		);
+
+		it.each([/[aB]/i, /[\97\66]/i, /[\x61\x42]/i, /[\u0061\u0042]/i])(
+			'expands casing variants in static set when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['a', 'A', 'b', 'B']);
+			}
+		);
+
+		it.each([/[4%]/i, /[\52\37]/i, /[\x34\x25]/i, /[\u0034\u0025]/i])(
+			'does not expand uncased characters in static set when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['4', '%']);
+			}
+		);
+
+		it.each([/[a-d]/, /[\97-\100]/, /[\x61-\x64]/, /[\u0061-\u0064]/])(
+			'expands exact casing in range set when the case-insensitive flag is omitted: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['a', 'b', 'c', 'd']);
+			}
+		);
+
+		it.each([/[a-d]/i, /[\97-\100]/i, /[\x61-\x64]/i, /[\u0061-\u0064]/i])(
+			'expands casing variants in range set when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D']);
+			}
+		);
+
+		it.each([/[1-4]/i, /* /[\49-\52]/i, */ /[\x31-\x34]/i, /[\u0031-\u0034]/i])(
+			'does not expand uncased characters in range set when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['1', '2', '3', '4']);
+			}
+		);
+
 		it.each(['.', /./])(
 			'does not expand the dot character to a newline when the dotall flag is omitted %#',
 			(input: string | RegExp) => {

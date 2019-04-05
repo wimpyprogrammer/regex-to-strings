@@ -1,4 +1,5 @@
 import { CharacterClass } from 'regexp-tree/ast';
+import Expander from '../Expander';
 import * as Guards from '../types/regexp-tree-guards';
 
 function* fill(start: number, end: number): IterableIterator<number> {
@@ -30,7 +31,15 @@ const allCodePointOptions = allCharOptions
 	.split('')
 	.map(char => char.charCodeAt(0));
 
-export function* expandCharacterClass(node: CharacterClass) {
+export function* expandCharacterClass(this: Expander, node: CharacterClass) {
+	const applyCaseInsensitiveFlag = (accumulator: string[], char: string) => {
+		if (this.flags.includes('i') && char.toLowerCase() !== char.toUpperCase()) {
+			return accumulator.concat([char.toLowerCase(), char.toUpperCase()]);
+		}
+
+		return accumulator.concat(char);
+	};
+
 	const referencedCodePoints = node.expressions.reduce(
 		(accumulator, expression) => {
 			const codePoints = getReferencedCodePoints(expression);
@@ -42,5 +51,6 @@ export function* expandCharacterClass(node: CharacterClass) {
 	yield* allCodePointOptions
 		.filter(option => !node.negative || !referencedCodePoints.includes(option))
 		.filter(option => node.negative || referencedCodePoints.includes(option))
-		.map(codePoint => String.fromCodePoint(codePoint));
+		.map(codePoint => String.fromCodePoint(codePoint))
+		.reduce(applyCaseInsensitiveFlag, []);
 }
