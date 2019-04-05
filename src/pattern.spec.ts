@@ -367,6 +367,7 @@ describe('expand', () => {
 		expect(result).toEqual(['foo ']);
 	});
 
+	// TODO: \43 should be \53
 	it.each([/\+/, /\43/, /\053/, /\x2B/, /\u002B/])(
 		'expands escaped character %p',
 		(escapedPlus: RegExp) => {
@@ -468,6 +469,7 @@ describe('expand', () => {
 	});
 
 	describe('RegEx flags', () => {
+		// TODO: \97\66 should be \141\102
 		it.each([/aB/, /\97\66/, /\x61\x42/, /\u0061\u0042/])(
 			'expands exact casing when the case-insensitive flag is omitted: %p',
 			(input: RegExp) => {
@@ -484,6 +486,7 @@ describe('expand', () => {
 			}
 		);
 
+		// TODO: \52\37 should be \64\45
 		it.each([/4%/i, /\52\37/i, /\x34\x25/i, /\u0034\u0025/i])(
 			'does not expand uncased characters when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
@@ -516,6 +519,7 @@ describe('expand', () => {
 			}
 		);
 
+		// TODO: \97-\100 should be \141-\144
 		it.each([/[a-d]/, /[\97-\100]/, /[\x61-\x64]/, /[\u0061-\u0064]/])(
 			'expands exact casing in range set when the case-insensitive flag is omitted: %p',
 			(input: RegExp) => {
@@ -532,6 +536,7 @@ describe('expand', () => {
 			}
 		);
 
+		// TODO: \49-\52 should be \61-\64
 		it.each([/[1-4]/i, /* /[\49-\52]/i, */ /[\x31-\x34]/i, /[\u0031-\u0034]/i])(
 			'does not expand uncased characters in range set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
