@@ -5,13 +5,18 @@
 		"baseUrl": "./",
 		"rootDir": "./",
 		"module": "es2015",
+		"lib": ["es5", "es2015.core", "es2015.iterable", "es2016.array.include"],
+		"downlevelIteration": true,
 		"noEmit": true,
 		"noImplicitAny": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
+		"paths": {
+			"regexp-tree": ["src/typings/regexp-tree.d.ts"]
+		},
 		"pretty": true,
-		"skipLibCheck": true,
-		"sourceMap": true
+		"sourceMap": true,
+		"strictNullChecks": true
 	},
 	"include": ["src"]
 }
