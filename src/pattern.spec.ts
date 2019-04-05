@@ -367,8 +367,7 @@ describe('expand', () => {
 		expect(result).toEqual(['foo ']);
 	});
 
-	// TODO: \43 should be \53
-	it.each([/\+/, /\43/, /\053/, /\x2B/, /\u002B/])(
+	it.each([/\+/, /\53/, /\053/, /\x2B/, /\u002B/])(
 		'expands escaped character %p',
 		(escapedPlus: RegExp) => {
 			const result = expandAll(escapedPlus);
@@ -469,8 +468,7 @@ describe('expand', () => {
 	});
 
 	describe('RegEx flags', () => {
-		// TODO: \97\66 should be \141\102
-		it.each([/aB/, /\97\66/, /\x61\x42/, /\u0061\u0042/])(
+		it.each([/aB/, /\141\102/, /\x61\x42/, /\u0061\u0042/])(
 			'expands exact casing when the case-insensitive flag is omitted: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
@@ -478,7 +476,7 @@ describe('expand', () => {
 			}
 		);
 
-		it.each([/aB/i, /\97\66/i, /\x61\x42/i, /\u0061\u0042/i])(
+		it.each([/aB/i, /\141\102/i, /\x61\x42/i, /\u0061\u0042/i])(
 			'expands casing variants when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
@@ -486,8 +484,7 @@ describe('expand', () => {
 			}
 		);
 
-		// TODO: \52\37 should be \64\45
-		it.each([/4%/i, /\52\37/i, /\x34\x25/i, /\u0034\u0025/i])(
+		it.each([/4%/i, /\64\45/i, /\x34\x25/i, /\u0034\u0025/i])(
 			'does not expand uncased characters when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
@@ -495,7 +492,7 @@ describe('expand', () => {
 			}
 		);
 
-		it.each([/[aB]/, /[\97\66]/, /[\x61\x42]/, /[\u0061\u0042]/])(
+		it.each([/[aB]/, /[\141\102]/, /[\x61\x42]/, /[\u0061\u0042]/])(
 			'expands exact casing in static set when the case-insensitive flag is omitted: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
@@ -503,7 +500,7 @@ describe('expand', () => {
 			}
 		);
 
-		it.each([/[aB]/i, /[\97\66]/i, /[\x61\x42]/i, /[\u0061\u0042]/i])(
+		it.each([/[aB]/i, /[\141\102]/i, /[\x61\x42]/i, /[\u0061\u0042]/i])(
 			'expands casing variants in static set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
@@ -511,7 +508,7 @@ describe('expand', () => {
 			}
 		);
 
-		it.each([/[4%]/i, /[\52\37]/i, /[\x34\x25]/i, /[\u0034\u0025]/i])(
+		it.each([/[4%]/i, /[\64\45]/i, /[\x34\x25]/i, /[\u0034\u0025]/i])(
 			'does not expand uncased characters in static set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
@@ -519,8 +516,7 @@ describe('expand', () => {
 			}
 		);
 
-		// TODO: \97-\100 should be \141-\144
-		it.each([/[a-d]/, /[\97-\100]/, /[\x61-\x64]/, /[\u0061-\u0064]/])(
+		it.each([/[a-d]/, /[\141-\144]/, /[\x61-\x64]/, /[\u0061-\u0064]/])(
 			'expands exact casing in range set when the case-insensitive flag is omitted: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
@@ -528,7 +524,7 @@ describe('expand', () => {
 			}
 		);
 
-		it.each([/[a-d]/i, /[\97-\100]/i, /[\x61-\x64]/i, /[\u0061-\u0064]/i])(
+		it.each([/[a-d]/i, /[\141-\144]/i, /[\x61-\x64]/i, /[\u0061-\u0064]/i])(
 			'expands casing variants in range set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
@@ -536,8 +532,7 @@ describe('expand', () => {
 			}
 		);
 
-		// TODO: \49-\52 should be \61-\64
-		it.each([/[1-4]/i, /* /[\49-\52]/i, */ /[\x31-\x34]/i, /[\u0031-\u0034]/i])(
+		it.each([/[1-4]/i, /[\61-\64]/i, /[\x31-\x34]/i, /[\u0031-\u0034]/i])(
 			'does not expand uncased characters in range set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);

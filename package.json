@@ -33,6 +33,7 @@
     "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/preset-env": "^7.4.2",
     "@babel/preset-typescript": "^7.3.3",
+    "@types/escape-string-regexp": "^1.0.0",
     "@types/jest": "^23.3.2",
     "husky": "0.14.3",
     "jest": "^23.6.0",
@@ -44,6 +45,7 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
+    "escape-string-regexp": "^1.0.5",
     "regexp-tree": "^0.1.5"
   }
 }

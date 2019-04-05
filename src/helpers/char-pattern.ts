@@ -34,6 +34,10 @@ export function* expandChar(this: Expander, node: Char) {
 		yield* expandCharByCodePoint.call(this, node.codePoint);
 	} else if (node.kind === 'control') {
 		yield translateEscapedControlChar(node);
+	} else if (node.kind === 'decimal') {
+		/* istanbul ignore next */
+		const m = `"${node.value}" not removed by decimalCharToOctalCharTransform`;
+		throw new Error(m);
 	} else if (Number.isInteger(node.codePoint)) {
 		yield* expandCharByCodePoint.call(this, node.codePoint);
 	} else if (Guards.isMetaChar(node)) {
