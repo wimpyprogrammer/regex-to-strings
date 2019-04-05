@@ -1,10 +1,6 @@
 import { Backreference, Group } from 'regexp-tree/ast';
 import Expander from '../Expander';
-import {
-	isCapturingGroup,
-	isNamedBackreference,
-	isNumericBackreference,
-} from '../types/regexp-tree-guards';
+import * as Guards from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
@@ -15,9 +11,9 @@ const namedGroups: { [name: string]: string } = {};
 const numberedGroups: { [num: number]: string } = {};
 
 export function* expandBackreference(node: Backreference) {
-	if (isNamedBackreference(node)) {
+	if (Guards.isNamedBackreference(node)) {
 		yield namedGroups[node.reference];
-	} else if (isNumericBackreference(node)) {
+	} else if (Guards.isNumericBackreference(node)) {
 		yield numberedGroups[node.number];
 	} else {
 		/* istanbul ignore next */
@@ -29,7 +25,7 @@ export function* expandGroup(this: Expander, node: Group) {
 	const generator = this.expandNode(node.expression);
 
 	for (const expression of generator) {
-		if (isCapturingGroup(node)) {
+		if (Guards.isCapturingGroup(node)) {
 			numberedGroups[node.number] = expression;
 
 			if (node.name) {
