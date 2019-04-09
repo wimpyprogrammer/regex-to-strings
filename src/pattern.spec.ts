@@ -1,4 +1,4 @@
-import { expand } from './pattern';
+import { expand, expandAll as expandAllWithSort } from './pattern';
 
 // Keep a stable order for consistent tests.
 function sortPreserveOrder<T>(items: T[]) {
@@ -7,7 +7,7 @@ function sortPreserveOrder<T>(items: T[]) {
 
 describe('expand', () => {
 	function expandAll(input: string | RegExp) {
-		return [...expand(input, sortPreserveOrder)];
+		return expandAllWithSort(input, sortPreserveOrder);
 	}
 
 	function expandSome(input: string | RegExp, maxExpansions: number) {
@@ -1213,5 +1213,12 @@ describe('expand', () => {
 			const result = expandAll(input);
 			expect(result).not.toEqual(['axa', 'axb', 'bxa', 'bxb']);
 		});
+	});
+});
+
+describe('expandAll', () => {
+	it('returns all expansions', () => {
+		const result = expandAllWithSort(/\d\d\d\d\d/);
+		expect(result).toHaveLength(100000);
 	});
 });

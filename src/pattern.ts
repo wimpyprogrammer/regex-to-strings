@@ -20,3 +20,7 @@ export function* expand(pattern: string | RegExp, sort?: Expander['sort']) {
 	const expander = new Expander(parsed.flags, sort);
 	yield* expander.expandNode(parsed.body);
 }
+
+export function expandAll(input: string | RegExp, sort?: Expander['sort']) {
+	return [...expand(input, sort)];
+}
