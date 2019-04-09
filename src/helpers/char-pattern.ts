@@ -12,11 +12,12 @@ function assertNever(x: never): never {
 function expandCharByCodePoint(this: Expander, codePoint: number) {
 	const char = String.fromCodePoint(codePoint);
 
-	if (this.flags.includes('i') && char.toUpperCase() !== char.toLowerCase()) {
-		return [char.toLowerCase(), char.toUpperCase()];
-	}
+	const expanded =
+		this.flags.includes('i') && char.toUpperCase() !== char.toLowerCase()
+			? [char.toLowerCase(), char.toUpperCase()]
+			: [char];
 
-	return [char];
+	return this.sort(expanded);
 }
 
 function translateEscapedControlChar(escapedControlChar: Char): string {

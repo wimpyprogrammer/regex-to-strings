@@ -9,7 +9,7 @@ function assertNever(x: never): never {
 	throw new Error('Unexpected node type: ' + x);
 }
 
-export function* expand(pattern: string | RegExp) {
+export function* expand(pattern: string | RegExp, sort?: Expander['sort']) {
 	if (!pattern) {
 		return [];
 	}
@@ -24,7 +24,7 @@ export function* expand(pattern: string | RegExp) {
 		parsed = parse(transformed.toString());
 	}
 
-	const expander = new Expander(parsed.flags);
+	const expander = new Expander(parsed.flags, sort);
 	yield* expander.expandNode(parsed.body);
 }
 
@@ -45,8 +45,7 @@ export function* expandNode(
 	} else if (Guards.isCharacterClass(node)) {
 		yield* this.expandCharacterClass(node);
 	} else if (Guards.isDisjunction(node)) {
-		yield* this.expandNode(node.left);
-		yield* this.expandNode(node.right);
+		yield* this.expandDisjunction(node);
 	} else if (Guards.isGroup(node)) {
 		yield* this.expandGroup(node);
 	} else if (Guards.isRepetition(node)) {

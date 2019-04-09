@@ -7,6 +7,12 @@ function assertNever(x: never): never {
 	throw new Error('Unexpected quantifier: ' + x);
 }
 
+function* fill(start: number, end: number): IterableIterator<number> {
+	for (let i = start; i <= end; i++) {
+		yield i;
+	}
+}
+
 function getNumOccurrences(quantifier: Quantifier): [number, number] {
 	/* istanbul ignore next */
 	if (Guards.isSimpleQuantifier(quantifier)) {
@@ -22,12 +28,15 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
 
 export function* expandRepetition(this: Expander, node: Repetition) {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
+	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];
 
 	const generator = this.expandNode(node.expression);
 
 	for (const expansion of generator) {
-		for (let i = minOccurrences; i <= maxOccurrences; i++) {
-			yield expansion.repeat(i);
+		const numOccurrenceOptionsSorted = this.sort(numOccurrenceOptions);
+
+		for (const numOccurrences of numOccurrenceOptionsSorted) {
+			yield expansion.repeat(numOccurrences);
 		}
 	}
 }

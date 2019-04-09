@@ -48,9 +48,11 @@ export function* expandCharacterClass(this: Expander, node: CharacterClass) {
 		[] as number[]
 	);
 
-	yield* allCodePointOptions
+	const expandedClass = allCodePointOptions
 		.filter(option => !node.negative || !referencedCodePoints.includes(option))
 		.filter(option => node.negative || referencedCodePoints.includes(option))
 		.map(codePoint => String.fromCodePoint(codePoint))
 		.reduce(applyCaseInsensitiveFlag, []);
+
+	yield* this.sort(expandedClass);
 }
