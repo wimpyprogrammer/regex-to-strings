@@ -12,7 +12,7 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"paths": {
-			"regexp-tree": ["src/typings/regexp-tree.d.ts"]
+			"regexp-tree": ["src/types/regexp-tree.d.ts"]
 		},
 		"pretty": true,
 		"sourceMap": true,
