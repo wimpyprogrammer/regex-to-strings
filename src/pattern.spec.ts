@@ -1,4 +1,8 @@
-import { expand } from './pattern';
+import {
+	expand,
+	expandAll as expandAllWithSort,
+	expandN as expandNWithSort,
+} from './pattern';
 
 // Keep a stable order for consistent tests.
 function sortPreserveOrder<T>(items: T[]) {
@@ -7,20 +11,11 @@ function sortPreserveOrder<T>(items: T[]) {
 
 describe('expand', () => {
 	function expandAll(input: string | RegExp) {
-		return [...expand(input, sortPreserveOrder)];
+		return expandAllWithSort(input, sortPreserveOrder);
 	}
 
 	function expandSome(input: string | RegExp, maxExpansions: number) {
-		const results = [];
-		const generator = expand(input, sortPreserveOrder);
-
-		let expansion = generator.next();
-		while (!expansion.done && results.length < maxExpansions) {
-			results.push(expansion.value);
-			expansion = generator.next();
-		}
-
-		return results;
+		return expandNWithSort(input, maxExpansions, sortPreserveOrder);
 	}
 
 	it.each(['', null, undefined])(
@@ -1213,5 +1208,24 @@ describe('expand', () => {
 			const result = expandAll(input);
 			expect(result).not.toEqual(['axa', 'axb', 'bxa', 'bxb']);
 		});
+	});
+});
+
+describe('expandN', () => {
+	it('returns at most the specified number of expansions', () => {
+		const result = expandNWithSort(/\d\d\d\d\d/, 10);
+		expect(result).toHaveLength(10);
+	});
+
+	it('returns all expansions if fewer than the specified limit', () => {
+		const result = expandNWithSort(/[abc]/, 10);
+		expect(result).toHaveLength(3);
+	});
+});
+
+describe('expandAll', () => {
+	it('returns all expansions', () => {
+		const result = expandAllWithSort(/\d\d\d\d\d/);
+		expect(result).toHaveLength(100000);
 	});
 });
