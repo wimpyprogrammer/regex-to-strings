@@ -1,13 +1,18 @@
 import { expand } from './pattern';
 
+// Keep a stable order for consistent tests.
+function sortPreserveOrder<T>(items: T[]) {
+	return [...items];
+}
+
 describe('expand', () => {
 	function expandAll(input: string | RegExp) {
-		return [...expand(input)];
+		return [...expand(input, sortPreserveOrder)];
 	}
 
 	function expandSome(input: string | RegExp, maxExpansions: number) {
 		const results = [];
-		const generator = expand(input);
+		const generator = expand(input, sortPreserveOrder);
 
 		let expansion = generator.next();
 		while (!expansion.done && results.length < maxExpansions) {
@@ -465,6 +470,27 @@ describe('expand', () => {
 	it('expands backreferences with numeric names', () => {
 		const result = expandAll('(?<20>a) \\k<20> (?<50>z) \\k<50>');
 		expect(result).toEqual(['a a z z']);
+	});
+
+	describe('Sorting', () => {
+		it.each([/abcdefghi/, /\d/, /a+/, /(a|b|c|d|e|f|g)/, /aaaaaaaa/i])(
+			'randomly sorts patterns by default: %p',
+			(input: RegExp) => {
+				const multipleRuns = Array.from(new Array(20), () =>
+					[...expand(input)].join()
+				);
+				const uniqueRuns = multipleRuns.filter(
+					(expansion, i, all) => all.indexOf(expansion) === i
+				);
+				expect(uniqueRuns.length).toBeGreaterThan(1);
+			}
+		);
+
+		it('accepts a custom sorting function', () => {
+			const sort = jest.fn(items => [...items].reverse());
+			const result = [...expand(/\d/, sort)];
+			expect(result).toEqual('9876543210'.split(''));
+		});
 	});
 
 	describe('RegEx flags', () => {

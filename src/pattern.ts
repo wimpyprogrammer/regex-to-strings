@@ -9,7 +9,7 @@ function assertNever(x: never): never {
 	throw new Error('Unexpected node type: ' + x);
 }
 
-export function* expand(pattern: string | RegExp) {
+export function* expand(pattern: string | RegExp, sort?: Expander['sort']) {
 	if (!pattern) {
 		return [];
 	}
@@ -24,7 +24,7 @@ export function* expand(pattern: string | RegExp) {
 		parsed = parse(transformed.toString());
 	}
 
-	const expander = new Expander(parsed.flags);
+	const expander = new Expander(parsed.flags, sort);
 	yield* expander.expandNode(parsed.body);
 }
 
