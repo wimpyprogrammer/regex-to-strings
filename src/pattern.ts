@@ -21,6 +21,23 @@ export function* expand(pattern: string | RegExp, sort?: Expander['sort']) {
 	yield* expander.expandNode(parsed.body);
 }
 
+export function expandN(
+	input: string | RegExp,
+	maxExpansions: number,
+	sort?: Expander['sort']
+) {
+	const results = [];
+	const generator = expand(input, sort);
+
+	let expansion = generator.next();
+	while (!expansion.done && results.length < maxExpansions) {
+		results.push(expansion.value);
+		expansion = generator.next();
+	}
+
+	return results;
+}
+
 export function expandAll(input: string | RegExp, sort?: Expander['sort']) {
 	return [...expand(input, sort)];
 }
