@@ -45,8 +45,7 @@ export function* expandNode(
 	} else if (Guards.isCharacterClass(node)) {
 		yield* this.expandCharacterClass(node);
 	} else if (Guards.isDisjunction(node)) {
-		yield* this.expandNode(node.left);
-		yield* this.expandNode(node.right);
+		yield* this.expandDisjunction(node);
 	} else if (Guards.isGroup(node)) {
 		yield* this.expandGroup(node);
 	} else if (Guards.isRepetition(node)) {

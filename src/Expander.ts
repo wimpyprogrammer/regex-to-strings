@@ -1,6 +1,7 @@
 import { expandAlternative } from './helpers/alternative-pattern';
 import { expandChar } from './helpers/char-pattern';
 import { expandCharacterClass } from './helpers/character-class-pattern';
+import { expandDisjunction } from './helpers/disjunction-pattern';
 import { expandBackreference, expandGroup } from './helpers/group-pattern';
 import { expandRepetition } from './helpers/repetition-pattern';
 import { expandNode } from './pattern';
@@ -11,6 +12,7 @@ class Expander {
 	protected expandBackreference = expandBackreference;
 	protected expandChar = expandChar;
 	protected expandCharacterClass = expandCharacterClass;
+	protected expandDisjunction = expandDisjunction;
 	protected expandGroup = expandGroup;
 	protected expandRepetition = expandRepetition;
 
