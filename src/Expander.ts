@@ -27,7 +27,7 @@ class Expander {
 		protected readonly sort: <T>(options: T[]) => T[] = sortRandom
 	) {}
 
-	public *expandNode(
+	public *expandExpression(
 		this: Expander,
 		node: Expression | null
 	): IterableIterator<string> {

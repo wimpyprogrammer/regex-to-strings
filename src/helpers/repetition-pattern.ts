@@ -30,7 +30,7 @@ export function* expandRepetition(this: Expander, node: Repetition) {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];
 
-	const generator = this.expandNode(node.expression);
+	const generator = this.expandExpression(node.expression);
 
 	for (const expansion of generator) {
 		const numOccurrenceOptionsSorted = this.sort(numOccurrenceOptions);

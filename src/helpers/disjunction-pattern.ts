@@ -6,6 +6,6 @@ export function* expandDisjunction(this: Expander, node: Disjunction) {
 	const sortedExpressions = this.sort(expressions);
 
 	for (const expression of sortedExpressions) {
-		yield* this.expandNode(expression);
+		yield* this.expandExpression(expression);
 	}
 }

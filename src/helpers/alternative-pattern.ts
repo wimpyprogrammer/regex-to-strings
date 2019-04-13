@@ -9,7 +9,7 @@ function* traverseTree(
 		return;
 	}
 
-	const firstBranch = this.expandNode(tree[0]);
+	const firstBranch = this.expandExpression(tree[0]);
 
 	for (const firstBranchPermutation of firstBranch) {
 		const restOfTree = traverseTree.call(this, tree.slice(1));

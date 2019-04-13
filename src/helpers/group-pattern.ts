@@ -22,7 +22,7 @@ export function* expandBackreference(node: Backreference) {
 }
 
 export function* expandGroup(this: Expander, node: Group) {
-	const generator = this.expandNode(node.expression);
+	const generator = this.expandExpression(node.expression);
 
 	for (const expression of generator) {
 		if (Guards.isCapturingGroup(node)) {
