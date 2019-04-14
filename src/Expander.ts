@@ -22,11 +22,23 @@ class Expander {
 	protected expandGroup = expandGroup;
 	protected expandRepetition = expandRepetition;
 
+	/**
+	 * Create a generator for strings that match regular expression
+	 * patterns parsed by regexp-tree.
+	 * @param flags The regular expression modifier flags
+	 * @param sort An optional function for sorting variations during parsing.
+	 *             When omitted, variations are returned randomly.
+	 */
 	constructor(
 		protected readonly flags: string,
 		protected readonly sort: <T>(options: T[]) => T[] = sortRandom
 	) {}
 
+	/**
+	 * Identify and expand an expression of any type.
+	 * @param expression The expression to expand
+	 * @returns An iterator that yields strings matched by expression
+	 */
 	public *expandExpression(
 		this: Expander,
 		expression: Expression | null
