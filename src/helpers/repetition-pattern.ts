@@ -23,9 +23,17 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
 	}
 
 	const { from, to } = quantifier;
+	// Cap unbounded quantifiers like * and +.
+	// Otherwise there would be infinite expansions.
 	return [from, to !== undefined ? to : 100];
 }
 
+/**
+ * Expand an expression that repeats another expression, like "a{1,5}"
+ * and "(\d|[a-m]){3,}".
+ * @param node The Repetition expression to expand
+ * @returns An iterator that yields strings matched by node
+ */
 export function* expandRepetition(this: Expander, node: Repetition) {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];

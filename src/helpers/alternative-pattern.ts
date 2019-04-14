@@ -9,6 +9,12 @@ function* traverseTree(
 		return;
 	}
 
+	/**
+	 * Recursively expand all expressions in the alternative. Then
+	 * combine all the permutations of the expansions. This is
+	 * necessary to expand deep, complex expressions like [12](3+|\d)
+	 */
+
 	const firstBranch = this.expandExpression(tree[0]);
 
 	for (const firstBranchPermutation of firstBranch) {
@@ -26,6 +32,12 @@ function* traverseTree(
 	}
 }
 
+/**
+ * Expand an expression that itself is a series of expressions, such as
+ * "abc", "a[bc]", "a(b|c)", or "a\d+".
+ * @param node The Alternative expression to expand
+ * @returns An iterator that yields strings matched by node
+ */
 export function* expandAlternative(this: Expander, node: Alternative) {
 	yield* traverseTree.call(this, node.expressions);
 }
