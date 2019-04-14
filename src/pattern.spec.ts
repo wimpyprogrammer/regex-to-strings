@@ -468,7 +468,7 @@ describe('expand', () => {
 	});
 
 	describe('Sorting', () => {
-		it.each([/abcdefghi/, /\d/, /a+/, /(a|b|c|d|e|f|g)/, /aaaaaaaa/i])(
+		it.each([/\d/, /a+/, /(a|b|c|d|e|f|g)/, /aaaaaaaa/i])(
 			'randomly sorts patterns by default: %p',
 			(input: RegExp) => {
 				const multipleRuns = Array.from(new Array(20), () =>
@@ -486,6 +486,20 @@ describe('expand', () => {
 			const result = [...expand(/\d/, sort)];
 			expect(result).toEqual('9876543210'.split(''));
 		});
+
+		it.each([
+			[/\d/, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']],
+			[/a{0,5}/, ['', 'a', 'aa', 'aaa', 'aaaa', 'aaaaa']],
+			[/(a|b|c|d|e|f|g)/, ['a', 'b', 'c', 'd', 'e', 'f', 'g']],
+			[/aAa/i, ['aaa', 'aaA', 'aAa', 'Aaa', 'aAA', 'AaA', 'AAa', 'AAA']],
+		])(
+			'sorts patterns without losing accuracy: %p',
+			(input: RegExp, allExpansions: string[]) => {
+				const result = [...expand(input)];
+				expect(result).toEqual(expect.arrayContaining(allExpansions));
+				expect(result).toHaveLength(allExpansions.length);
+			}
+		);
 	});
 
 	describe('RegEx flags', () => {

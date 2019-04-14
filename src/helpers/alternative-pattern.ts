@@ -27,7 +27,5 @@ function* traverseTree(
 }
 
 export function* expandAlternative(this: Expander, node: Alternative) {
-	const sortedExpressions = this.sort(node.expressions);
-
-	yield* traverseTree.call(this, sortedExpressions);
+	yield* traverseTree.call(this, node.expressions);
 }
