@@ -468,7 +468,7 @@ describe('expand', () => {
 	});
 
 	describe('Sorting', () => {
-		it.each([/\d/, /a+/, /(a|b|c|d|e|f|g)/, /aaaaaaaa/i])(
+		it.each([/\d/, /a+/, /(a|b|c|d|e|f|g)/, /aaaaaaaa/i, /[A-I]/])(
 			'randomly sorts patterns by default: %p',
 			(input: RegExp) => {
 				const multipleRuns = Array.from(new Array(20), () =>
@@ -492,6 +492,7 @@ describe('expand', () => {
 			[/a{0,5}/, ['', 'a', 'aa', 'aaa', 'aaaa', 'aaaaa']],
 			[/(a|b|c|d|e|f|g)/, ['a', 'b', 'c', 'd', 'e', 'f', 'g']],
 			[/aAa/i, ['aaa', 'aaA', 'aAa', 'Aaa', 'aAA', 'AaA', 'AAa', 'AAA']],
+			[/[A-I]/, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],
 		])(
 			'sorts patterns without losing accuracy: %p',
 			(input: RegExp, allExpansions: string[]) => {
