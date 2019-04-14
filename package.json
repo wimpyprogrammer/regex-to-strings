@@ -25,7 +25,8 @@
     "format": "prettier --write 'src/**'",
     "lint": "tsc; tslint -p ./",
     "precommit": "pretty-quick --staged",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "travisci": "npm run lint && npm run test && codecov"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -36,6 +37,7 @@
     "@types/escape-string-regexp": "^1.0.0",
     "@types/jest": "^23.3.2",
     "@types/shuffle-array": "0.0.28",
+    "codecov": "^3.3.0",
     "husky": "0.14.3",
     "jest": "^23.6.0",
     "prettier": "1.14.3",
