@@ -13,14 +13,14 @@ function* traverseTree(
 
 	for (const firstBranchPermutation of firstBranch) {
 		const restOfTree = traverseTree.call(this, tree.slice(1));
-		let restOfTreeHasPermutations = false;
+		let isEndOfTree = true;
 
 		for (const restOfTreePermutation of restOfTree) {
-			restOfTreeHasPermutations = true;
-			yield firstBranchPermutation.concat(restOfTreePermutation);
+			isEndOfTree = false;
+			yield `${firstBranchPermutation}${restOfTreePermutation}`;
 		}
 
-		if (!restOfTreeHasPermutations) {
+		if (isEndOfTree) {
 			yield firstBranchPermutation;
 		}
 	}
