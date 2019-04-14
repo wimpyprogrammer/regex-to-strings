@@ -1,14 +1,14 @@
 {
-  "name": "expand-regex-char-set",
+  "name": "expand-regex-pattern",
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wimpyprogrammer/expand-regex-char-set.git"
+    "url": "git+https://github.com/wimpyprogrammer/expand-regex-pattern.git"
   },
   "bugs": {
-    "url": "https://github.com/wimpyprogrammer/expand-regex-char-set/issues"
+    "url": "https://github.com/wimpyprogrammer/expand-regex-pattern/issues"
   },
-  "homepage": "https://github.com/wimpyprogrammer/expand-regex-char-set#readme",
+  "homepage": "https://github.com/wimpyprogrammer/expand-regex-pattern#readme",
   "description": "Expand a regular expression pattern into a set of words",
   "author": "Drew Keller <drew@wimpyprogrammer.com>",
   "license": "MIT",
