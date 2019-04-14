@@ -12,7 +12,7 @@
   "description": "Expand a regular expression pattern into a set of words",
   "author": "Drew Keller <drew@wimpyprogrammer.com>",
   "license": "MIT",
-  "main": "index.js",
+  "main": "lib/index.js",
   "directories": {
     "lib": "lib"
   },
