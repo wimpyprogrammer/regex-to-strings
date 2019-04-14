@@ -22,36 +22,48 @@ class Expander {
 	protected expandGroup = expandGroup;
 	protected expandRepetition = expandRepetition;
 
+	/**
+	 * Create a generator for strings that match regular expression
+	 * patterns parsed by regexp-tree.
+	 * @param flags The regular expression modifier flags
+	 * @param sort An optional function for sorting variations during parsing.
+	 *             When omitted, variations are returned randomly.
+	 */
 	constructor(
 		protected readonly flags: string,
 		protected readonly sort: <T>(options: T[]) => T[] = sortRandom
 	) {}
 
-	public *expandNode(
+	/**
+	 * Identify and expand an expression of any type.
+	 * @param expression The expression to expand
+	 * @returns An iterator that yields strings matched by expression
+	 */
+	public *expandExpression(
 		this: Expander,
-		node: Expression | null
+		expression: Expression | null
 	): IterableIterator<string> {
-		if (node === null) {
+		if (expression === null) {
 			yield '';
-		} else if (Guards.isAlternative(node)) {
-			yield* this.expandAlternative(node);
-		} else if (Guards.isAssertion(node)) {
+		} else if (Guards.isAlternative(expression)) {
+			yield* this.expandAlternative(expression);
+		} else if (Guards.isAssertion(expression)) {
 			yield '';
-		} else if (Guards.isBackreference(node)) {
-			yield* this.expandBackreference(node);
-		} else if (Guards.isChar(node)) {
-			yield* this.expandChar(node);
-		} else if (Guards.isCharacterClass(node)) {
-			yield* this.expandCharacterClass(node);
-		} else if (Guards.isDisjunction(node)) {
-			yield* this.expandDisjunction(node);
-		} else if (Guards.isGroup(node)) {
-			yield* this.expandGroup(node);
-		} else if (Guards.isRepetition(node)) {
-			yield* this.expandRepetition(node);
+		} else if (Guards.isBackreference(expression)) {
+			yield* this.expandBackreference(expression);
+		} else if (Guards.isChar(expression)) {
+			yield* this.expandChar(expression);
+		} else if (Guards.isCharacterClass(expression)) {
+			yield* this.expandCharacterClass(expression);
+		} else if (Guards.isDisjunction(expression)) {
+			yield* this.expandDisjunction(expression);
+		} else if (Guards.isGroup(expression)) {
+			yield* this.expandGroup(expression);
+		} else if (Guards.isRepetition(expression)) {
+			yield* this.expandRepetition(expression);
 		} else {
 			/* istanbul ignore next */
-			assertNever(node);
+			assertNever(expression);
 		}
 	}
 }
