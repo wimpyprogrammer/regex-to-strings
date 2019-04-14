@@ -20,6 +20,10 @@ function getNumOccurrences(quantifier: SimpleQuantifier): [number, number?] {
 	return assertNever(quantifier.kind);
 }
 
+/**
+ * Convert the ?, +, and * quantifiers to their equivalent ranges of
+ * {0,1}, {1,}, and {0,} respectively
+ */
 const simpleQuantifierToRangeQuantifierTransform: Handler = {
 	Quantifier(quantifierPath) {
 		const { node } = quantifierPath;
