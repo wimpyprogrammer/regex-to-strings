@@ -145,6 +145,33 @@ describe('expand', () => {
 		expect(result).toEqual(['0', '1', '2', '3', '4', '5']);
 	});
 
+	it('expands permutations of sibling character sets', () => {
+		const result = expandAll('[ab]c[de]f');
+		expect(result).toEqual(['acdf', 'acef', 'bcdf', 'bcef']);
+	});
+
+	it('deeply expands permutations of nested character sets', () => {
+		const result = expandAll('([ab]|(c|[d-e]){2,3})f(g?)');
+		expect(result).toEqual([
+			'af',
+			'afg',
+			'bf',
+			'bfg',
+			'ccf',
+			'ccfg',
+			'cccf',
+			'cccfg',
+			'ddf',
+			'ddfg',
+			'dddf',
+			'dddfg',
+			'eef',
+			'eefg',
+			'eeef',
+			'eeefg',
+		]);
+	});
+
 	it('expands negated alphabetic character set', () => {
 		function testExpansion(expansion: string) {
 			expect(expansion).toHaveLength(1);
