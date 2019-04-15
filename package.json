@@ -13,9 +13,9 @@
   "author": "Drew Keller <drew@wimpyprogrammer.com>",
   "license": "MIT",
   "main": "lib/index.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "files": [
+    "lib/**/!(*.spec).js"
+  ],
   "engines": {
     "node": ">=8"
   },
