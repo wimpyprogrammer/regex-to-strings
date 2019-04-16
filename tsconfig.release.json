@@ -1,4 +1,3 @@
-// These settings are only directed at IDEs that auto-detect the tsconfig file.
 {
 	"compilerOptions": {
 		"allowJs": true,

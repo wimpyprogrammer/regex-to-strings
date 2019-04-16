@@ -23,7 +23,7 @@
     "build": "npm run clean && babel src -d lib --extensions '.js,.ts'",
     "clean": "rimraf lib/*",
     "format": "prettier --write 'src/**'",
-    "lint": "tsc; tslint -p ./",
+    "lint": "tsc -p ./tsconfig.release.json; tslint -p ./tsconfig.release.json",
     "precommit": "pretty-quick --staged",
     "test": "jest --coverage",
     "travisci": "npm run lint && npm run test && codecov"
