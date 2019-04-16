@@ -24,6 +24,7 @@
     "clean": "rimraf lib/*",
     "format": "prettier --write 'src/**'",
     "lint": "tsc -p ./tsconfig.release.json; tslint -p ./tsconfig.release.json",
+    "lint-tests": "tsc -p ./tsconfig.test.json; tslint -p ./tsconfig.test.json",
     "precommit": "pretty-quick --staged",
     "test": "jest --coverage",
     "travisci": "npm run lint && npm run test && codecov"
