@@ -1,4 +1,4 @@
-import { Quantifier, Repetition } from 'regexp-tree/ast';
+import { Expression, Quantifier, Repetition } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import * as Guards from '../types/regexp-tree-guards';
 
@@ -28,6 +28,37 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
 	return [from, to !== undefined ? to : 100];
 }
 
+function* repeatExpression(
+	this: Expander,
+	expression: Expression,
+	currentDepth: number
+): IterableIterator<string> {
+	if (currentDepth <= 0) {
+		return yield '';
+	}
+
+	const thisLevel = this.expandExpression(expression);
+
+	for (const thisLevelPermutation of thisLevel) {
+		let isLevelComplete = true;
+
+		const remainingLevels = repeatExpression.call(
+			this,
+			expression,
+			currentDepth - 1
+		);
+
+		for (const remainingLevelPermutation of remainingLevels) {
+			isLevelComplete = false;
+			yield `${thisLevelPermutation}${remainingLevelPermutation}`;
+		}
+
+		if (isLevelComplete) {
+			yield thisLevelPermutation;
+		}
+	}
+}
+
 /**
  * Expand an expression that repeats another expression, like "a{1,5}"
  * and "(\d|[a-m]){3,}".
@@ -38,13 +69,9 @@ export function* expandRepetition(this: Expander, node: Repetition) {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];
 
-	const generator = this.expandExpression(node.expression);
+	const numOccurrenceOptionsSorted = this.sort(numOccurrenceOptions);
 
-	for (const expansion of generator) {
-		const numOccurrenceOptionsSorted = this.sort(numOccurrenceOptions);
-
-		for (const numOccurrences of numOccurrenceOptionsSorted) {
-			yield expansion.repeat(numOccurrences);
-		}
+	for (const numOccurrences of numOccurrenceOptionsSorted) {
+		yield* repeatExpression.call(this, node.expression, numOccurrences);
 	}
 }

@@ -4,6 +4,12 @@ import {
 	expandN as expandNWithSort,
 } from './pattern';
 
+function* fill(start: number, end: number): IterableIterator<number> {
+	for (let i = start; i <= end; i++) {
+		yield i;
+	}
+}
+
 // Keep a stable order for consistent tests.
 function sortPreserveOrder<T>(items: T[]) {
 	return [...items];
@@ -159,14 +165,74 @@ describe('expand', () => {
 			'bfg',
 			'ccf',
 			'ccfg',
-			'cccf',
-			'cccfg',
+			'cdf',
+			'cdfg',
+			'cef',
+			'cefg',
+			'dcf',
+			'dcfg',
 			'ddf',
 			'ddfg',
-			'dddf',
-			'dddfg',
+			'def',
+			'defg',
+			'ecf',
+			'ecfg',
+			'edf',
+			'edfg',
 			'eef',
 			'eefg',
+			'cccf',
+			'cccfg',
+			'ccdf',
+			'ccdfg',
+			'ccef',
+			'ccefg',
+			'cdcf',
+			'cdcfg',
+			'cddf',
+			'cddfg',
+			'cdef',
+			'cdefg',
+			'cecf',
+			'cecfg',
+			'cedf',
+			'cedfg',
+			'ceef',
+			'ceefg',
+			'dccf',
+			'dccfg',
+			'dcdf',
+			'dcdfg',
+			'dcef',
+			'dcefg',
+			'ddcf',
+			'ddcfg',
+			'dddf',
+			'dddfg',
+			'ddef',
+			'ddefg',
+			'decf',
+			'decfg',
+			'dedf',
+			'dedfg',
+			'deef',
+			'deefg',
+			'eccf',
+			'eccfg',
+			'ecdf',
+			'ecdfg',
+			'ecef',
+			'ecefg',
+			'edcf',
+			'edcfg',
+			'eddf',
+			'eddfg',
+			'edef',
+			'edefg',
+			'eecf',
+			'eecfg',
+			'eedf',
+			'eedfg',
 			'eeef',
 			'eeefg',
 		]);
@@ -363,6 +429,15 @@ describe('expand', () => {
 			result.forEach(testExpansion);
 		}
 	);
+
+	it('expands repeated character class', () => {
+		const allTwoDigitNumbers = [...fill(0, 99)].map(num =>
+			num.toString().padStart(2, '0')
+		);
+
+		const result = expandAll(/\d{2}/);
+		expect(result).toEqual(allTwoDigitNumbers);
+	});
 
 	it('ignores boundary anchors', () => {
 		const result = expandAll('\\bzz\\b \\Bzzz\\B \\bzzzz\\B');

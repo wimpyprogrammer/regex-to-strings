@@ -1,4 +1,13 @@
 {
+	"compilerOptions": {
+		"lib": [
+			"es5",
+			"es2015.core",
+			"es2015.iterable",
+			"es2016.array.include",
+			"es2017.string"
+		]
+	},
 	"exclude": [""],
 	"extends": "./tsconfig.release.json"
 }
