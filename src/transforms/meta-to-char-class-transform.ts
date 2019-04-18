@@ -5,6 +5,7 @@ import {
 	Char,
 	CharacterClass,
 	Group,
+	Repetition,
 	SpecialChar,
 } from 'regexp-tree/ast';
 import * as Guards from '../types/regexp-tree-guards';
@@ -132,6 +133,11 @@ const replacer: NodeReplacer = {
 	RegExp: (parent, replacement) => {
 		const parentNode = parent.node as AstRegExp;
 		parentNode.body = replacement;
+	},
+
+	Repetition: (parent, replacement) => {
+		const parentNode = parent.node as Repetition;
+		parentNode.expression = replacement;
 	},
 };
 
