@@ -4,6 +4,7 @@ import { expandChar } from './helpers/char-pattern';
 import { expandCharacterClass } from './helpers/character-class-pattern';
 import { expandDisjunction } from './helpers/disjunction-pattern';
 import { expandBackreference, expandGroup } from './helpers/group-pattern';
+import { iterateWithSorting } from './helpers/iterate-sorted';
 import { expandRepetition } from './helpers/repetition-pattern';
 import sortRandom from './sorts/fisher-yates-random';
 import * as Guards from './types/regexp-tree-guards';
@@ -21,6 +22,8 @@ class Expander {
 	protected expandDisjunction = expandDisjunction;
 	protected expandGroup = expandGroup;
 	protected expandRepetition = expandRepetition;
+
+	protected iterateWithSorting = iterateWithSorting;
 
 	/**
 	 * Create a generator for strings that match regular expression

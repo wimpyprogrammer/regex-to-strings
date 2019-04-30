@@ -83,6 +83,14 @@ describe('expand', () => {
 		expect(result).toEqual(['ba', 'bar']);
 	});
 
+	it.each([/foob{0}/, /foo(bar){0}/])(
+		'expands non-occurring character %p',
+		(optional: RegExp) => {
+			const result = expandAll(optional);
+			expect(result).toEqual(['foo']);
+		}
+	);
+
 	it.each([/abc?/, /abc??/])(
 		'expands optional character %p',
 		(optional: RegExp) => {
@@ -570,15 +578,17 @@ describe('expand', () => {
 	});
 
 	describe('Sorting', () => {
+		function isUnique<T>(item: T, iItem: number, all: T[]) {
+			return all.indexOf(item) === iItem;
+		}
+
 		it.each([/\d/, /a+/, /(a|b|c|d|e|f|g)/, /aaaaaaaa/i, /[A-I]/])(
 			'randomly sorts patterns by default: %p',
 			(input: RegExp) => {
 				const multipleRuns = Array.from(new Array(20), () =>
 					[...expand(input)].join()
 				);
-				const uniqueRuns = multipleRuns.filter(
-					(expansion, i, all) => all.indexOf(expansion) === i
-				);
+				const uniqueRuns = multipleRuns.filter(isUnique);
 				expect(uniqueRuns.length).toBeGreaterThan(1);
 			}
 		);
@@ -592,6 +602,7 @@ describe('expand', () => {
 		it.each([
 			[/\d/, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']],
 			[/a{0,5}/, ['', 'a', 'aa', 'aaa', 'aaaa', 'aaaaa']],
+			[/[ab]{3}/, ['aaa', 'aab', 'aba', 'abb', 'baa', 'bab', 'bba', 'bbb']],
 			[/(a|b|c|d|e|f|g)/, ['a', 'b', 'c', 'd', 'e', 'f', 'g']],
 			[/aAa/i, ['aaa', 'aaA', 'aAa', 'Aaa', 'aAA', 'AaA', 'AAa', 'AAA']],
 			[/[A-I]/, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],
@@ -601,6 +612,26 @@ describe('expand', () => {
 				const result = [...expand(input)];
 				expect(result).toEqual(expect.arrayContaining(allExpansions));
 				expect(result).toHaveLength(allExpansions.length);
+			}
+		);
+
+		it('sorts number of repetitions', () => {
+			const results = expandNWithSort(/\w{1,10}/, 50);
+			const resultsByLength = results.map(result => result.length);
+			const uniqueLengths = resultsByLength.filter(isUnique);
+
+			expect(uniqueLengths.length).toBeGreaterThan(1);
+		});
+
+		it.each([1, 2, 3])(
+			'sorts all levels of repetitions: level %p',
+			(iChar: number) => {
+				const results = expandNWithSort(/\w{3}/, 50);
+
+				const resultsThisChar = results.map(result => result.charAt(iChar - 1));
+				const uniqueThisChar = resultsThisChar.filter(isUnique);
+
+				expect(uniqueThisChar.length).toBeGreaterThan(1);
 			}
 		);
 	});

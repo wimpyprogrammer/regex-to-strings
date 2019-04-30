@@ -1,4 +1,4 @@
-import { Expression, Quantifier, Repetition } from 'regexp-tree/ast';
+import { Quantifier, Repetition } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import * as Guards from '../types/regexp-tree-guards';
 
@@ -28,35 +28,31 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
 	return [from, to !== undefined ? to : 100];
 }
 
-function* repeatExpression(
+/**
+ * Calculate all permutations of combining a set of strings a fixed number of times.
+ * e.g. ['a', 'b'] of length 3 yields aaa, aab, aba, abb, baa, bab, bba, bbb
+ * @param options The options to combine to create permutations
+ * @param length The number of options to combine in a single permutation
+ * @returns An iterator that yields all permutations of the given length
+ */
+function* calculatePermutations(
 	this: Expander,
-	expression: Expression,
-	currentDepth: number
+	options: string[],
+	length: number
 ): IterableIterator<string> {
-	if (currentDepth <= 0) {
-		return yield '';
+	if (length <= 1) {
+		return yield* this.sort(options);
 	}
 
-	const thisLevel = this.expandExpression(expression);
-
-	for (const thisLevelPermutation of thisLevel) {
-		let isLevelComplete = true;
-
-		const remainingLevels = repeatExpression.call(
-			this,
-			expression,
-			currentDepth - 1
-		);
-
-		for (const remainingLevelPermutation of remainingLevels) {
-			isLevelComplete = false;
-			yield `${thisLevelPermutation}${remainingLevelPermutation}`;
-		}
-
-		if (isLevelComplete) {
-			yield thisLevelPermutation;
+	const calculatePermutationsBound = calculatePermutations.bind(this);
+	function* expandOption(option: string) {
+		const children = calculatePermutationsBound(options, length - 1);
+		for (const child of children) {
+			yield `${option}${child}`;
 		}
 	}
+
+	yield* this.iterateWithSorting(options, expandOption);
 }
 
 /**
@@ -69,9 +65,18 @@ export function* expandRepetition(this: Expander, node: Repetition) {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];
 
-	const numOccurrenceOptionsSorted = this.sort(numOccurrenceOptions);
+	// Calculate all expansions upfront. This is necessary for sorting the results.
+	// Avoid expanding the expression if it won't be used.
+	const expansionsOfExpression =
+		maxOccurrences <= 0 ? [] : [...this.expandExpression(node.expression)];
 
-	for (const numOccurrences of numOccurrenceOptionsSorted) {
-		yield* repeatExpression.call(this, node.expression, numOccurrences);
+	const calculatePermutationsBound = calculatePermutations.bind(this);
+	function* expandNRepetitions(numOccurrences: number) {
+		if (numOccurrences <= 0) {
+			return yield '';
+		}
+		yield* calculatePermutationsBound(expansionsOfExpression, numOccurrences);
 	}
+
+	yield* this.iterateWithSorting(numOccurrenceOptions, expandNRepetitions);
 }
