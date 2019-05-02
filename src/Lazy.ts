@@ -27,8 +27,6 @@ export default class Lazy<T> extends Deferred<T> {
  * @param valueFn The function to wrap.
  * @returns A Lazy object that lazily runs valueFn.
  */
-export function lazily<T>(
-	valueFn: (...args: any[]) => T
-): (...args: any[]) => Lazy<T> {
-	return (...args) => new Lazy(() => valueFn(...args));
+export function lazily<T>(valueFn: (...args: any[]) => T) {
+	return (...args: any[]) => new Lazy(() => valueFn(...args));
 }
