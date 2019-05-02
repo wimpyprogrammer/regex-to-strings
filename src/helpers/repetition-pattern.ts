@@ -1,5 +1,6 @@
 import { Quantifier, Repetition } from 'regexp-tree/ast';
 import Expander from '../Expander';
+import { lazily } from '../Lazy';
 import * as Guards from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
@@ -52,7 +53,7 @@ function* calculatePermutations(
 		}
 	}
 
-	yield* this.iterateWithSorting(options, expandOption);
+	yield* this.iterateWithSorting(options, lazily(expandOption));
 }
 
 /**
@@ -78,5 +79,8 @@ export function* expandRepetition(this: Expander, node: Repetition) {
 		yield* calculatePermutationsBound(expansionsOfExpression, numOccurrences);
 	}
 
-	yield* this.iterateWithSorting(numOccurrenceOptions, expandNRepetitions);
+	yield* this.iterateWithSorting(
+		numOccurrenceOptions,
+		lazily(expandNRepetitions)
+	);
 }

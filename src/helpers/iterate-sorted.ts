@@ -1,8 +1,9 @@
+import Deferred from '../Deferred';
 import Expander from '../Expander';
 
 interface IOptionLookup {
-	[index: string]: IterableIterator<string>;
-	[index: number]: IterableIterator<string>;
+	[index: string]: Deferred<IterableIterator<string>>;
+	[index: number]: Deferred<IterableIterator<string>>;
 }
 
 /**
@@ -18,7 +19,7 @@ interface IOptionLookup {
 export function* iterateWithSorting<T extends string | number>(
 	this: Expander,
 	optionsToSort: T[],
-	createIterable: (option: T) => IterableIterator<string>
+	createIterable: (option: T) => Deferred<IterableIterator<string>>
 ): IterableIterator<string> {
 	const iterableSource = optionsToSort.reduce<IOptionLookup>(
 		(accumulator, option) => {
@@ -34,7 +35,7 @@ export function* iterateWithSorting<T extends string | number>(
 		// Sort and choose the first option.
 		availableOptions = this.sort(availableOptions);
 		const option = availableOptions[0];
-		const outputForOption = iterableSource[option].next();
+		const outputForOption = iterableSource[option].value().next();
 
 		if (outputForOption.done) {
 			// We've exhausted expansions for this number of occurrences.
