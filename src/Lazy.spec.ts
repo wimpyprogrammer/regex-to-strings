@@ -1,4 +1,4 @@
-import Lazy, { lazily } from './lazy';
+import Lazy, { lazily } from './Lazy';
 
 describe('Lazy', () => {
 	it('does not evaluate value on creation', () => {
