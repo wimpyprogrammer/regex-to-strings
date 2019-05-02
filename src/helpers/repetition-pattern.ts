@@ -1,6 +1,6 @@
 import { Quantifier, Repetition } from 'regexp-tree/ast';
 import Expander from '../Expander';
-import { lazily } from '../Lazy';
+import Lazy, { lazily } from '../Lazy';
 import * as Guards from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
@@ -67,16 +67,16 @@ export function* expandRepetition(this: Expander, node: Repetition) {
 	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];
 
 	// Calculate all expansions upfront. This is necessary for sorting the results.
-	// Avoid expanding the expression if it won't be used.
-	const expansionsOfExpression =
-		maxOccurrences <= 0 ? [] : [...this.expandExpression(node.expression)];
+	// Make Lazy to avoid expanding the expression if it won't be used.
+	const fnExpand = () => [...this.expandExpression(node.expression)];
+	const expansions = new Lazy(fnExpand);
 
 	const calculatePermutationsBound = calculatePermutations.bind(this);
 	function* expandNRepetitions(numOccurrences: number) {
 		if (numOccurrences <= 0) {
 			return yield '';
 		}
-		yield* calculatePermutationsBound(expansionsOfExpression, numOccurrences);
+		yield* calculatePermutationsBound(expansions.value(), numOccurrences);
 	}
 
 	yield* this.iterateWithSorting(
