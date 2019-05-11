@@ -12,7 +12,7 @@ function sortPreserveOrder<T>(items: T[]) {
 }
 
 describe('expand', () => {
-	function expandAll(input: string | RegExp) {
+	function expandAllUnsorted(input: string | RegExp) {
 		return patternLib.expandAll(input, sortPreserveOrder);
 	}
 
@@ -23,66 +23,66 @@ describe('expand', () => {
 	it.each(['', null, undefined])(
 		'returns an empty list for %p',
 		(input: string) => {
-			expect(expandAll(input)).toEqual([]);
+			expect(expandAllUnsorted(input)).toEqual([]);
 		}
 	);
 
 	it.each(['(', '[0-9', '*', '\\', '[z-a]'])(
 		'throws on malformed pattern %p',
 		(input: string) => {
-			expect(() => expandAll(input)).toThrow();
+			expect(() => expandAllUnsorted(input)).toThrow();
 		}
 	);
 
 	it('reproduces static patterns', () => {
-		const result = expandAll('abc');
+		const result = expandAllUnsorted('abc');
 		expect(result).toEqual(['abc']);
 	});
 
 	it('reproduces static alternation patterns', () => {
-		const result = expandAll('abc|xyz');
+		const result = expandAllUnsorted('abc|xyz');
 		expect(result).toEqual(['abc', 'xyz']);
 	});
 
 	it('expands single-character groups', () => {
-		const result = expandAll('ba(r)');
+		const result = expandAllUnsorted('ba(r)');
 		expect(result).toEqual(['bar']);
 	});
 
 	it('expands multi-character groups', () => {
-		const result = expandAll('foo(bar)');
+		const result = expandAllUnsorted('foo(bar)');
 		expect(result).toEqual(['foobar']);
 	});
 
 	it('expands single-character alternation groups', () => {
-		const result = expandAll('ba(r|z)');
+		const result = expandAllUnsorted('ba(r|z)');
 		expect(result).toEqual(['bar', 'baz']);
 	});
 
 	it('expands multi-character alternation groups', () => {
-		const result = expandAll('b(ar|az)');
+		const result = expandAllUnsorted('b(ar|az)');
 		expect(result).toEqual(['bar', 'baz']);
 	});
 
 	it('expands nested alternation groups', () => {
-		const result = expandAll('M(a(ine|ryland|ssachusetts))');
+		const result = expandAllUnsorted('M(a(ine|ryland|ssachusetts))');
 		expect(result).toEqual(['Maine', 'Maryland', 'Massachusetts']);
 	});
 
 	it('expands empty alternation groups', () => {
-		const result = expandAll('foo(|)');
+		const result = expandAllUnsorted('foo(|)');
 		expect(result).toEqual(['foo', 'foo']);
 	});
 
 	it('expands partially empty alternation groups', () => {
-		const result = expandAll('ba(|r)');
+		const result = expandAllUnsorted('ba(|r)');
 		expect(result).toEqual(['ba', 'bar']);
 	});
 
 	it.each([/foob{0}/, /foo(bar){0}/])(
 		'expands non-occurring character %p',
 		(optional: RegExp) => {
-			const result = expandAll(optional);
+			const result = expandAllUnsorted(optional);
 			expect(result).toEqual(['foo']);
 		}
 	);
@@ -90,7 +90,7 @@ describe('expand', () => {
 	it.each([/abc?/, /abc??/])(
 		'expands optional character %p',
 		(optional: RegExp) => {
-			const result = expandAll(optional);
+			const result = expandAllUnsorted(optional);
 			expect(result).toEqual(['ab', 'abc']);
 		}
 	);
@@ -98,7 +98,7 @@ describe('expand', () => {
 	it.each([/a(bc)?/, /a(bc)??/])(
 		'expands optional group %p',
 		(optionalGroup: RegExp) => {
-			const result = expandAll(optionalGroup);
+			const result = expandAllUnsorted(optionalGroup);
 			expect(result).toEqual(['a', 'abc']);
 		}
 	);
@@ -136,32 +136,32 @@ describe('expand', () => {
 	);
 
 	it('expands alphabetic single-character set', () => {
-		const result = expandAll('[aeiou]');
+		const result = expandAllUnsorted('[aeiou]');
 		expect(result).toEqual(['a', 'e', 'i', 'o', 'u']);
 	});
 
 	it('expands numeric single-character set', () => {
-		const result = expandAll('[234789]');
+		const result = expandAllUnsorted('[234789]');
 		expect(result).toEqual(['2', '3', '4', '7', '8', '9']);
 	});
 
 	it('expands alphabetic range character set', () => {
-		const result = expandAll('[a-f]');
+		const result = expandAllUnsorted('[a-f]');
 		expect(result).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
 	});
 
 	it('expands numeric range character set', () => {
-		const result = expandAll('[0-5]');
+		const result = expandAllUnsorted('[0-5]');
 		expect(result).toEqual(['0', '1', '2', '3', '4', '5']);
 	});
 
 	it('expands permutations of sibling character sets', () => {
-		const result = expandAll('[ab]c[de]f');
+		const result = expandAllUnsorted('[ab]c[de]f');
 		expect(result).toEqual(['acdf', 'acef', 'bcdf', 'bcef']);
 	});
 
 	it('deeply expands permutations of nested character sets', () => {
-		const result = expandAll('([ab]|(c|[d-e]){2,3})f(g?)');
+		const result = expandAllUnsorted('([ab]|(c|[d-e]){2,3})f(g?)');
 		expect(result).toEqual([
 			'af',
 			'afg',
@@ -248,7 +248,7 @@ describe('expand', () => {
 			expect(expansion).toMatch(/[^abc]/);
 		}
 
-		const result = expandAll('[^abc]');
+		const result = expandAllUnsorted('[^abc]');
 		expect(result.length).toBeGreaterThan(1);
 		result.forEach(testExpansion);
 	});
@@ -259,7 +259,7 @@ describe('expand', () => {
 			expect(expansion).toMatch(/[^246]/);
 		}
 
-		const result = expandAll('[^246]');
+		const result = expandAllUnsorted('[^246]');
 		expect(result.length).toBeGreaterThan(1);
 		result.forEach(testExpansion);
 	});
@@ -270,7 +270,7 @@ describe('expand', () => {
 			expect(expansion).toMatch(/[^a-p]/);
 		}
 
-		const result = expandAll('[^a-p]');
+		const result = expandAllUnsorted('[^a-p]');
 		expect(result.length).toBeGreaterThan(1);
 		result.forEach(testExpansion);
 	});
@@ -281,7 +281,7 @@ describe('expand', () => {
 			expect(expansion).toMatch(/[^0-8]/);
 		}
 
-		const result = expandAll('[^0-8]');
+		const result = expandAllUnsorted('[^0-8]');
 		expect(result.length).toBeGreaterThan(1);
 		result.forEach(testExpansion);
 	});
@@ -292,7 +292,7 @@ describe('expand', () => {
 			expect(expansion).toMatch(/[^aeiou0-5A-T]/);
 		}
 
-		const result = expandAll('[^aeiou0-5A-T]');
+		const result = expandAllUnsorted('[^aeiou0-5A-T]');
 		expect(result.length).toBeGreaterThan(1);
 		result.forEach(testExpansion);
 	});
@@ -300,7 +300,7 @@ describe('expand', () => {
 	it.each([/a{5}/, /a{5}?/])(
 		'expands exact quantifier pattern %p',
 		(exactQuantifier: RegExp) => {
-			const result = expandAll(exactQuantifier);
+			const result = expandAllUnsorted(exactQuantifier);
 			expect(result).toEqual(['aaaaa']);
 		}
 	);
@@ -308,7 +308,7 @@ describe('expand', () => {
 	it.each([/a{2,6}/, /a{2,6}?/])(
 		'expands range quantifier pattern %p',
 		(rangeQuantifier: RegExp) => {
-			const result = expandAll(rangeQuantifier);
+			const result = expandAllUnsorted(rangeQuantifier);
 			expect(result).toEqual(['aa', 'aaa', 'aaaa', 'aaaaa', 'aaaaaa']);
 		}
 	);
@@ -324,7 +324,7 @@ describe('expand', () => {
 	it.each([/./, /\w/, /\W/, /\d/, /\D/, /\s/, /\S/])(
 		'expands the single character class %p',
 		(charClass: RegExp) => {
-			const result = expandAll(charClass);
+			const result = expandAllUnsorted(charClass);
 			expect(result.length).toBeGreaterThan(1);
 			expect(result[0]).toHaveLength(1);
 			expect(result[0]).toMatch(charClass);
@@ -339,7 +339,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet);
+			const result = expandAllUnsorted(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -353,7 +353,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet);
+			const result = expandAllUnsorted(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -367,7 +367,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet);
+			const result = expandAllUnsorted(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -376,7 +376,7 @@ describe('expand', () => {
 	it.each([/\w\w\w/, /\w\d\s/, /\W\w\w/, /\W\D\S/, /\s\w\S/, /\d\W\D/])(
 		'expands the multiple character class %p',
 		(charClassSet: RegExp) => {
-			const result = expandAll(charClassSet);
+			const result = expandAllUnsorted(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			expect(result[0]).toHaveLength(3);
 			expect(result[0]).toMatch(charClassSet);
@@ -391,7 +391,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet);
+			const result = expandAllUnsorted(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -405,7 +405,7 @@ describe('expand', () => {
 				expect(expansion).toMatch(charClassSet);
 			}
 
-			const result = expandAll(charClassSet);
+			const result = expandAllUnsorted(charClassSet);
 			expect(result.length).toBeGreaterThan(1);
 			result.forEach(testExpansion);
 		}
@@ -414,7 +414,7 @@ describe('expand', () => {
 	it.each([/[^\w\W]/, /[^\d\D]/, /[^\s\S]/, /[^\w\D]/, /[^\W\S]/, /[^0-9\D]/])(
 		'returns zero expansions for impossible set %p',
 		(charClassSet: RegExp) => {
-			const result = expandAll(charClassSet);
+			const result = expandAllUnsorted(charClassSet);
 			expect(result).toHaveLength(0);
 		}
 	);
@@ -439,44 +439,44 @@ describe('expand', () => {
 			num.toString().padStart(2, '0')
 		);
 
-		const result = expandAll(/\d{2}/);
+		const result = expandAllUnsorted(/\d{2}/);
 		expect(result).toEqual(allTwoDigitNumbers);
 	});
 
 	it('ignores boundary anchors', () => {
-		const result = expandAll('\\bzz\\b \\Bzzz\\B \\bzzzz\\B');
+		const result = expandAllUnsorted('\\bzz\\b \\Bzzz\\B \\bzzzz\\B');
 		expect(result).toEqual(['zz zzz zzzz']);
 	});
 
 	it('ignores beginning and end anchors', () => {
-		const result = expandAll('$foo bar^');
+		const result = expandAllUnsorted('$foo bar^');
 		expect(result).toEqual(['foo bar']);
 	});
 
 	it('ignores positive lookahead', () => {
-		const result = expandAll('foo (?=\\w+)');
+		const result = expandAllUnsorted('foo (?=\\w+)');
 		expect(result).toEqual(['foo ']);
 	});
 
 	it('ignores negative lookahead', () => {
-		const result = expandAll('foo (?!\\w+)');
+		const result = expandAllUnsorted('foo (?!\\w+)');
 		expect(result).toEqual(['foo ']);
 	});
 
 	it('ignores positive lookbehind', () => {
-		const result = expandAll('foo (?<=\\w+)');
+		const result = expandAllUnsorted('foo (?<=\\w+)');
 		expect(result).toEqual(['foo ']);
 	});
 
 	it('ignores negative lookbehind', () => {
-		const result = expandAll('foo (?<!\\w+)');
+		const result = expandAllUnsorted('foo (?<!\\w+)');
 		expect(result).toEqual(['foo ']);
 	});
 
 	it.each([/\+/, /\53/, /\053/, /\x2B/, /\u002B/])(
 		'expands escaped character %p',
 		(escapedPlus: RegExp) => {
-			const result = expandAll(escapedPlus);
+			const result = expandAllUnsorted(escapedPlus);
 			expect(result).toEqual(['+']);
 		}
 	);
@@ -484,7 +484,7 @@ describe('expand', () => {
 	it.each([/\t/, /\n/, /\r/, /\v/, /\f/, /\0/])(
 		'verbatim expands control character %p',
 		(controlCharacter: RegExp) => {
-			const result = expandAll(controlCharacter);
+			const result = expandAllUnsorted(controlCharacter);
 			expect(result).toHaveLength(1);
 			expect(result[0]).toHaveLength(1);
 			expect(result[0]).toMatch(controlCharacter);
@@ -494,7 +494,7 @@ describe('expand', () => {
 	it.each(['\t', '\n', '\r', '\v', '\f', '\0'])(
 		'verbatim expands literal control character %#',
 		(literalControlCharacter: string) => {
-			const result = expandAll(literalControlCharacter);
+			const result = expandAllUnsorted(literalControlCharacter);
 			expect(result).toHaveLength(1);
 			expect(result[0]).toHaveLength(1);
 			expect(result[0]).toMatch(new RegExp(literalControlCharacter));
@@ -504,7 +504,7 @@ describe('expand', () => {
 	it.each([/\cJ/, /\cj/, /\cK/, /\ck/, /\cL/, /\cl/, /\cM/, /\cm/])(
 		'verbatim expands escaped control character %p',
 		(controlCharacter: RegExp) => {
-			const result = expandAll(controlCharacter);
+			const result = expandAllUnsorted(controlCharacter);
 			expect(result).toHaveLength(1);
 			expect(result[0]).toHaveLength(1);
 			expect(result[0]).toMatch(controlCharacter);
@@ -512,52 +512,56 @@ describe('expand', () => {
 	);
 
 	it('expands static numbered backreferences', () => {
-		const result = expandAll('(a) \\1 (z) \\2');
+		const result = expandAllUnsorted('(a) \\1 (z) \\2');
 		expect(result).toEqual(['a a z z']);
 	});
 
 	it('expands static numbered backreferences with noncapturing groups', () => {
-		const result = expandAll('(?:ignored) (a) \\1');
+		const result = expandAllUnsorted('(?:ignored) (a) \\1');
 		expect(result).toEqual(['ignored a a']);
 	});
 
 	it('expands static named backreferences', () => {
-		const result = expandAll('(?<foo>a) \\k<foo> (?<bar>z) \\k<bar>');
+		const result = expandAllUnsorted('(?<foo>a) \\k<foo> (?<bar>z) \\k<bar>');
 		expect(result).toEqual(['a a z z']);
 	});
 
 	it('expands static named backreferences with noncapturing groups', () => {
-		const result = expandAll('(?:ignored) (?<foo>a) \\k<foo>');
+		const result = expandAllUnsorted('(?:ignored) (?<foo>a) \\k<foo>');
 		expect(result).toEqual(['ignored a a']);
 	});
 
 	it('expands static named and numbered backreferences', () => {
-		const result = expandAll('(?<foo>a) \\k<foo> \\1 (?<bar>z) \\2 \\k<bar>');
+		const result = expandAllUnsorted(
+			'(?<foo>a) \\k<foo> \\1 (?<bar>z) \\2 \\k<bar>'
+		);
 		expect(result).toEqual(['a a a z z z']);
 	});
 
 	it('expands alternation group numbered backreferences', () => {
-		const result = expandAll('(a|b) \\1 (y|z) \\2');
+		const result = expandAllUnsorted('(a|b) \\1 (y|z) \\2');
 		expect(result).toEqual(['a a y y', 'a a z z', 'b b y y', 'b b z z']);
 	});
 
 	it('expands alternation group numbered backreferences with noncapturing groups', () => {
-		const result = expandAll('(?:ignored) (a|z) \\1');
+		const result = expandAllUnsorted('(?:ignored) (a|z) \\1');
 		expect(result).toEqual(['ignored a a', 'ignored z z']);
 	});
 
 	it('expands alternation group named backreferences', () => {
-		const result = expandAll('(?<foo>a|b) \\k<foo> (?<bar>y|z) \\k<bar>');
+		const result = expandAllUnsorted(
+			'(?<foo>a|b) \\k<foo> (?<bar>y|z) \\k<bar>'
+		);
 		expect(result).toEqual(['a a y y', 'a a z z', 'b b y y', 'b b z z']);
 	});
 
 	it('expands alternation group named backreferences with noncapturing groups', () => {
-		const result = expandAll('(?:ignored) (?<foo>a|z) \\k<foo>');
+		const result = expandAllUnsorted('(?:ignored) (?<foo>a|z) \\k<foo>');
 		expect(result).toEqual(['ignored a a', 'ignored z z']);
 	});
 
 	it('expands alternation group named and numbered backreferences', () => {
-		const result = expandAll(
+		const result = expandAllUnsorted(
 			'(?<foo>a|b) \\k<foo> \\1 (?<bar>y|z) \\2 \\k<bar>'
 		);
 		expect(result).toEqual([
@@ -569,7 +573,7 @@ describe('expand', () => {
 	});
 
 	it('expands backreferences with numeric names', () => {
-		const result = expandAll('(?<20>a) \\k<20> (?<50>z) \\k<50>');
+		const result = expandAllUnsorted('(?<20>a) \\k<20> (?<50>z) \\k<50>');
 		expect(result).toEqual(['a a z z']);
 	});
 
@@ -582,7 +586,7 @@ describe('expand', () => {
 			'randomly sorts patterns by default: %p',
 			(input: RegExp) => {
 				const multipleRuns = Array.from(new Array(20), () =>
-					expandAll(input).join()
+					expandAllUnsorted(input).join()
 				);
 				const uniqueRuns = multipleRuns.filter(isUnique);
 				expect(uniqueRuns.length).toBeGreaterThan(1);
@@ -591,7 +595,7 @@ describe('expand', () => {
 
 		it('accepts a custom sorting function', () => {
 			const sort = jest.fn(items => [...items].reverse());
-			const result = expandAll(/\d/, sort);
+			const result = expandAllUnsorted(/\d/, sort);
 			expect(result).toEqual('9876543210'.split(''));
 		});
 
@@ -605,7 +609,7 @@ describe('expand', () => {
 		])(
 			'sorts patterns without losing accuracy: %p',
 			(input: RegExp, allExpansions: string[]) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(expect.arrayContaining(allExpansions));
 				expect(result).toHaveLength(allExpansions.length);
 			}
@@ -636,7 +640,7 @@ describe('expand', () => {
 		it.each([/aB/, /\141\102/, /\x61\x42/, /\u0061\u0042/])(
 			'expands exact casing when the case-insensitive flag is omitted: %p',
 			(input: RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(['aB']);
 			}
 		);
@@ -644,7 +648,7 @@ describe('expand', () => {
 		it.each([/aB/i, /\141\102/i, /\x61\x42/i, /\u0061\u0042/i])(
 			'expands casing variants when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(['ab', 'aB', 'Ab', 'AB']);
 			}
 		);
@@ -652,7 +656,7 @@ describe('expand', () => {
 		it.each([/4%/i, /\64\45/i, /\x34\x25/i, /\u0034\u0025/i])(
 			'does not expand uncased characters when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(['4%']);
 			}
 		);
@@ -660,7 +664,7 @@ describe('expand', () => {
 		it.each([/[aB]/, /[\141\102]/, /[\x61\x42]/, /[\u0061\u0042]/])(
 			'expands exact casing in static set when the case-insensitive flag is omitted: %p',
 			(input: RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(['a', 'B']);
 			}
 		);
@@ -668,7 +672,7 @@ describe('expand', () => {
 		it.each([/[aB]/i, /[\141\102]/i, /[\x61\x42]/i, /[\u0061\u0042]/i])(
 			'expands casing variants in static set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(['a', 'A', 'b', 'B']);
 			}
 		);
@@ -676,7 +680,7 @@ describe('expand', () => {
 		it.each([/[4%]/i, /[\64\45]/i, /[\x34\x25]/i, /[\u0034\u0025]/i])(
 			'does not expand uncased characters in static set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(['4', '%']);
 			}
 		);
@@ -684,7 +688,7 @@ describe('expand', () => {
 		it.each([/[a-d]/, /[\141-\144]/, /[\x61-\x64]/, /[\u0061-\u0064]/])(
 			'expands exact casing in range set when the case-insensitive flag is omitted: %p',
 			(input: RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(['a', 'b', 'c', 'd']);
 			}
 		);
@@ -692,7 +696,7 @@ describe('expand', () => {
 		it.each([/[a-d]/i, /[\141-\144]/i, /[\x61-\x64]/i, /[\u0061-\u0064]/i])(
 			'expands casing variants in range set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D']);
 			}
 		);
@@ -700,7 +704,7 @@ describe('expand', () => {
 		it.each([/[1-4]/i, /[\61-\64]/i, /[\x31-\x34]/i, /[\u0031-\u0034]/i])(
 			'does not expand uncased characters in range set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toEqual(['1', '2', '3', '4']);
 			}
 		);
@@ -708,13 +712,13 @@ describe('expand', () => {
 		it.each(['.', /./])(
 			'does not expand the dot character to a newline when the dotall flag is omitted %#',
 			(input: string | RegExp) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).not.toContain('\n');
 			}
 		);
 
 		it('expands the dot character to a newline when the dotall flag is included', () => {
-			const result = expandAll(/./s);
+			const result = expandAllUnsorted(/./s);
 			expect(result).toContain('\n');
 		});
 	});
@@ -767,7 +771,7 @@ describe('expand', () => {
 			['named subroutine call', "a(?'x'b\\g'x'?y)z"],
 			['subroutine definitions', '(?(DEFINE)([ab]))x(?1)y(?1)z'],
 		])('throws on RegEx syntax: %s /%s/', (_: string, input: string) => {
-			expect(() => expandAll(input)).toThrow();
+			expect(() => expandAllUnsorted(input)).toThrow();
 		});
 
 		[
@@ -803,46 +807,46 @@ describe('expand', () => {
 			])(
 				'throws on RegEx mode modifier: %s /%s/',
 				(_: string, input: string) => {
-					expect(() => expandAll(input)).toThrow();
+					expect(() => expandAllUnsorted(input)).toThrow();
 				}
 			);
 		});
 
 		// From https://javascript.info/regexp-unicode#the-u-flag
 		it('does not support RegEx "u" flag for static character set', () => {
-			const result = expandAll(/[𝒳𝒴]/u);
+			const result = expandAllUnsorted(/[𝒳𝒴]/u);
 			expect(result).not.toEqual(['𝒳', '𝒴']);
 		});
 
 		it('does not support RegEx "u" flag for range character set', () => {
-			expect(() => expandAll(/[𝒳-𝒵]/u)).toThrow();
+			expect(() => expandAllUnsorted(/[𝒳-𝒵]/u)).toThrow();
 		});
 
 		it('does not recognize RegEx syntax: hexadecimal escaped character', () => {
-			const result = expandAll(/\x{2B}/);
+			const result = expandAllUnsorted(/\x{2B}/);
 			expect(result).toEqual(['x{2B}']);
 		});
 
 		it('does not recognize RegEx syntax: unicode escaped character', () => {
-			const result = expandAll(/\u{002B}/);
+			const result = expandAllUnsorted(/\u{002B}/);
 			expect(result).toEqual(['u{002B}']);
 		});
 
 		it.each([/a{,5}/, /a{,5}?/])(
 			'does not recognize RegEx syntax: range quantifier pattern without lower bound %p',
 			(rangeQuantifierNoLower: RegExp) => {
-				const result = expandAll(rangeQuantifierNoLower);
+				const result = expandAllUnsorted(rangeQuantifierNoLower);
 				expect(result.pop()).toEqual('a{,5}');
 			}
 		);
 
 		it('does not recognize RegEx syntax: line break character \\R', () => {
-			const result = expandAll(/\R/);
+			const result = expandAllUnsorted(/\R/);
 			expect(result).toEqual(['R']);
 		});
 
 		it('does not recognize RegEx syntax: not a line break character \\N', () => {
-			const result = expandAll(/\N/);
+			const result = expandAllUnsorted(/\N/);
 			expect(result).toEqual(['N']);
 		});
 
@@ -852,7 +856,7 @@ describe('expand', () => {
 			['Character class intersection', /[a-i&&c-z]/],
 			['Character class nested intersection', /[a-i&&[c-z]]/],
 		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandAll(input);
+			const result = expandAllUnsorted(input);
 			expect(result).not.toEqual(['c', 'd', 'e', 'f', 'g', 'h', 'i']);
 		});
 
@@ -888,7 +892,7 @@ describe('expand', () => {
 			])(
 				'does not recognize RegEx syntax: %s /%s/',
 				(_: string, input: string) => {
-					const result = expandAll(input);
+					const result = expandAllUnsorted(input);
 					expect(result.pop()).toEqual(':]');
 				}
 			);
@@ -917,7 +921,7 @@ describe('expand', () => {
 			])(
 				'does not recognize RegEx syntax: %s /%s/',
 				(_: string, input: string) => {
-					const result = expandAll(input);
+					const result = expandAllUnsorted(input);
 					expect(result).toHaveLength(1);
 					expect(result[0]).toMatch(/^p{/);
 				}
@@ -975,7 +979,7 @@ describe('expand', () => {
 			it.each([`\p{${unicodeScript}}`, `\p{Is${unicodeScript}}`])(
 				'does not recognize RegEx syntax: Unicode script /%s/',
 				(input: string) => {
-					const result = expandAll(input);
+					const result = expandAllUnsorted(input);
 					expect(result).toHaveLength(1);
 					expect(result[0]).toMatch(/^p{/);
 				}
@@ -1091,7 +1095,7 @@ describe('expand', () => {
 			'Specials',
 		].forEach(unicodeBlock => {
 			function testUnicodeBlock(_: string, input: string) {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).toHaveLength(1);
 				expect(result[0]).toMatch(/^p{/);
 			}
@@ -1215,7 +1219,7 @@ describe('expand', () => {
 			])(
 				'does not recognize RegEx syntax: Unicode category %s /%s/',
 				(_: string, input: string) => {
-					const result = expandAll(input);
+					const result = expandAllUnsorted(input);
 					expect(result).toHaveLength(1);
 					expect(result[0]).toMatch(/^p{/);
 				}
@@ -1227,7 +1231,7 @@ describe('expand', () => {
 			])(
 				'does not recognize RegEx syntax: Unicode category %s /%s/',
 				(_: string, input: string) => {
-					const result = expandAll(input);
+					const result = expandAllUnsorted(input);
 					expect(result).toHaveLength(1);
 					expect(result[0]).toMatch(/^P{/);
 				}
@@ -1239,7 +1243,7 @@ describe('expand', () => {
 			it.each([['Shorthand format', `\p${unicodeCategory}`]])(
 				'does not recognize RegEx syntax: Unicode category %s /%s/',
 				(_: string, input: string) => {
-					const result = expandAll(input);
+					const result = expandAllUnsorted(input);
 					expect(result).toHaveLength(1);
 					expect(result[0]).toMatch(/^p/);
 				}
@@ -1248,7 +1252,7 @@ describe('expand', () => {
 			it.each([['Shorthand negative format', `\P${unicodeCategory}`]])(
 				'does not recognize RegEx syntax: Unicode category %s /%s/',
 				(_: string, input: string) => {
-					const result = expandAll(input);
+					const result = expandAllUnsorted(input);
 					expect(result).toHaveLength(1);
 					expect(result[0]).toMatch(/^P/);
 				}
@@ -1257,18 +1261,18 @@ describe('expand', () => {
 
 		// From https://www.regular-expressions.info/posixbrackets.html#eq
 		it('does not recognize RegEx syntax: POSIX character equivalent', () => {
-			const result = expandAll('[[=e=]]');
+			const result = expandAllUnsorted('[[=e=]]');
 			expect(result).toEqual(['e]', '=]', '[]']);
 		});
 
 		it('does not recognize RegEx syntax: line break character \\R', () => {
-			const result = expandAll(/\R/);
+			const result = expandAllUnsorted(/\R/);
 			expect(result.length).toEqual(1);
 			expect(result[0]).not.toContain('\n');
 		});
 
 		it('does not recognize RegEx syntax: grapheme \\X', () => {
-			const result = expandAll(/\X/);
+			const result = expandAllUnsorted(/\X/);
 			expect(result).toEqual(['X']);
 		});
 
@@ -1299,7 +1303,7 @@ describe('expand', () => {
 			['backreference in lookbehind', /(ab) (?<=\1)/],
 			['marker to ignore preceeding text', /ignore this \Kab ab/],
 		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandAll(input);
+			const result = expandAllUnsorted(input);
 			expect(result).not.toEqual(['ab ab']);
 		});
 
@@ -1315,7 +1319,7 @@ describe('expand', () => {
 		])(
 			'does not recognize RegEx syntax: %s /%s/',
 			(_: string, input: string) => {
-				const result = expandAll(input);
+				const result = expandAllUnsorted(input);
 				expect(result).not.toEqual(['ab ab']);
 			}
 		);
@@ -1349,7 +1353,7 @@ describe('expand', () => {
 			['forward subroutine call', /\g<+1>x([ab])/],
 			['forward subroutine call', /\g'+1'x([ab])/],
 		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandAll(input);
+			const result = expandAllUnsorted(input);
 			expect(result).not.toEqual(['axa', 'axb', 'bxa', 'bxb']);
 		});
 	});
