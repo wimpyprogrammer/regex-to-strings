@@ -578,6 +578,8 @@ describe('expand', () => {
 	});
 
 	describe('Sorting', () => {
+		const { expandAll, expandN } = patternLib;
+
 		function isUnique<T>(item: T, iItem: number, all: T[]) {
 			return all.indexOf(item) === iItem;
 		}
@@ -586,7 +588,7 @@ describe('expand', () => {
 			'randomly sorts patterns by default: %p',
 			(input: RegExp) => {
 				const multipleRuns = Array.from(new Array(20), () =>
-					expandAllUnsorted(input).join()
+					expandAll(input).join()
 				);
 				const uniqueRuns = multipleRuns.filter(isUnique);
 				expect(uniqueRuns.length).toBeGreaterThan(1);
@@ -595,7 +597,7 @@ describe('expand', () => {
 
 		it('accepts a custom sorting function', () => {
 			const sort = jest.fn(items => [...items].reverse());
-			const result = expandAllUnsorted(/\d/, sort);
+			const result = expandAll(/\d/, sort);
 			expect(result).toEqual('9876543210'.split(''));
 		});
 
@@ -609,14 +611,14 @@ describe('expand', () => {
 		])(
 			'sorts patterns without losing accuracy: %p',
 			(input: RegExp, allExpansions: string[]) => {
-				const result = expandAllUnsorted(input);
+				const result = expandAll(input);
 				expect(result).toEqual(expect.arrayContaining(allExpansions));
 				expect(result).toHaveLength(allExpansions.length);
 			}
 		);
 
 		it('sorts number of repetitions', () => {
-			const results = expandNUnsorted(/\w{1,10}/, 50);
+			const results = expandN(/\w{1,10}/, 50);
 			const resultsByLength = results.map(result => result.length);
 			const uniqueLengths = resultsByLength.filter(isUnique);
 
@@ -626,7 +628,7 @@ describe('expand', () => {
 		it.each([1, 2, 3])(
 			'sorts all levels of repetitions: level %p',
 			(iChar: number) => {
-				const results = expandNUnsorted(/\w{3}/, 50);
+				const results = expandN(/\w{3}/, 50);
 
 				const resultsThisChar = results.map(result => result.charAt(iChar - 1));
 				const uniqueThisChar = resultsThisChar.filter(isUnique);
