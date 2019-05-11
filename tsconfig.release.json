@@ -9,6 +9,7 @@
 		"lib": ["es5", "es2015.core", "es2015.iterable", "es2016.array.include"],
 		"downlevelIteration": true,
 		"noEmit": true,
+		"noImplicitReturns": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"paths": {
