@@ -16,7 +16,7 @@ describe('expand', () => {
 		return patternLib.expandAll(input, sortPreserveOrder);
 	}
 
-	function expandSome(input: string | RegExp, maxExpansions: number) {
+	function expandNUnsorted(input: string | RegExp, maxExpansions: number) {
 		return patternLib.expandN(input, maxExpansions, sortPreserveOrder);
 	}
 
@@ -106,7 +106,7 @@ describe('expand', () => {
 	it.each([/abc*/, /abc*?/])(
 		'expands optionally repeating character %p',
 		(optionalRepeat: RegExp) => {
-			const result = expandSome(optionalRepeat, 5);
+			const result = expandNUnsorted(optionalRepeat, 5);
 			expect(result).toEqual(['ab', 'abc', 'abcc', 'abccc', 'abcccc']);
 		}
 	);
@@ -114,7 +114,7 @@ describe('expand', () => {
 	it.each([/a(bc)*/, /a(bc)*?/])(
 		'expands optionally repeating group %p',
 		(optionalRepeatGroup: RegExp) => {
-			const result = expandSome(optionalRepeatGroup, 4);
+			const result = expandNUnsorted(optionalRepeatGroup, 4);
 			expect(result).toEqual(['a', 'abc', 'abcbc', 'abcbcbc']);
 		}
 	);
@@ -122,7 +122,7 @@ describe('expand', () => {
 	it.each([/abc+/, /abc+?/])(
 		'expands repeating character %p',
 		(repeat: RegExp) => {
-			const result = expandSome(repeat, 5);
+			const result = expandNUnsorted(repeat, 5);
 			expect(result).toEqual(['abc', 'abcc', 'abccc', 'abcccc', 'abccccc']);
 		}
 	);
@@ -130,7 +130,7 @@ describe('expand', () => {
 	it.each([/a(bc)+/, /a(bc)+?/])(
 		'expands repeating group %p',
 		(repeat: RegExp) => {
-			const result = expandSome(repeat, 4);
+			const result = expandNUnsorted(repeat, 4);
 			expect(result).toEqual(['abc', 'abcbc', 'abcbcbc', 'abcbcbcbc']);
 		}
 	);
@@ -316,7 +316,7 @@ describe('expand', () => {
 	it.each([/a{3,}/, /a{3,}?/])(
 		'expands range quantifier pattern without upper bound %p',
 		(rangeQuantifierNoUpper: RegExp) => {
-			const result = expandSome(rangeQuantifierNoUpper, 5);
+			const result = expandNUnsorted(rangeQuantifierNoUpper, 5);
 			expect(result).toEqual(['aaa', 'aaaa', 'aaaaa', 'aaaaaa', 'aaaaaaa']);
 		}
 	);
@@ -428,7 +428,7 @@ describe('expand', () => {
 			}
 
 			// Too many possible combinations - limit to 1,000
-			const result = expandSome(charClassSet, 1000);
+			const result = expandNUnsorted(charClassSet, 1000);
 			expect(result).toHaveLength(1000);
 			result.forEach(testExpansion);
 		}
@@ -616,7 +616,7 @@ describe('expand', () => {
 		);
 
 		it('sorts number of repetitions', () => {
-			const results = expandSome(/\w{1,10}/, 50);
+			const results = expandNUnsorted(/\w{1,10}/, 50);
 			const resultsByLength = results.map(result => result.length);
 			const uniqueLengths = resultsByLength.filter(isUnique);
 
@@ -626,7 +626,7 @@ describe('expand', () => {
 		it.each([1, 2, 3])(
 			'sorts all levels of repetitions: level %p',
 			(iChar: number) => {
-				const results = expandSome(/\w{3}/, 50);
+				const results = expandNUnsorted(/\w{3}/, 50);
 
 				const resultsThisChar = results.map(result => result.charAt(iChar - 1));
 				const uniqueThisChar = resultsThisChar.filter(isUnique);
@@ -1329,7 +1329,7 @@ describe('expand', () => {
 			['recursion', /a\g<0>?z/],
 			['recursion', /ag'0'?z/],
 		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandSome(input, 3);
+			const result = expandNUnsorted(input, 3);
 			expect(result).not.toEqual(['az', 'aazz', 'aaazzz']);
 		});
 
@@ -1343,7 +1343,7 @@ describe('expand', () => {
 		])(
 			'does not recognize RegEx syntax: %s /%s/',
 			(_: string, input: string) => {
-				const result = expandSome(input, 3);
+				const result = expandNUnsorted(input, 3);
 				expect(result).not.toEqual(['abyz', 'abbyyz', 'abbbyyyz']);
 			}
 		);
