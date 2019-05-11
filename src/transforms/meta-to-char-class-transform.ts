@@ -74,7 +74,12 @@ function getMetaCharExpressions(
  * Convert meta character classes like "\d", "\W", and "." to their ranged character
  * set equivalents like "[0-9]" and "[ \t\r\n~`!@#$%^&*()=+<,>.?/[{}|:;"'\]\-\\]".
  */
-const metaToCharClassTransform: Handler = {
+interface IMetaToCharClassTransform extends Handler {
+	flags: string;
+}
+const metaToCharClassTransform: IMetaToCharClassTransform = {
+	flags: '',
+
 	init(ast: AstRegExp) {
 		this.flags = ast.flags;
 	},

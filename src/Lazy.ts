@@ -6,7 +6,7 @@ import Deferred from './Deferred';
  */
 export default class Lazy<T> extends Deferred<T> {
 	protected hasEvaluated: boolean = false;
-	protected evaluated: T;
+	protected evaluated?: T = undefined;
 
 	constructor(protected readonly valueFn: () => T) {
 		super(valueFn);
@@ -18,7 +18,7 @@ export default class Lazy<T> extends Deferred<T> {
 			this.hasEvaluated = true;
 		}
 
-		return this.evaluated;
+		return this.evaluated as T;
 	}
 }
 
