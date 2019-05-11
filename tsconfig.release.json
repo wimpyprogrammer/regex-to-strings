@@ -8,7 +8,6 @@
 		"lib": ["es5", "es2015.core", "es2015.iterable", "es2016.array.include"],
 		"downlevelIteration": true,
 		"noEmit": true,
-		"noImplicitAny": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"paths": {
@@ -16,7 +15,7 @@
 		},
 		"pretty": true,
 		"sourceMap": true,
-		"strictNullChecks": true
+		"strict": true
 	},
 	"exclude": ["**/*.spec.ts"],
 	"include": ["src"]
