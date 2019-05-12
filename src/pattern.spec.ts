@@ -1,6 +1,12 @@
 import { when } from 'jest-when';
 import * as patternLib from './pattern';
 
+// This cast is necessary until DefinitelyTyped/DefinitelyTyped#35086 releases
+type JestWhenMock = jest.Mock<
+	IterableIterator<string>,
+	[string | RegExp, (<T>(options: T[]) => T[])?]
+>;
+
 function* fill(start: number, end: number): IterableIterator<number> {
 	for (let i = start; i <= end; i++) {
 		yield i;
@@ -23,8 +29,8 @@ describe('expand', () => {
 
 	it.each(['', null, undefined])(
 		'returns an empty list for %p',
-		(input: string) => {
-			expect(expandAllUnsorted(input)).toEqual([]);
+		(input?: string | null) => {
+			expect(expandAllUnsorted(input as string)).toEqual([]);
 		}
 	);
 
@@ -602,7 +608,7 @@ describe('expand', () => {
 			expect(result).toEqual('9876543210'.split(''));
 		});
 
-		it.each([
+		it.each<[RegExp, string[]]>([
 			[/\d/, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']],
 			[/a{0,5}/, ['', 'a', 'aa', 'aaa', 'aaaa', 'aaaaa']],
 			[/[ab]{3}/, ['aaa', 'aab', 'aba', 'abb', 'baa', 'bab', 'bba', 'bbb']],
@@ -853,7 +859,7 @@ describe('expand', () => {
 			expect(result).toEqual(['N']);
 		});
 
-		it.each([
+		it.each<[string, RegExp]>([
 			// From https://www.regular-expressions.info/refcharclass.html
 			['Character class subtraction', /[c-m-[j-z]]/],
 			['Character class intersection', /[a-i&&c-z]/],
@@ -1279,7 +1285,7 @@ describe('expand', () => {
 			expect(result).toEqual(['X']);
 		});
 
-		it.each([
+		it.each<[string, RegExp]>([
 			// From https://www.regular-expressions.info/refcharacters.html
 			['Escape sequence', /Qab abE/],
 			['Octal escape sequence', /\o{141}\o{142} \o{141}\o{142}/],
@@ -1327,7 +1333,7 @@ describe('expand', () => {
 			}
 		);
 
-		it.each([
+		it.each<[string, RegExp]>([
 			// From https://www.regular-expressions.info/refrecurse.html
 			['recursion', /a\g<0>?z/],
 			['recursion', /ag'0'?z/],
@@ -1351,7 +1357,7 @@ describe('expand', () => {
 			}
 		);
 
-		it.each([
+		it.each<[string, RegExp]>([
 			// From https://www.regular-expressions.info/refrecurse.html
 			['forward subroutine call', /\g<+1>x([ab])/],
 			['forward subroutine call', /\g'+1'x([ab])/],
@@ -1368,28 +1374,32 @@ describe('expandN', () => {
 	afterEach(() => jest.restoreAllMocks());
 
 	it('passes pattern to expand()', () => {
-		when(jest.spyOn(patternLib, 'expand'))
+		when(jest.spyOn(patternLib, 'expand') as JestWhenMock)
 			.calledWith('test', undefined)
-			.mockReturnValue(function*() {
-				yield* [1, 2, 3];
-			});
+			.mockReturnValue(
+				(function*() {
+					yield* ['1', '2', '3'];
+				})()
+			);
 
 		const result = expandN('test', 10);
 
-		expect(result).toEqual([1, 2, 3]);
+		expect(result).toEqual(['1', '2', '3']);
 	});
 
 	it('passes sort function to expand()', () => {
 		const sortFn = <N>(items: N) => items;
-		when(jest.spyOn(patternLib, 'expand'))
+		when(jest.spyOn(patternLib, 'expand') as JestWhenMock)
 			.calledWith('test', sortFn)
-			.mockReturnValue(function*() {
-				yield* [4, 5, 6];
-			});
+			.mockReturnValue(
+				(function*() {
+					yield* ['4', '5', '6'];
+				})()
+			);
 
 		const result = expandN('test', 10, sortFn);
 
-		expect(result).toEqual([4, 5, 6]);
+		expect(result).toEqual(['4', '5', '6']);
 	});
 
 	it('returns at most the specified number of expansions', () => {
@@ -1409,28 +1419,32 @@ describe('expandAll', () => {
 	afterEach(() => jest.restoreAllMocks());
 
 	it('passes pattern to expand()', () => {
-		when(jest.spyOn(patternLib, 'expand'))
+		when(jest.spyOn(patternLib, 'expand') as JestWhenMock)
 			.calledWith('test', undefined)
-			.mockReturnValue(function*() {
-				yield* [7, 8, 9];
-			});
+			.mockReturnValue(
+				(function*() {
+					yield* ['7', '8', '9'];
+				})()
+			);
 
 		const result = expandAll('test');
 
-		expect(result).toEqual([7, 8, 9]);
+		expect(result).toEqual(['7', '8', '9']);
 	});
 
 	it('passes sort function to expand()', () => {
 		const sortFn = <N>(items: N) => items;
-		when(jest.spyOn(patternLib, 'expand'))
+		when(jest.spyOn(patternLib, 'expand') as JestWhenMock)
 			.calledWith('test', sortFn)
-			.mockReturnValue(function*() {
-				yield* [10, 11, 12];
-			});
+			.mockReturnValue(
+				(function*() {
+					yield* ['10', '11', '12'];
+				})()
+			);
 
 		const result = expandAll('test', sortFn);
 
-		expect(result).toEqual([10, 11, 12]);
+		expect(result).toEqual(['10', '11', '12']);
 	});
 
 	it('returns all expansions', () => {
