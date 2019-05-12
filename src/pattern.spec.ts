@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import * as patternLib from './pattern';
 
 function* fill(start: number, end: number): IterableIterator<number> {
@@ -1364,6 +1365,33 @@ describe('expand', () => {
 describe('expandN', () => {
 	const { expandN } = patternLib;
 
+	afterEach(() => jest.restoreAllMocks());
+
+	it('passes pattern to expand()', () => {
+		when(jest.spyOn(patternLib, 'expand'))
+			.calledWith('test', undefined)
+			.mockReturnValue(function*() {
+				yield* [1, 2, 3];
+			});
+
+		const result = expandN('test', 10);
+
+		expect(result).toEqual([1, 2, 3]);
+	});
+
+	it('passes sort function to expand()', () => {
+		const sortFn = <N>(items: N) => items;
+		when(jest.spyOn(patternLib, 'expand'))
+			.calledWith('test', sortFn)
+			.mockReturnValue(function*() {
+				yield* [4, 5, 6];
+			});
+
+		const result = expandN('test', 10, sortFn);
+
+		expect(result).toEqual([4, 5, 6]);
+	});
+
 	it('returns at most the specified number of expansions', () => {
 		const result = expandN(/\d\d\d\d\d/, 10);
 		expect(result).toHaveLength(10);
@@ -1377,6 +1405,33 @@ describe('expandN', () => {
 
 describe('expandAll', () => {
 	const { expandAll } = patternLib;
+
+	afterEach(() => jest.restoreAllMocks());
+
+	it('passes pattern to expand()', () => {
+		when(jest.spyOn(patternLib, 'expand'))
+			.calledWith('test', undefined)
+			.mockReturnValue(function*() {
+				yield* [7, 8, 9];
+			});
+
+		const result = expandAll('test');
+
+		expect(result).toEqual([7, 8, 9]);
+	});
+
+	it('passes sort function to expand()', () => {
+		const sortFn = <N>(items: N) => items;
+		when(jest.spyOn(patternLib, 'expand'))
+			.calledWith('test', sortFn)
+			.mockReturnValue(function*() {
+				yield* [10, 11, 12];
+			});
+
+		const result = expandAll('test', sortFn);
+
+		expect(result).toEqual([10, 11, 12]);
+	});
 
 	it('returns all expansions', () => {
 		const result = expandAll(/\d\d\d\d\d/);

@@ -1,5 +1,7 @@
 import { parse, transform } from 'regexp-tree';
 import Expander from './Expander';
+// Circular reference for spying/mocking in tests
+import { expand } from './pattern';
 import transforms from './transforms/index';
 
 /**
@@ -10,7 +12,7 @@ import transforms from './transforms/index';
  * @returns An iterator that yields strings matched by pattern
  * @throws When pattern is invalid or unsupported syntax
  */
-export function* expand(
+function* _expand(
 	pattern: string | RegExp,
 	sort?: Expander['sort']
 ): IterableIterator<string> {
@@ -31,6 +33,7 @@ export function* expand(
 	const expander = new Expander(parsed.flags, sort);
 	yield* expander.expandExpression(parsed.body);
 }
+export { _expand as expand };
 
 /**
  * Calculate up to N strings that satisfy the regular expression pattern.
