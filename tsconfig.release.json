@@ -1,9 +1,9 @@
 {
 	"compilerOptions": {
 		"allowJs": true,
-		"allowSyntheticDefaultImports": true,
 		"baseUrl": "./",
 		"checkJs": true,
+		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"rootDir": "./",
 		"module": "es2015",
