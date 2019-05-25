@@ -1,12 +1,6 @@
 import { when } from 'jest-when';
 import * as patternLib from './pattern';
 
-// This cast is necessary until DefinitelyTyped/DefinitelyTyped#35086 releases
-type JestWhenMock = jest.Mock<
-	IterableIterator<string>,
-	[string | RegExp, (<T>(options: T[]) => T[])?]
->;
-
 function* fill(start: number, end: number): IterableIterator<number> {
 	for (let i = start; i <= end; i++) {
 		yield i;
@@ -1374,7 +1368,7 @@ describe('expandN', () => {
 	afterEach(() => jest.restoreAllMocks());
 
 	it('passes pattern to expand()', () => {
-		when(jest.spyOn(patternLib, 'expand') as JestWhenMock)
+		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test', undefined)
 			.mockReturnValue(
 				(function*() {
@@ -1389,7 +1383,7 @@ describe('expandN', () => {
 
 	it('passes sort function to expand()', () => {
 		const sortFn = <N>(items: N) => items;
-		when(jest.spyOn(patternLib, 'expand') as JestWhenMock)
+		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test', sortFn)
 			.mockReturnValue(
 				(function*() {
@@ -1419,7 +1413,7 @@ describe('expandAll', () => {
 	afterEach(() => jest.restoreAllMocks());
 
 	it('passes pattern to expand()', () => {
-		when(jest.spyOn(patternLib, 'expand') as JestWhenMock)
+		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test', undefined)
 			.mockReturnValue(
 				(function*() {
@@ -1434,7 +1428,7 @@ describe('expandAll', () => {
 
 	it('passes sort function to expand()', () => {
 		const sortFn = <N>(items: N) => items;
-		when(jest.spyOn(patternLib, 'expand') as JestWhenMock)
+		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test', sortFn)
 			.mockReturnValue(
 				(function*() {
