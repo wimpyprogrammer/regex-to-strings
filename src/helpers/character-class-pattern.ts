@@ -23,7 +23,7 @@ function getReferencedCodePoints(
 
 const allCharOptions =
 	' \t\r\n' +
-	'abcdefghijklmnopqrstuvwwxyz' +
+	'abcdefghijklmnopqrstuvwxyz' +
 	'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
 	'0123456789' +
 	'~`!@#$%^&*()-_=+<,>.?/[]{}|\\:;"\'';
