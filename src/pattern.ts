@@ -16,8 +16,10 @@ function* _expand(
 	pattern: string | RegExp,
 	sort?: Expander['sort']
 ): IterableIterator<string> {
-	if (!pattern) {
-		return [];
+	if (pattern === null) {
+		return yield* [];
+	} else if (!pattern) {
+		return yield '';
 	}
 
 	let parsed;

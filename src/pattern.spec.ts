@@ -21,10 +21,24 @@ describe('expand', () => {
 		return patternLib.expandN(input, maxExpansions, sortPreserveOrder);
 	}
 
-	it.each(['', null, undefined])(
-		'returns an empty list for %p',
-		(input?: string | null) => {
-			expect(expandAllUnsorted(input as string)).toEqual([]);
+	it('returns an empty list for null', () => {
+		const result = expandAllUnsorted((null as unknown) as string);
+		expect(result).toEqual([]);
+
+		// Mirror this JavaScript behavior
+		const nativeRegex = new RegExp(null as any);
+		expect(nativeRegex.test('')).toBe(false);
+	});
+
+	it.each(['', undefined])(
+		'returns an empty string for %p',
+		(input?: string) => {
+			const result = expandAllUnsorted(input as string);
+			expect(result).toEqual(['']);
+
+			// Mirror this JavaScript behavior
+			const nativeRegex = new RegExp(input as any);
+			expect(nativeRegex.test('')).toBe(true);
 		}
 	);
 
