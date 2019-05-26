@@ -1,12 +1,22 @@
 import { Alternative, Expression } from 'regexp-tree/ast';
 import Expander from '../Expander';
+import Expansion from '../Expansion';
 
-function* traverseTree(
-	this: Expander,
-	tree: Expression[]
-): IterableIterator<string> {
+function* iteratePermutations(head: Expansion, tail: Expansion) {
+	if (tail.count <= 0) {
+		return yield* head.getIterator();
+	}
+
+	for (const headPermutation of head.getIterator()) {
+		for (const tailPermutation of tail.getIterator()) {
+			yield `${headPermutation}${tailPermutation}`;
+		}
+	}
+}
+
+function traverseTree(this: Expander, tree: Expression[]): Expansion {
 	if (!tree.length) {
-		return;
+		return Expansion.Empty;
 	}
 
 	/**
@@ -16,28 +26,23 @@ function* traverseTree(
 	 */
 
 	const firstBranch = this.expandExpression(tree[0]);
+	const restOfTree = traverseTree.call(this, tree.slice(1));
 
-	for (const firstBranchPermutation of firstBranch) {
-		const restOfTree = traverseTree.call(this, tree.slice(1));
-		let isEndOfTree = true;
-
-		for (const restOfTreePermutation of restOfTree) {
-			isEndOfTree = false;
-			yield `${firstBranchPermutation}${restOfTreePermutation}`;
-		}
-
-		if (isEndOfTree) {
-			yield firstBranchPermutation;
-		}
+	if (restOfTree.count <= 0) {
+		return firstBranch;
 	}
+
+	const numPermutations = firstBranch.count * restOfTree.count;
+	const iterator = () => iteratePermutations(firstBranch, restOfTree);
+	return new Expansion(iterator, numPermutations);
 }
 
 /**
  * Expand an expression that itself is a series of expressions, such as
  * "abc", "a[bc]", "a(b|c)", or "a\d+".
  * @param node The Alternative expression to expand
- * @returns An iterator that yields strings matched by node
+ * @return The Expansion of node
  */
-export function* expandAlternative(this: Expander, node: Alternative) {
-	yield* traverseTree.call(this, node.expressions);
+export function expandAlternative(this: Expander, node: Alternative) {
+	return traverseTree.call(this, node.expressions);
 }

@@ -1,14 +1,15 @@
 {
 	"compilerOptions": {
 		"allowJs": true,
-		"allowSyntheticDefaultImports": true,
 		"baseUrl": "./",
 		"checkJs": true,
+		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"rootDir": "./",
 		"module": "es2015",
 		"lib": ["es5", "es2015.core", "es2015.iterable", "es2016.array.include"],
 		"downlevelIteration": true,
+		"moduleResolution": "node",
 		"noEmit": true,
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,

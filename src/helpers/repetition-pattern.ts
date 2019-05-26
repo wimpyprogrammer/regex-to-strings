@@ -1,5 +1,6 @@
 import { Quantifier, Repetition } from 'regexp-tree/ast';
 import Expander from '../Expander';
+import Expansion from '../Expansion';
 import Lazy, { lazily } from '../Lazy';
 import * as Guards from '../types/regexp-tree-guards';
 
@@ -60,15 +61,16 @@ function* calculatePermutations(
  * Expand an expression that repeats another expression, like "a{1,5}"
  * and "(\d|[a-m]){3,}".
  * @param node The Repetition expression to expand
- * @returns An iterator that yields strings matched by node
+ * @return The Expansion of node
  */
-export function* expandRepetition(this: Expander, node: Repetition) {
+export function expandRepetition(this: Expander, node: Repetition): Expansion {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];
 
 	// Calculate all expansions upfront. This is necessary for sorting the results.
 	// Make Lazy to avoid expanding the expression if it won't be used.
-	const fnExpand = () => [...this.expandExpression(node.expression)];
+	const expansion = this.expandExpression(node.expression);
+	const fnExpand = () => [...expansion.getIterator()];
 	const expansions = new Lazy(fnExpand);
 
 	const calculatePermutationsBound = calculatePermutations.bind(this);
@@ -79,8 +81,13 @@ export function* expandRepetition(this: Expander, node: Repetition) {
 		yield* calculatePermutationsBound(expansions.value(), numOccurrences);
 	}
 
-	yield* this.iterateWithSorting(
-		numOccurrenceOptions,
-		lazily(expandNRepetitions)
+	const getIterator = () =>
+		this.iterateWithSorting(numOccurrenceOptions, lazily(expandNRepetitions));
+
+	const totalNumPermutations = numOccurrenceOptions.reduce(
+		(sum, numOccurrences) => sum + Math.pow(expansion.count, numOccurrences),
+		0
 	);
+
+	return new Expansion(getIterator, totalNumPermutations);
 }
