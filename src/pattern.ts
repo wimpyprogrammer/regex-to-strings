@@ -1,25 +1,36 @@
 import { parse, transform } from 'regexp-tree';
 import Expander from './Expander';
+import Expansion from './Expansion';
 // Circular reference for spying/mocking in tests
 import { expand } from './pattern';
 import transforms from './transforms/index';
+
+/**
+ * Calculate how many strings satisfy the regular expression pattern.
+ * @param pattern The regular expression to expand
+ * @return The total number of strings that satisfy the regular expression
+ * @throws When pattern is invalid or unsupported syntax
+ */
+export function count(pattern: string | RegExp): number {
+	return expand(pattern).count;
+}
 
 /**
  * Calculate strings that satisfy the regular expression pattern.
  * @param pattern The regular expression to expand
  * @param sort An optional function for sorting variations during parsing.
  *             When omitted, variations are returned randomly.
- * @returns An iterator that yields strings matched by pattern
+ * @return The Expansion of pattern
  * @throws When pattern is invalid or unsupported syntax
  */
-function* _expand(
+function unmockedExpand(
 	pattern: string | RegExp,
 	sort?: Expander['sort']
-): IterableIterator<string> {
+): Expansion {
 	if (pattern === null) {
-		return yield* [];
+		return Expansion.Empty;
 	} else if (!pattern) {
-		return yield '';
+		return Expansion.Blank;
 	}
 
 	let parsed;
@@ -33,9 +44,9 @@ function* _expand(
 	}
 
 	const expander = new Expander(parsed.flags, sort);
-	yield* expander.expandExpression(parsed.body);
+	return expander.expandExpression(parsed.body);
 }
-export { _expand as expand };
+export { unmockedExpand as expand };
 
 /**
  * Calculate up to N strings that satisfy the regular expression pattern.
@@ -53,7 +64,7 @@ export function expandN(
 	sort?: Expander['sort']
 ): string[] {
 	const results = [];
-	const generator = expand(pattern, sort);
+	const generator = expand(pattern, sort).getIterator();
 
 	let expansion = generator.next();
 	while (!expansion.done && results.length < maxExpansions) {
@@ -76,5 +87,5 @@ export function expandAll(
 	pattern: string | RegExp,
 	sort?: Expander['sort']
 ): string[] {
-	return [...expand(pattern, sort)];
+	return [...expand(pattern, sort).getIterator()];
 }

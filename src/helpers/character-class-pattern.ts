@@ -1,5 +1,6 @@
 import { CharacterClass } from 'regexp-tree/ast';
 import Expander from '../Expander';
+import Expansion from '../Expansion';
 import * as Guards from '../types/regexp-tree-guards';
 
 function* fill(start: number, end: number): IterableIterator<number> {
@@ -37,9 +38,9 @@ const allCodePointOptions = allCharOptions
  * whitelist of options like "[abc]" and "[a-z1-5]", or a blacklist
  * of options like "[^123]" and "[^A-FW-Z]".
  * @param node The CharacterClass expression to expand
- * @returns An iterator that yields strings matched by node
+ * @return The Expansion of node
  */
-export function* expandCharacterClass(this: Expander, node: CharacterClass) {
+export function expandCharacterClass(this: Expander, node: CharacterClass) {
 	const applyCaseInsensitiveFlag = (accumulator: string[], char: string) => {
 		if (this.flags.includes('i') && char.toLowerCase() !== char.toUpperCase()) {
 			return accumulator.concat([char.toLowerCase(), char.toUpperCase()]);
@@ -64,5 +65,5 @@ export function* expandCharacterClass(this: Expander, node: CharacterClass) {
 		.map(codePoint => String.fromCodePoint(codePoint))
 		.reduce(applyCaseInsensitiveFlag, []);
 
-	yield* this.sort(expandedClass);
+	return new Expansion(this.sort(expandedClass), expandedClass.length);
 }

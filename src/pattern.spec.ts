@@ -1,4 +1,5 @@
 import { when } from 'jest-when';
+import Expansion from './Expansion';
 import * as patternLib from './pattern';
 
 function* fill(start: number, end: number): IterableIterator<number> {
@@ -11,6 +12,54 @@ function* fill(start: number, end: number): IterableIterator<number> {
 function sortPreserveOrder<T>(items: T[]) {
 	return [...items];
 }
+
+describe('count', () => {
+	const { count, expand } = patternLib;
+
+	afterEach(() => jest.restoreAllMocks());
+
+	it('passes pattern to expand()', () => {
+		when(jest.spyOn(patternLib, 'expand'))
+			.calledWith('test')
+			.mockReturnValue(new Expansion(['a', 'b', 'c'], 3));
+
+		const result = count('test');
+
+		expect(result).toEqual(3);
+	});
+
+	it('counts null as zero patterns', () => {
+		const result = count((null as unknown) as string);
+		expect(result).toBe(0);
+	});
+
+	it('counts undefined as one pattern', () => {
+		const result = count((undefined as unknown) as string);
+		expect(result).toBe(1);
+	});
+
+	it.each<[RegExp | string, number]>([
+		[new RegExp(''), 1],
+		[/abc/, 1],
+		[/\d/, 10],
+		[/ab?/, 2],
+		[/a{0,5}/, 6],
+		[/a*/, 101],
+		[/[ab]{3}/, Math.pow(2, 3)],
+		[/(a|b|c|d|e|f|g)/, 7],
+		[/aAa/i, Math.pow(2, 3)],
+		[/[A-I]/, 9],
+		[/[^\W]/, 26 + 26 + 10 + 1], // upper and lower alphanumeric, and underscore
+		[/([ab]|(c|[d-e]){2,3})f(g?)/, 76],
+		['(?<foo>a|b) \\k<foo> \\1', 2],
+	])(
+		'counts total number of patterns: %p',
+		(input: RegExp | string, expectedCount: number) => {
+			const result = count(input);
+			expect(result).toEqual(expectedCount);
+		}
+	);
+});
 
 describe('expand', () => {
 	function expandAllUnsorted(input: string | RegExp) {
@@ -1384,11 +1433,7 @@ describe('expandN', () => {
 	it('passes pattern to expand()', () => {
 		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test', undefined)
-			.mockReturnValue(
-				(function*() {
-					yield* ['1', '2', '3'];
-				})()
-			);
+			.mockReturnValue(new Expansion(['1', '2', '3'], 3));
 
 		const result = expandN('test', 10);
 
@@ -1399,11 +1444,7 @@ describe('expandN', () => {
 		const sortFn = <N>(items: N) => items;
 		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test', sortFn)
-			.mockReturnValue(
-				(function*() {
-					yield* ['4', '5', '6'];
-				})()
-			);
+			.mockReturnValue(new Expansion(['4', '5', '6'], 3));
 
 		const result = expandN('test', 10, sortFn);
 
@@ -1429,11 +1470,7 @@ describe('expandAll', () => {
 	it('passes pattern to expand()', () => {
 		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test', undefined)
-			.mockReturnValue(
-				(function*() {
-					yield* ['7', '8', '9'];
-				})()
-			);
+			.mockReturnValue(new Expansion(['7', '8', '9'], 3));
 
 		const result = expandAll('test');
 
@@ -1444,11 +1481,7 @@ describe('expandAll', () => {
 		const sortFn = <N>(items: N) => items;
 		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test', sortFn)
-			.mockReturnValue(
-				(function*() {
-					yield* ['10', '11', '12'];
-				})()
-			);
+			.mockReturnValue(new Expansion(['10', '11', '12'], 3));
 
 		const result = expandAll('test', sortFn);
 
