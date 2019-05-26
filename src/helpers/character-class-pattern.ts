@@ -64,6 +64,7 @@ export function expandCharacterClass(this: Expander, node: CharacterClass) {
 		.filter(option => node.negative || referencedCodePoints.includes(option))
 		.map(codePoint => String.fromCodePoint(codePoint))
 		.reduce(applyCaseInsensitiveFlag, []);
+	const sortChars = () => this.sort(expandedClass);
 
-	return new Expansion(this.sort(expandedClass), expandedClass.length);
+	return new Expansion(sortChars, expandedClass.length);
 }

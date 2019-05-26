@@ -17,8 +17,9 @@ function expandCharByCodePoint(this: Expander, codePoint: number) {
 		this.flags.includes('i') && char.toUpperCase() !== char.toLowerCase()
 			? [char.toLowerCase(), char.toUpperCase()]
 			: [char];
+	const sortChars = () => this.sort(expanded);
 
-	return new Expansion(this.sort(expanded), expanded.length);
+	return new Expansion(sortChars, expanded.length);
 }
 
 /**

@@ -28,6 +28,13 @@ describe('count', () => {
 		expect(result).toEqual(3);
 	});
 
+	it('does not sort to calculate count', () => {
+		const sortFn = jest.fn();
+		expand(/([ab]|(c|[d-e]){2,3})f(g?) \1/, sortFn);
+
+		expect(sortFn).not.toHaveBeenCalled();
+	});
+
 	it('counts null as zero patterns', () => {
 		const result = count((null as unknown) as string);
 		expect(result).toBe(0);

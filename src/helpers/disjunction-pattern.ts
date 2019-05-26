@@ -12,16 +12,15 @@ import Expansion from '../Expansion';
  */
 export function expandDisjunction(this: Expander, node: Disjunction) {
 	const expressions = [node.left, node.right];
-	const sortedExpressions = this.sort(expressions);
+	const expansions = expressions.map(e => this.expandExpression(e));
 
-	const expansion1 = this.expandExpression(sortedExpressions[0]);
-	const expansion2 = this.expandExpression(sortedExpressions[1]);
+	function* expandBothSides(this: Expander) {
+		const sorted = this.sort(expansions);
 
-	function* expandBothSides() {
-		yield* expansion1.getIterator();
-		yield* expansion2.getIterator();
+		yield* sorted[0].getIterator();
+		yield* sorted[1].getIterator();
 	}
-	const iterationsSum = expansion1.count + expansion2.count;
+	const iterationsSum = expansions[0].count + expansions[1].count;
 
-	return new Expansion(expandBothSides, iterationsSum);
+	return new Expansion(expandBothSides.bind(this), iterationsSum);
 }
