@@ -2,8 +2,10 @@ import { Handler, NodePath } from 'regexp-tree';
 import {
 	AstClass,
 	AstRegExp,
+	Base,
 	Char,
 	CharacterClass,
+	Disjunction,
 	Group,
 	Repetition,
 	SpecialChar,
@@ -108,7 +110,7 @@ const metaToCharClassTransform: IMetaToCharClassTransform = {
 		};
 
 		const parentReplacer = replacer[parent.type]!;
-		parentReplacer(parentPath, characterClass, index);
+		parentReplacer(parentPath, characterClass, node, index);
 	},
 };
 
@@ -116,18 +118,28 @@ type NodeReplacer = {
 	[parentType in AstClass]?: (
 		parent: NodePath<AstClass>,
 		replacement: CharacterClass,
+		child: Base<AstClass>,
 		iChild?: number
 	) => void
 };
 
 const replacer: NodeReplacer = {
-	Alternative: (parent, replacement, iChild) => {
+	Alternative: (parent, replacement, _, iChild) => {
 		parent.getChild(iChild)!.replace(replacement);
 	},
 
-	CharacterClass: (parent, replacement, iChild) => {
+	CharacterClass: (parent, replacement, _, iChild) => {
 		const parentNode = parent.node as CharacterClass;
 		parentNode.expressions.splice(iChild!, 1, ...replacement.expressions);
+	},
+
+	Disjunction: (parent, replacement, child) => {
+		const parentNode = parent.node as Disjunction;
+		if (parentNode.left === child) {
+			parentNode.left = replacement;
+		} else if (parentNode.right === child) {
+			parentNode.right = replacement;
+		}
 	},
 
 	Group: (parent, replacement) => {

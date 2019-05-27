@@ -482,6 +482,20 @@ describe('expand', () => {
 		}
 	);
 
+	it.each([/(\w|\d)/, /(\W|\D)/, /(\d|\D)/, /(\w|\d|\s)/])(
+		'expands the character class in disjunction %p',
+		(metaDisjunction: RegExp) => {
+			function testExpansion(expansion: string) {
+				expect(expansion).toHaveLength(1);
+				expect(expansion).toMatch(metaDisjunction);
+			}
+
+			const result = expandAllUnsorted(metaDisjunction);
+			expect(result.length).toBeGreaterThan(1);
+			result.forEach(testExpansion);
+		}
+	);
+
 	it.each([/[^\w\W]/, /[^\d\D]/, /[^\s\S]/, /[^\w\D]/, /[^\W\S]/, /[^0-9\D]/])(
 		'returns zero expansions for impossible set %p',
 		(charClassSet: RegExp) => {
