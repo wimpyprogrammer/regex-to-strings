@@ -1,5 +1,5 @@
 import { Handler } from 'regexp-tree';
-import { Quantifier, RangeQuantifier, SimpleQuantifier } from 'regexp-tree/ast';
+import { RangeQuantifier, SimpleQuantifier } from 'regexp-tree/ast';
 import * as Guards from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
@@ -26,8 +26,7 @@ function getNumOccurrences(quantifier: SimpleQuantifier): [number, number?] {
  */
 const simpleQuantifierToRangeQuantifierTransform: Handler = {
 	Quantifier(quantifierPath) {
-		const { node } = quantifierPath;
-		const quantifier = node as Quantifier;
+		const { node: quantifier } = quantifierPath;
 
 		if (!Guards.isSimpleQuantifier(quantifier)) {
 			return;
