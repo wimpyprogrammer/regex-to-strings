@@ -25,18 +25,14 @@ class Expander {
 	protected expandRepetition = expandRepetition;
 
 	protected iterateWithSorting = iterateWithSorting;
+	protected sort = sortRandom;
 
 	/**
 	 * Create a generator for strings that match regular expression
 	 * patterns parsed by regexp-tree.
 	 * @param flags The regular expression modifier flags
-	 * @param sort An optional function for sorting variations during parsing.
-	 *             When omitted, variations are returned randomly.
 	 */
-	constructor(
-		protected readonly flags: string,
-		protected readonly sort: <T>(options: T[]) => T[] = sortRandom
-	) {}
+	constructor(protected readonly flags: string) {}
 
 	/**
 	 * Identify and expand an expression of any type.
