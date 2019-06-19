@@ -2,7 +2,9 @@ import { Quantifier, Repetition } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
 import Lazy, { lazily } from '../Lazy';
+import sortRandom from '../sorts/fisher-yates-random';
 import * as Guards from '../types/regexp-tree-guards';
+import { iterateWithSorting } from './iterate-sorted';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
@@ -38,23 +40,21 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
  * @returns An iterator that yields all permutations of the given length
  */
 function* calculatePermutations(
-	this: Expander,
 	options: string[],
 	length: number
 ): IterableIterator<string> {
 	if (length <= 1) {
-		return yield* this.sort(options);
+		return yield* sortRandom(options);
 	}
 
-	const calculatePermutationsBound = calculatePermutations.bind(this);
 	function* expandOption(option: string) {
-		const children = calculatePermutationsBound(options, length - 1);
+		const children = calculatePermutations(options, length - 1);
 		for (const child of children) {
 			yield `${option}${child}`;
 		}
 	}
 
-	yield* this.iterateWithSorting(options, lazily(expandOption));
+	yield* iterateWithSorting(options, lazily(expandOption));
 }
 
 /**
@@ -73,16 +73,15 @@ export function expandRepetition(this: Expander, node: Repetition): Expansion {
 	const fnExpand = () => [...expansion.getIterator()];
 	const expansions = new Lazy(fnExpand);
 
-	const calculatePermutationsBound = calculatePermutations.bind(this);
 	function* expandNRepetitions(numOccurrences: number) {
 		if (numOccurrences <= 0) {
 			return yield '';
 		}
-		yield* calculatePermutationsBound(expansions.value(), numOccurrences);
+		yield* calculatePermutations(expansions.value(), numOccurrences);
 	}
 
 	const getIterator = () =>
-		this.iterateWithSorting(numOccurrenceOptions, lazily(expandNRepetitions));
+		iterateWithSorting(numOccurrenceOptions, lazily(expandNRepetitions));
 
 	const totalNumPermutations = numOccurrenceOptions.reduce(
 		(sum, numOccurrences) => sum + Math.pow(expansion.count, numOccurrences),

@@ -1,5 +1,5 @@
 import Deferred from '../Deferred';
-import Expander from '../Expander';
+import sortRandom from '../sorts/fisher-yates-random';
 
 interface IOptionLookup {
 	[index: string]: Deferred<IterableIterator<string>>;
@@ -17,7 +17,6 @@ interface IOptionLookup {
  * @return An iterator that yields expansions for each option
  */
 export function* iterateWithSorting<T extends string | number>(
-	this: Expander,
 	optionsToSort: T[],
 	createIterable: (option: T) => Deferred<IterableIterator<string>>
 ): IterableIterator<string> {
@@ -33,7 +32,7 @@ export function* iterateWithSorting<T extends string | number>(
 
 	while (availableOptions.length > 0) {
 		// Sort and choose the first option.
-		availableOptions = this.sort(availableOptions);
+		availableOptions = sortRandom(availableOptions);
 		const option = availableOptions[0];
 		const outputForOption = iterableSource[option].value().next();
 

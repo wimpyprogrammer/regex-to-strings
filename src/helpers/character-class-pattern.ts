@@ -1,6 +1,7 @@
 import { CharacterClass } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
+import sortRandom from '../sorts/fisher-yates-random';
 import * as Guards from '../types/regexp-tree-guards';
 
 function* fill(start: number, end: number): IterableIterator<number> {
@@ -64,7 +65,7 @@ export function expandCharacterClass(this: Expander, node: CharacterClass) {
 		.filter(option => node.negative || referencedCodePoints.includes(option))
 		.map(codePoint => String.fromCodePoint(codePoint))
 		.reduce(applyCaseInsensitiveFlag, []);
-	const sortChars = () => this.sort(expandedClass);
+	const sortChars = () => sortRandom(expandedClass);
 
 	return new Expansion(sortChars, expandedClass.length);
 }
