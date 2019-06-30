@@ -71,11 +71,9 @@ describe('expand', () => {
 
 	beforeEach(() => {
 		// Keep a stable order for consistent tests.
-		const sortPreserveOrder = <T>(items: T[]) => [...items];
-
 		sortFn = jest
 			.spyOn(randomSort, 'default')
-			.mockImplementation(sortPreserveOrder);
+			.mockImplementation(items => [...items]);
 	});
 
 	afterEach(() => jest.restoreAllMocks());
