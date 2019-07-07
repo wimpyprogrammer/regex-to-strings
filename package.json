@@ -25,7 +25,9 @@
     "format": "prettier --write 'src/**'",
     "lint": "tsc; tslint -p ./",
     "precommit": "pretty-quick --staged",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -48,6 +50,8 @@
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "regexp-tree": "^0.1.5",
-    "shuffle-array": "^1.0.1"
-  }
+    "shuffle-array": "^1.0.1",
+    "snyk": "^1.192.3"
+  },
+  "snyk": true
 }
