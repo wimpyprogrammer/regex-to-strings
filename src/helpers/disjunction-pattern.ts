@@ -1,7 +1,7 @@
 import { Disjunction } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
-import sortRandom from '../sorts/fisher-yates-random';
+import { iterateWeightedByCount } from './iterate-sorted';
 
 /**
  * Expand an expression which represents one of two options, like "(a|b}"
@@ -15,12 +15,7 @@ export function expandDisjunction(this: Expander, node: Disjunction) {
 	const expressions = [node.left, node.right];
 	const expansions = expressions.map(e => this.expandExpression(e));
 
-	function* expandBothSides() {
-		const sorted = sortRandom(expansions);
-
-		yield* sorted[0].getIterator();
-		yield* sorted[1].getIterator();
-	}
+	const expandBothSides = () => iterateWeightedByCount(expansions);
 	const iterationsSum = expansions[0].count + expansions[1].count;
 
 	return new Expansion(expandBothSides, iterationsSum);

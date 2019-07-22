@@ -1,10 +1,9 @@
 import { Quantifier, Repetition } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
-import Lazy, { lazily } from '../Lazy';
-import sortRandom from '../sorts/fisher-yates-random';
+import Lazy from '../Lazy';
 import * as Guards from '../types/regexp-tree-guards';
-import { iterateWithSorting } from './iterate-sorted';
+import { iteratePermutations, iterateWeightedByCount } from './iterate-sorted';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
@@ -33,31 +32,6 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
 }
 
 /**
- * Calculate all permutations of combining a set of strings a fixed number of times.
- * e.g. ['a', 'b'] of length 3 yields aaa, aab, aba, abb, baa, bab, bba, bbb
- * @param options The options to combine to create permutations
- * @param length The number of options to combine in a single permutation
- * @returns An iterator that yields all permutations of the given length
- */
-function* calculatePermutations(
-	options: string[],
-	length: number
-): IterableIterator<string> {
-	if (length <= 1) {
-		return yield* sortRandom(options);
-	}
-
-	function* expandOption(option: string) {
-		const children = calculatePermutations(options, length - 1);
-		for (const child of children) {
-			yield `${option}${child}`;
-		}
-	}
-
-	yield* iterateWithSorting(options, lazily(expandOption));
-}
-
-/**
  * Expand an expression that repeats another expression, like "a{1,5}"
  * and "(\d|[a-m]){3,}".
  * @param node The Repetition expression to expand
@@ -67,26 +41,37 @@ export function expandRepetition(this: Expander, node: Repetition): Expansion {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];
 
-	// Calculate all expansions upfront. This is necessary for sorting the results.
 	// Make Lazy to avoid expanding the expression if it won't be used.
-	const expansion = this.expandExpression(node.expression);
-	const fnExpand = () => [...expansion.getIterator()];
-	const expansions = new Lazy(fnExpand);
+	const expansionOnce = new Lazy(() => this.expandExpression(node.expression));
 
-	function* expandNRepetitions(numOccurrences: number) {
+	// Calculate the expansions for each quantity of repetition, like "a{1}",
+	// "a{2}", "a{3}", etc.
+	const allExpansions = numOccurrenceOptions.map(numOccurrences => {
 		if (numOccurrences <= 0) {
-			return yield '';
+			return Expansion.Blank;
 		}
-		yield* calculatePermutations(expansions.value(), numOccurrences);
-	}
 
-	const getIterator = () =>
-		iterateWithSorting(numOccurrenceOptions, lazily(expandNRepetitions));
+		const expansionNTimes = new Array<Expansion>(numOccurrences).fill(
+			expansionOnce.value()
+		);
+		const numPermutationsThisNumOccurrences = Math.pow(
+			expansionOnce.value().count,
+			numOccurrences
+		);
 
-	const totalNumPermutations = numOccurrenceOptions.reduce(
-		(sum, numOccurrences) => sum + Math.pow(expansion.count, numOccurrences),
+		return new Expansion(
+			() => iteratePermutations(expansionNTimes),
+			numPermutationsThisNumOccurrences
+		);
+	});
+	const totalNumPermutations = allExpansions.reduce(
+		(sum, { count }) => sum + count,
 		0
 	);
 
-	return new Expansion(getIterator, totalNumPermutations);
+	// Return all of the expansions for all quantities of repetition.
+	return new Expansion(
+		() => iterateWeightedByCount(allExpansions),
+		totalNumPermutations
+	);
 }

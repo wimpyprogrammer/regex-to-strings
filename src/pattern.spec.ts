@@ -2,6 +2,8 @@ import { when } from 'jest-when';
 import Expansion from './Expansion';
 import * as patternLib from './pattern';
 import * as randomSort from './sorts/fisher-yates-random';
+import * as chooseRandom from './sorts/number-random';
+import * as chooseRandomWeighted from './sorts/weighted-random';
 
 function* fill(start: number, end: number): IterableIterator<number> {
 	for (let i = start; i <= end; i++) {
@@ -68,12 +70,22 @@ describe('count', () => {
 describe('expand', () => {
 	const { expandAll, expandN } = patternLib;
 	let sortFn: jest.SpyInstance;
+	let randomWeightedFn: jest.SpyInstance;
+	let randomFn: jest.SpyInstance;
 
 	beforeEach(() => {
 		// Keep a stable order for consistent tests.
 		sortFn = jest
 			.spyOn(randomSort, 'default')
 			.mockImplementation(items => [...items]);
+
+		randomWeightedFn = jest
+			.spyOn(chooseRandomWeighted, 'default')
+			.mockImplementation(() => 0);
+
+		randomFn = jest
+			.spyOn(chooseRandom, 'default')
+			.mockImplementation(minValue => minValue);
 	});
 
 	afterEach(() => jest.restoreAllMocks());
@@ -665,7 +677,11 @@ describe('expand', () => {
 		}
 
 		// Re-enable the normal sorting behavior
-		beforeEach(() => sortFn.mockRestore());
+		beforeEach(() => {
+			[sortFn, randomWeightedFn, randomFn].forEach(mockFn =>
+				mockFn.mockRestore()
+			);
+		});
 
 		it.each([/\d/, /a+/, /(a|b|c|d|e|f|g)/, /aaaaaaaa/i, /[A-I]/])(
 			'randomly sorts patterns: %p',
@@ -702,17 +718,26 @@ describe('expand', () => {
 			expect(uniqueLengths.length).toBeGreaterThan(1);
 		});
 
-		it.each([1, 2, 3])(
-			'sorts all levels of repetitions: level %p',
-			(iChar: number) => {
-				const results = expandN(/\w{3}/, 50);
+		[
+			/\w\w\w/,
+			/\w{3}/,
+			/[a-z][a-z][a-z]/i,
+			/(\d|\W|[a-z])(\d|\W|[a-z])(\d|\W|[a-z])/,
+		].forEach((input: RegExp) => {
+			it.each([1, 2, 3])(
+				`sorts all levels of pattern ${input}: level %p`,
+				(iChar: number) => {
+					const results = expandN(input, 50);
 
-				const resultsThisChar = results.map(result => result.charAt(iChar - 1));
-				const uniqueThisChar = resultsThisChar.filter(isUnique);
+					const resultsThisChar = results.map(result =>
+						result.charAt(iChar - 1)
+					);
+					const uniqueThisChar = resultsThisChar.filter(isUnique);
 
-				expect(uniqueThisChar.length).toBeGreaterThan(1);
-			}
-		);
+					expect(uniqueThisChar.length).toBeGreaterThan(1);
+				}
+			);
+		});
 	});
 
 	describe('RegEx flags', () => {

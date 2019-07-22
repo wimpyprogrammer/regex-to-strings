@@ -1,47 +1,89 @@
-import Deferred from '../Deferred';
-import sortRandom from '../sorts/fisher-yates-random';
+import Expansion from '../Expansion';
+import chooseRandomInRange from '../sorts/number-random';
+import chooseRandomWeighted from '../sorts/weighted-random';
 
-interface IOptionLookup {
-	[index: string]: Deferred<IterableIterator<string>>;
-	[index: number]: Deferred<IterableIterator<string>>;
+/**
+ * Return all strings from a set of expansions.  Randomize the order of the returned strings.
+ * For example, the patterns /[ab]/ and /[12]/ might return ['b', '1', '2', 'a'].
+ * @param options The expansions to choose from
+ * @return An iterator that yields the randomly chosen strings
+ */
+export function* iterateWeightedByCount(
+	options: Expansion[]
+): IterableIterator<string> {
+	const iterators = options.map(option => option.getIterator());
+	const weights = options.map(option => option.count);
+
+	while (iterators.length > 0) {
+		// Randomly choose an option, weighted by the size of the expansion.
+		// For example, \d{3} will be chosen 10x more often than \d{2}.
+		const iRandom = chooseRandomWeighted(weights);
+		const { done, value } = iterators[iRandom].next();
+
+		if (done) {
+			// We've exhausted expansions for this iterator.
+			// Remove it from the list of options.
+			iterators.splice(iRandom, 1);
+			weights.splice(iRandom, 1);
+		} else {
+			yield value;
+			// Update weight to reflect the remaining count.
+			weights[iRandom]--;
+		}
+	}
 }
 
 /**
- * Repeatedly choose from options and yield the corresponding expansion.
- * The options are sorted before each selection.
- * This technique allows expansions to be thoroughly sorted. Otherwise
- * the sorting might only apply to one character at a time while the
- * other characters are unchanged, e.g. \d\d -> 48, 42, 49, 43, 41, 45...
- * @param optionsToSort The list of options to choose from
- * @param createIterable A function to create the iterable for each option
- * @return An iterator that yields expansions for each option
+ * Return strings for all permutations of a set of expansions.  Randomize the order of the
+ * returned strings.
+ * For example, the patterns /[ab]/ and /[12]/ might return ['a2', 'b1', 'a1', 'b2'].
+ * @param expansions The expansions to combine in each permutation
+ * @return An iterator that yields the permutations, ordered randomly
  */
-export function* iterateWithSorting<T extends string | number>(
-	optionsToSort: T[],
-	createIterable: (option: T) => Deferred<IterableIterator<string>>
+export function* iteratePermutations(
+	expansions: Expansion[]
 ): IterableIterator<string> {
-	const iterableSource = optionsToSort.reduce<IOptionLookup>(
-		(accumulator, option) => {
-			accumulator[option] = createIterable(option);
-			return accumulator;
-		},
-		{}
-	);
+	const [thisExpansion, ...childExpansions] = expansions;
+	const thisIterator = thisExpansion.getIterator();
+	let numCompletedValuesThisIterator = 0;
 
-	let availableOptions = [...optionsToSort];
+	if (expansions.length <= 1) {
+		// Reached the end of the recursion, yield all iterations
+		// of the final expansion.
+		return yield* thisIterator;
+	}
 
-	while (availableOptions.length > 0) {
-		// Sort and choose the first option.
-		availableOptions = sortRandom(availableOptions);
-		const option = availableOptions[0];
-		const outputForOption = iterableSource[option].value().next();
+	// Yield all permutations of one value from the current iterator with
+	// all values from the child expansions.
+	function* iterateChildPermutations() {
+		const { done, value: thisValue } = thisIterator.next();
+		if (done) {
+			return;
+		}
+		const childIterator = iteratePermutations(childExpansions);
+		for (const childValue of childIterator) {
+			yield `${thisValue}${childValue}`;
+		}
+		numCompletedValuesThisIterator++;
+	}
 
-		if (outputForOption.done) {
-			// We've exhausted expansions for this number of occurrences.
-			// Remove it from the list of options.
-			availableOptions.splice(0, 1);
+	const inProgressIterators: Array<IterableIterator<string>> = [];
+
+	while (numCompletedValuesThisIterator < thisExpansion.count) {
+		let iRandom = chooseRandomInRange(0, thisExpansion.count - 1);
+
+		if (iRandom > inProgressIterators.length - 1) {
+			inProgressIterators.push(iterateChildPermutations());
+			iRandom = inProgressIterators.length - 1;
+		}
+
+		const { done, value } = inProgressIterators[iRandom].next();
+
+		if (done) {
+			// We've exhausted permutations for this value of the current iterator.
+			inProgressIterators.splice(iRandom, 1);
 		} else {
-			yield outputForOption.value;
+			yield value;
 		}
 	}
 }

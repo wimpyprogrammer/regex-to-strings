@@ -4,3 +4,10 @@ declare module 'pandemonium/shuffle' {
 	const shuffle: Shuffle;
 	export default shuffle;
 }
+
+declare module 'pandemonium/weighted-random-index' {
+	type WeightedRandomIndex = (weights: number[]) => number;
+
+	const weightedRandomIndex: WeightedRandomIndex;
+	export default weightedRandomIndex;
+}
