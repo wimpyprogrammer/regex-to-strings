@@ -1,7 +1,6 @@
 import { Quantifier, Repetition } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
-import Lazy from '../Lazy';
 import * as Guards from '../types/regexp-tree-guards';
 import { iteratePermutations, iterateWeightedByCount } from './iterate-sorted';
 
@@ -41,8 +40,7 @@ export function expandRepetition(this: Expander, node: Repetition): Expansion {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
 	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];
 
-	// Make Lazy to avoid expanding the expression if it won't be used.
-	const expansionOnce = new Lazy(() => this.expandExpression(node.expression));
+	const expansionOnce = this.expandExpression(node.expression);
 
 	// Calculate the expansions for each quantity of repetition, like "a{1}",
 	// "a{2}", "a{3}", etc.
@@ -52,10 +50,10 @@ export function expandRepetition(this: Expander, node: Repetition): Expansion {
 		}
 
 		const expansionNTimes = new Array<Expansion>(numOccurrences).fill(
-			expansionOnce.value()
+			expansionOnce
 		);
 		const numPermutationsThisNumOccurrences = Math.pow(
-			expansionOnce.value().count,
+			expansionOnce.count,
 			numOccurrences
 		);
 
