@@ -711,8 +711,12 @@ describe('expand', () => {
 		);
 
 		it('sorts number of repetitions', () => {
-			const results = expandN(/\w{1,10}/, 50);
-			const resultsByLength = results.map(result => result.length);
+			let resultsAllTrials: string[] = [];
+			for (let i = 0, numTrials = 50; i < numTrials; i++) {
+				const results = expandN(/[ab]{1,2}/, 2);
+				resultsAllTrials = resultsAllTrials.concat(results);
+			}
+			const resultsByLength = resultsAllTrials.map(result => result.length);
 			const uniqueLengths = resultsByLength.filter(isUnique);
 
 			expect(uniqueLengths.length).toBeGreaterThan(1);
