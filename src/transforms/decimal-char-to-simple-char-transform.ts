@@ -9,8 +9,7 @@ import { Char } from 'regexp-tree/ast';
  */
 const decimalCharToSimpleCharTransform: Handler = {
 	Char(charPath) {
-		const { node } = charPath;
-		const char = node as Char;
+		const { node: char } = charPath;
 
 		if (char.kind !== 'decimal') {
 			return;

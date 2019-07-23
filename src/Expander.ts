@@ -5,9 +5,7 @@ import { expandChar } from './helpers/char-pattern';
 import { expandCharacterClass } from './helpers/character-class-pattern';
 import { expandDisjunction } from './helpers/disjunction-pattern';
 import { expandBackreference, expandGroup } from './helpers/group-pattern';
-import { iterateWithSorting } from './helpers/iterate-sorted';
 import { expandRepetition } from './helpers/repetition-pattern';
-import sortRandom from './sorts/fisher-yates-random';
 import * as Guards from './types/regexp-tree-guards';
 
 /* istanbul ignore next */
@@ -24,19 +22,12 @@ class Expander {
 	protected expandGroup = expandGroup;
 	protected expandRepetition = expandRepetition;
 
-	protected iterateWithSorting = iterateWithSorting;
-
 	/**
 	 * Create a generator for strings that match regular expression
 	 * patterns parsed by regexp-tree.
 	 * @param flags The regular expression modifier flags
-	 * @param sort An optional function for sorting variations during parsing.
-	 *             When omitted, variations are returned randomly.
 	 */
-	constructor(
-		protected readonly flags: string,
-		protected readonly sort: <T>(options: T[]) => T[] = sortRandom
-	) {}
+	constructor(protected readonly flags: string) {}
 
 	/**
 	 * Identify and expand an expression of any type.

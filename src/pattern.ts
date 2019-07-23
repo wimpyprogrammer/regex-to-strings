@@ -18,15 +18,10 @@ export function count(pattern: string | RegExp): number {
 /**
  * Calculate strings that satisfy the regular expression pattern.
  * @param pattern The regular expression to expand
- * @param sort An optional function for sorting variations during parsing.
- *             When omitted, variations are returned randomly.
  * @return The Expansion of pattern
  * @throws When pattern is invalid or unsupported syntax
  */
-function unmockedExpand(
-	pattern: string | RegExp,
-	sort?: Expander['sort']
-): Expansion {
+function unmockedExpand(pattern: string | RegExp): Expansion {
 	if (pattern === null) {
 		return Expansion.Empty;
 	} else if (!pattern) {
@@ -43,7 +38,7 @@ function unmockedExpand(
 		parsed = parse(transformed.toString());
 	}
 
-	const expander = new Expander(parsed.flags, sort);
+	const expander = new Expander(parsed.flags);
 	return expander.expandExpression(parsed.body);
 }
 export { unmockedExpand as expand };
@@ -53,18 +48,15 @@ export { unmockedExpand as expand };
  * Return all strings or N strings, whichever is fewer.
  * @param pattern The regular expression to expand
  * @param maxExpansions The maximum number of expansions to return
- * @param sort An optional function for sorting variations during parsing.
- *             When omitted, variations are returned randomly.
  * @return A list of up to maxExpansions strings matched by pattern
  * @throws When pattern is invalid or unsupported syntax
  */
 export function expandN(
 	pattern: string | RegExp,
-	maxExpansions: number,
-	sort?: Expander['sort']
+	maxExpansions: number
 ): string[] {
 	const results = [];
-	const generator = expand(pattern, sort).getIterator();
+	const generator = expand(pattern).getIterator();
 
 	let expansion = generator.next();
 	while (!expansion.done && results.length < maxExpansions) {
@@ -78,14 +70,9 @@ export function expandN(
 /**
  * Calculate all strings that satisfy the regular expression pattern.
  * @param pattern The regular expression to expand
- * @param sort An optional function for sorting variations during parsing.
- *             When omitted, variations are returned randomly.
  * @return A list of strings matched by pattern
  * @throws When pattern is invalid or unsupported syntax
  */
-export function expandAll(
-	pattern: string | RegExp,
-	sort?: Expander['sort']
-): string[] {
-	return [...expand(pattern, sort).getIterator()];
+export function expandAll(pattern: string | RegExp): string[] {
+	return [...expand(pattern).getIterator()];
 }

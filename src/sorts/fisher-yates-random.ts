@@ -1,5 +1,5 @@
-import randomShuffle from 'shuffle-array';
+import shuffle from 'pandemonium/shuffle';
 
 export default function sort<T>(items: T[]) {
-	return randomShuffle([...items]);
+	return shuffle(items);
 }

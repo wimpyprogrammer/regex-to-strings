@@ -1,18 +1,7 @@
 import { Alternative, Expression } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
-
-function* iteratePermutations(head: Expansion, tail: Expansion) {
-	if (tail.count <= 0) {
-		return yield* head.getIterator();
-	}
-
-	for (const headPermutation of head.getIterator()) {
-		for (const tailPermutation of tail.getIterator()) {
-			yield `${headPermutation}${tailPermutation}`;
-		}
-	}
-}
+import { iteratePermutations } from './iterate-sorted';
 
 function traverseTree(this: Expander, tree: Expression[]): Expansion {
 	if (!tree.length) {
@@ -32,8 +21,9 @@ function traverseTree(this: Expander, tree: Expression[]): Expansion {
 		return firstBranch;
 	}
 
+	const iterator = () => iteratePermutations([firstBranch, restOfTree]);
 	const numPermutations = firstBranch.count * restOfTree.count;
-	const iterator = () => iteratePermutations(firstBranch, restOfTree);
+
 	return new Expansion(iterator, numPermutations);
 }
 

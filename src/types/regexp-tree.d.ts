@@ -131,6 +131,28 @@ declare module 'regexp-tree/ast' {
 		flags: string;
 	}
 
+	export type AsExpression<T extends AstClass> = T extends 'Char'
+		? Char
+		: T extends 'ClassRange'
+			? ClassRange
+			: T extends 'CharacterClass'
+				? CharacterClass
+				: T extends 'Alternative'
+					? Alternative
+					: T extends 'Disjunction'
+						? Disjunction
+						: T extends 'Group'
+							? Group
+							: T extends 'Backreference'
+								? Backreference
+								: T extends 'Repetition'
+									? Repetition
+									: T extends 'Quantifier'
+										? Quantifier
+										: T extends 'Assertion'
+											? Assertion
+											: T extends 'RegExp' ? AstRegExp : never;
+
 	export interface TransformResult {
 		getAST(): AstRegExp;
 		getBodyString(): string;
@@ -141,7 +163,13 @@ declare module 'regexp-tree/ast' {
 }
 
 declare module 'regexp-tree' {
-	import { AstClass, AstRegExp, Base, TransformResult } from 'regexp-tree/ast';
+	import {
+		AstClass,
+		AstRegExp,
+		AsExpression,
+		TransformResult,
+	} from 'regexp-tree/ast';
+
 	interface ParserOptions {
 		captureLocations?: boolean;
 	}
@@ -176,14 +204,16 @@ declare module 'regexp-tree' {
 	export function toRegExp(regexp: string): RegExp;
 
 	interface NodePath<T extends AstClass> {
-		node: Base<T>;
-		parent?: Base<AstClass>;
+		node: AsExpression<T>;
+		parent?: AsExpression<AstClass>;
 		parentPath?: NodePath<AstClass>;
 		property?: string;
 		index?: number;
 
 		remove(): void;
-		replace<TNew extends AstClass>(node: Base<TNew>): NodePath<TNew> | null;
+		replace<TNew extends AstClass>(
+			node: AsExpression<TNew>
+		): NodePath<TNew> | null;
 		update(nodeProps: Object): void;
 		getPreviousSibling(): NodePath<AstClass> | null;
 		getNextSibling(): NodePath<AstClass> | null;

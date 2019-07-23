@@ -1,11 +1,10 @@
-import { Handler, NodePath } from 'regexp-tree';
+import { Handler } from 'regexp-tree';
 import {
+	AsExpression,
 	AstClass,
 	AstRegExp,
 	Char,
 	CharacterClass,
-	Group,
-	Repetition,
 	SpecialChar,
 } from 'regexp-tree/ast';
 import * as Guards from '../types/regexp-tree-guards';
@@ -85,8 +84,7 @@ const metaToCharClassTransform: IMetaToCharClassTransform = {
 	},
 
 	Char(charPath) {
-		const { index, node, parent, parentPath } = charPath;
-		const char = node as Char;
+		const { node: char, parent, parentPath } = charPath;
 
 		if (!parent || !parentPath || !replacer[parent.type]) {
 			return;
@@ -107,41 +105,50 @@ const metaToCharClassTransform: IMetaToCharClassTransform = {
 			type: 'CharacterClass',
 		};
 
-		const parentReplacer = replacer[parent.type]!;
-		parentReplacer(parentPath, characterClass, index);
+		const replaceParent = replacer[parent.type] as Replace<typeof parent.type>;
+		replaceParent(parentPath.node, characterClass, char);
 	},
 };
 
-type NodeReplacer = {
-	[parentType in AstClass]?: (
-		parent: NodePath<AstClass>,
-		replacement: CharacterClass,
-		iChild?: number
-	) => void
-};
+type Replace<ParentType extends AstClass> = (
+	parentNode: AsExpression<ParentType>,
+	replacement: CharacterClass,
+	child: Char
+) => void;
+type NodeReplacer = { [parentType in AstClass]?: Replace<parentType> };
 
 const replacer: NodeReplacer = {
-	Alternative: (parent, replacement, iChild) => {
-		parent.getChild(iChild)!.replace(replacement);
+	Alternative: (parentNode, replacement, child) => {
+		const iChild = parentNode.expressions.indexOf(child);
+		if (iChild > -1) {
+			parentNode.expressions[iChild] = replacement;
+		}
 	},
 
-	CharacterClass: (parent, replacement, iChild) => {
-		const parentNode = parent.node as CharacterClass;
-		parentNode.expressions.splice(iChild!, 1, ...replacement.expressions);
+	CharacterClass: (parentNode, replacement, child) => {
+		const iChild = parentNode.expressions.indexOf(child);
+		if (iChild > -1) {
+			parentNode.expressions.splice(iChild!, 1, ...replacement.expressions);
+		}
 	},
 
-	Group: (parent, replacement) => {
-		const parentNode = parent.node as Group;
+	Disjunction: (parentNode, replacement, child) => {
+		if (parentNode.left === child) {
+			parentNode.left = replacement;
+		} else if (parentNode.right === child) {
+			parentNode.right = replacement;
+		}
+	},
+
+	Group: (parentNode, replacement) => {
 		parentNode.expression = replacement;
 	},
 
-	RegExp: (parent, replacement) => {
-		const parentNode = parent.node as AstRegExp;
+	RegExp: (parentNode, replacement) => {
 		parentNode.body = replacement;
 	},
 
-	Repetition: (parent, replacement) => {
-		const parentNode = parent.node as Repetition;
+	Repetition: (parentNode, replacement) => {
 		parentNode.expression = replacement;
 	},
 };

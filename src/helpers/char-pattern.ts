@@ -1,6 +1,7 @@
 import { Char } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
+import sortRandom from '../sorts/fisher-yates-random';
 import * as Guards from '../types/regexp-tree-guards';
 
 const alphaOffsetCharCode = 'a'.charCodeAt(0) - 1;
@@ -10,14 +11,14 @@ function assertNever(x: never): never {
 	throw new Error('Unexpected char type: ' + x);
 }
 
-function expandCharByCodePoint(this: Expander, codePoint: number) {
+function expandCharByCodePoint(codePoint: number, flags: string) {
 	const char = String.fromCodePoint(codePoint);
 
 	const expanded =
-		this.flags.includes('i') && char.toUpperCase() !== char.toLowerCase()
+		flags.includes('i') && char.toUpperCase() !== char.toLowerCase()
 			? [char.toLowerCase(), char.toUpperCase()]
 			: [char];
-	const sortChars = () => this.sort(expanded);
+	const sortChars = () => sortRandom(expanded);
 
 	return new Expansion(sortChars, expanded.length);
 }
@@ -50,10 +51,12 @@ function translateEscapedControlChar(escapedControlChar: Char) {
  * @return The Expansion of node
  */
 export function expandChar(this: Expander, node: Char) {
+	const { flags } = this;
+
 	if (Guards.isSimpleChar(node)) {
-		return expandCharByCodePoint.call(this, node.codePoint);
+		return expandCharByCodePoint(node.codePoint, flags);
 	} else if (['oct', 'hex', 'unicode'].includes(node.kind)) {
-		return expandCharByCodePoint.call(this, node.codePoint);
+		return expandCharByCodePoint(node.codePoint, flags);
 	} else if (node.kind === 'control') {
 		return translateEscapedControlChar(node);
 	} else if (node.kind === 'decimal') {
@@ -61,7 +64,7 @@ export function expandChar(this: Expander, node: Char) {
 		const m = `"${node.value}" not removed by decimalCharToOctalCharTransform`;
 		throw new Error(m);
 	} else if (Number.isInteger(node.codePoint)) {
-		return expandCharByCodePoint.call(this, node.codePoint);
+		return expandCharByCodePoint(node.codePoint, flags);
 	} else if (Guards.isMetaChar(node)) {
 		/* istanbul ignore next */
 		throw new Error(`"${node.value}" not removed by metaToCharClassTransform`);
