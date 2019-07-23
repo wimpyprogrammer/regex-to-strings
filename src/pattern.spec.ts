@@ -1,15 +1,10 @@
 import { when } from 'jest-when';
 import Expansion from './Expansion';
+import { fill } from './helpers/utils';
 import * as patternLib from './pattern';
 import * as randomSort from './sorts/fisher-yates-random';
 import * as chooseRandom from './sorts/number-random';
 import * as chooseRandomWeighted from './sorts/weighted-random';
-
-function* fill(start: number, end: number): IterableIterator<number> {
-	for (let i = start; i <= end; i++) {
-		yield i;
-	}
-}
 
 describe('count', () => {
 	const { count } = patternLib;
@@ -533,7 +528,7 @@ describe('expand', () => {
 	);
 
 	it('expands repeated character class', () => {
-		const allTwoDigitNumbers = [...fill(0, 99)].map(num =>
+		const allTwoDigitNumbers = fill(0, 99).map(num =>
 			num.toString().padStart(2, '0')
 		);
 
