@@ -27,7 +27,9 @@
     "lint-tests": "tsc -p ./tsconfig.test.json; tslint -p ./tsconfig.test.json",
     "precommit": "pretty-quick --staged",
     "test": "jest --coverage",
-    "travisci": "npm run lint && npm run test && codecov"
+    "travisci": "npm run lint && npm run test && codecov",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -41,7 +43,7 @@
     "codecov": "^3.3.0",
     "husky": "0.14.3",
     "jest": "^24.8.0",
-    "jest-when": "^2.5.0",
+    "jest-when": "^2.6.0",
     "prettier": "1.14.3",
     "pretty-quick": "1.7.0",
     "rimraf": "^2.6.2",
@@ -52,6 +54,8 @@
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "pandemonium": "^1.4.1",
-    "regexp-tree": "^0.1.5"
-  }
+    "regexp-tree": "^0.1.5",
+    "snyk": "^1.198.0"
+  },
+  "snyk": true
 }
