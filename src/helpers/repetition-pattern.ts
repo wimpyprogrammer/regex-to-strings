@@ -3,16 +3,11 @@ import Expander from '../Expander';
 import Expansion from '../Expansion';
 import * as Guards from '../types/regexp-tree-guards';
 import { iteratePermutations, iterateWeightedByCount } from './iterate-sorted';
+import { fill } from './utils';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
 	throw new Error('Unexpected quantifier: ' + x);
-}
-
-function* fill(start: number, end: number): IterableIterator<number> {
-	for (let i = start; i <= end; i++) {
-		yield i;
-	}
 }
 
 function getNumOccurrences(quantifier: Quantifier): [number, number] {
@@ -38,7 +33,7 @@ function getNumOccurrences(quantifier: Quantifier): [number, number] {
  */
 export function expandRepetition(this: Expander, node: Repetition): Expansion {
 	const [minOccurrences, maxOccurrences] = getNumOccurrences(node.quantifier);
-	const numOccurrenceOptions = [...fill(minOccurrences, maxOccurrences)];
+	const numOccurrenceOptions = fill(minOccurrences, maxOccurrences);
 
 	const expansionOnce = this.expandExpression(node.expression);
 

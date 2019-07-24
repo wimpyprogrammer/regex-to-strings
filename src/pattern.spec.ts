@@ -1,14 +1,22 @@
 import { when } from 'jest-when';
 import Expansion from './Expansion';
+import { fill } from './helpers/utils';
 import * as patternLib from './pattern';
 import * as randomSort from './sorts/fisher-yates-random';
 import * as chooseRandom from './sorts/number-random';
 import * as chooseRandomWeighted from './sorts/weighted-random';
 
-function* fill(start: number, end: number): IterableIterator<number> {
-	for (let i = start; i <= end; i++) {
-		yield i;
+function measureAverageTime(fn: () => any, numTrials: number) {
+	let totalTime = 0;
+
+	for (let i = 0; i < numTrials; i++) {
+		const startTime = Date.now();
+		fn();
+		const endTime = Date.now();
+		totalTime += endTime - startTime;
 	}
+
+	return totalTime / numTrials;
 }
 
 describe('count', () => {
@@ -65,10 +73,16 @@ describe('count', () => {
 			expect(result).toEqual(expectedCount);
 		}
 	);
+
+	it('is performant', () => {
+		const trial = () => count(/([ab]|(c|[d-e]){2,3})(\w?) \1/);
+		const averageTime = measureAverageTime(trial, 5);
+		expect(averageTime).toBeLessThanOrEqual(10);
+	});
 });
 
 describe('expand', () => {
-	const { expandAll, expandN } = patternLib;
+	const { expand, expandAll, expandN } = patternLib;
 	let sortFn: jest.SpyInstance;
 	let randomWeightedFn: jest.SpyInstance;
 	let randomFn: jest.SpyInstance;
@@ -533,7 +547,7 @@ describe('expand', () => {
 	);
 
 	it('expands repeated character class', () => {
-		const allTwoDigitNumbers = [...fill(0, 99)].map(num =>
+		const allTwoDigitNumbers = fill(0, 99).map(num =>
 			num.toString().padStart(2, '0')
 		);
 
@@ -669,6 +683,12 @@ describe('expand', () => {
 	it('expands backreferences with numeric names', () => {
 		const result = expandAll('(?<20>a) \\k<20> (?<50>z) \\k<50>');
 		expect(result).toEqual(['a a z z']);
+	});
+
+	it('is performant', () => {
+		const trial = () => expand(/([ab]|(c|[d-e]){2,3})(\w?) \1/);
+		const averageTime = measureAverageTime(trial, 5);
+		expect(averageTime).toBeLessThanOrEqual(10);
 	});
 
 	describe('Sorting', () => {
@@ -1491,6 +1511,12 @@ describe('expandN', () => {
 		const result = expandN(/[abc]/, 10);
 		expect(result).toHaveLength(3);
 	});
+
+	it('is performant', () => {
+		const trial = () => expandN(/([ab]|(c|[d-e]){2,3})(\w?) \1/, 1000);
+		const averageTime = measureAverageTime(trial, 5);
+		expect(averageTime).toBeLessThanOrEqual(200);
+	});
 });
 
 describe('expandAll', () => {
@@ -1511,5 +1537,11 @@ describe('expandAll', () => {
 	it('returns all expansions', () => {
 		const result = expandAll(/\d\d\d\d\d/);
 		expect(result).toHaveLength(100000);
+	});
+
+	it('is performant', () => {
+		const trial = () => expandAll(/([ab]|(c|[d-e]){2,3})(\w?) \1/);
+		const averageTime = measureAverageTime(trial, 5);
+		expect(averageTime).toBeLessThanOrEqual(1000);
 	});
 });

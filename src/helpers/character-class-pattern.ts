@@ -3,12 +3,7 @@ import Expander from '../Expander';
 import Expansion from '../Expansion';
 import sortRandom from '../sorts/fisher-yates-random';
 import * as Guards from '../types/regexp-tree-guards';
-
-function* fill(start: number, end: number): IterableIterator<number> {
-	for (let i = start; i <= end; i++) {
-		yield i;
-	}
-}
+import { fill } from './utils';
 
 function getReferencedCodePoints(
 	expression: CharacterClass['expressions'][0]
@@ -17,7 +12,7 @@ function getReferencedCodePoints(
 	if (Guards.isClassRange(expression)) {
 		const minCodePoint = expression.from.codePoint;
 		const maxCodePoint = expression.to.codePoint;
-		return [...fill(minCodePoint, maxCodePoint)];
+		return fill(minCodePoint, maxCodePoint);
 	}
 
 	return [expression.codePoint];
