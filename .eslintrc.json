@@ -9,5 +9,24 @@
 	],
 	"parserOptions": {
 		"ecmaVersion": 2018
+	},
+	"rules": {
+		"import/no-unresolved": [
+			"error",
+			{
+				"ignore": [
+					// Workaround for alexgorbatchev/eslint-import-resolver-typescript#17
+					"regexp-tree/ast"
+				]
+			}
+		]
+	},
+	"settings": {
+		"import/parsers": {
+			"@typescript-eslint/parser": [".ts"]
+		},
+		"import/resolver": {
+			"typescript": {}
+		}
 	}
 }
