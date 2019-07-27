@@ -36,7 +36,7 @@ function getMetaCharExpressions(
 	regExpFlags: string
 ): CharacterClass['expressions'] {
 	switch (metaChar.value) {
-		case '.':
+		case '.': {
 			const dotAllOptions = regExpFlags.includes('s') ? [optionsNewLine] : [];
 
 			return [
@@ -47,6 +47,7 @@ function getMetaCharExpressions(
 				optionUnderscore,
 				...dotAllOptions,
 			];
+		}
 		case '\\w':
 			return [...optionsAlpha, optionsDigit, optionUnderscore];
 		case '\\W':
@@ -73,10 +74,10 @@ function getMetaCharExpressions(
  * Convert meta character classes like "\d", "\W", and "." to their ranged character
  * set equivalents like "[0-9]" and "[ \t\r\n~`!@#$%^&*()=+<,>.?/[{}|:;"'\]\-\\]".
  */
-interface IMetaToCharClassTransform extends Handler {
+interface MetaToCharClassTransform extends Handler {
 	flags: string;
 }
-const metaToCharClassTransform: IMetaToCharClassTransform = {
+const metaToCharClassTransform: MetaToCharClassTransform = {
 	flags: '',
 
 	init(ast: AstRegExp) {
@@ -117,6 +118,7 @@ type Replace<ParentType extends AstClass> = (
 ) => void;
 type NodeReplacer = { [parentType in AstClass]?: Replace<parentType> };
 
+/* eslint no-param-reassign: ["error", { "ignorePropertyModificationsFor": ["parentNode"] }] */
 const replacer: NodeReplacer = {
 	Alternative: (parentNode, replacement, child) => {
 		const iChild = parentNode.expressions.indexOf(child);
@@ -128,7 +130,7 @@ const replacer: NodeReplacer = {
 	CharacterClass: (parentNode, replacement, child) => {
 		const iChild = parentNode.expressions.indexOf(child);
 		if (iChild > -1) {
-			parentNode.expressions.splice(iChild!, 1, ...replacement.expressions);
+			parentNode.expressions.splice(iChild, 1, ...replacement.expressions);
 		}
 	},
 

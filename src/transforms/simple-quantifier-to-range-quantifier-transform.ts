@@ -4,7 +4,7 @@ import * as Guards from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
-	throw new Error('Unexpected quantifier kind: ' + x);
+	throw new Error(`Unexpected quantifier kind: ${x}`);
 }
 
 function getNumOccurrences(quantifier: SimpleQuantifier): [number, number?] {

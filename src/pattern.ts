@@ -2,6 +2,7 @@ import { parse, transform } from 'regexp-tree';
 import Expander from './Expander';
 import Expansion from './Expansion';
 // Circular reference for spying/mocking in tests
+// eslint-disable-next-line import/no-self-import
 import { expand } from './pattern';
 import transforms from './transforms/index';
 

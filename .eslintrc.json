@@ -11,6 +11,13 @@
 		"ecmaVersion": 2018
 	},
 	"rules": {
+		"import/no-cycle": "off",
+		"import/no-extraneous-dependencies": [
+			"error",
+			{
+				"devDependencies": ["**/*.spec.{js,ts}", "**/jest.config.js"]
+			}
+		],
 		"import/no-unresolved": [
 			"error",
 			{
@@ -19,7 +26,20 @@
 					"regexp-tree/ast"
 				]
 			}
-		]
+		],
+		"import/prefer-default-export": "off",
+		"no-else-return": "off",
+		"no-plusplus": "off",
+		// This rule excludes too many escape sequences we need, like \p
+		"no-useless-escape": "off",
+		// Allow ForOfStatement, preserve the rest of Airbnb's restrictions
+		"no-restricted-syntax": [
+			"error",
+			"ForInStatement",
+			"LabeledStatement",
+			"WithStatement"
+		],
+		"@typescript-eslint/explicit-function-return-type": "off"
 	},
 	"settings": {
 		"import/parsers": {

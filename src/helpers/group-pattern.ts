@@ -5,7 +5,7 @@ import * as Guards from '../types/regexp-tree-guards';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
-	throw new Error('Unexpected backreference: ' + x);
+	throw new Error(`Unexpected backreference: ${x}`);
 }
 
 const namedGroups: { [name: string]: string } = {};

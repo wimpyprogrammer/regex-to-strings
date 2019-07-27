@@ -8,7 +8,7 @@ const alphaOffsetCharCode = 'a'.charCodeAt(0) - 1;
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
-	throw new Error('Unexpected char type: ' + x);
+	throw new Error(`Unexpected char type: ${x}`);
 }
 
 function expandCharByCodePoint(codePoint: number, flags: string) {

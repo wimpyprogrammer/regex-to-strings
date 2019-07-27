@@ -3,7 +3,7 @@ type IterableSource = (() => IterableIterator<string> | string[]) | string[];
 function toIterable(
 	getIterator: IterableSource
 ): () => IterableIterator<string> {
-	return function*() {
+	return function* beginIterating() {
 		yield* getIterator instanceof Function ? getIterator() : getIterator;
 	};
 }
@@ -29,7 +29,7 @@ export default class Expansion {
 	 */
 	public count: number;
 
-	constructor(getIterator: IterableSource, count: Expansion['count']) {
+	public constructor(getIterator: IterableSource, count: Expansion['count']) {
 		this.getIterator = toIterable(getIterator);
 		this.count = count;
 	}
