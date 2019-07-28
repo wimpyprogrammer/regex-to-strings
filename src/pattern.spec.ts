@@ -680,7 +680,7 @@ describe('expand', () => {
 		]);
 	});
 
-	it.only('expands multiple patterns with numbered backreferences concurrently', () => {
+	it('expands multiple patterns with numbered backreferences concurrently', () => {
 		const iterator1 = expand('(a|b) \\1').getIterator();
 		const iterator2 = expand('(y|z) \\1').getIterator();
 
@@ -1411,12 +1411,6 @@ describe('expand', () => {
 		it('does not recognize RegEx syntax: POSIX character equivalent', () => {
 			const result = expandAll('[[=e=]]');
 			expect(result).toEqual(['e]', '=]', '[]']);
-		});
-
-		it('does not recognize RegEx syntax: line break character \\R', () => {
-			const result = expandAll(/\R/);
-			expect(result.length).toEqual(1);
-			expect(result[0]).not.toContain('\n');
 		});
 
 		it('does not recognize RegEx syntax: grapheme \\X', () => {
