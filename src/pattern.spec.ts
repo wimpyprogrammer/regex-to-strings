@@ -680,6 +680,26 @@ describe('expand', () => {
 		]);
 	});
 
+	it.only('expands multiple patterns with numbered backreferences concurrently', () => {
+		const iterator1 = expand('(a|b) \\1').getIterator();
+		const iterator2 = expand('(y|z) \\1').getIterator();
+
+		expect(iterator1.next().value).toBe('a a');
+		expect(iterator2.next().value).toBe('y y');
+		expect(iterator1.next().value).toBe('b b');
+		expect(iterator2.next().value).toBe('z z');
+	});
+
+	it('expands multiple patterns with named backreferences concurrently', () => {
+		const iterator1 = expand('(?<foo>a|b) \\k<foo>').getIterator();
+		const iterator2 = expand('(?<foo>y|z) \\k<foo>').getIterator();
+
+		expect(iterator1.next().value).toBe('a a');
+		expect(iterator2.next().value).toBe('y y');
+		expect(iterator1.next().value).toBe('b b');
+		expect(iterator2.next().value).toBe('z z');
+	});
+
 	it('expands backreferences with numeric names', () => {
 		const result = expandAll('(?<20>a) \\k<20> (?<50>z) \\k<50>');
 		expect(result).toEqual(['a a z z']);
