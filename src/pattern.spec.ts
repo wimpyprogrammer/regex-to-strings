@@ -6,7 +6,7 @@ import * as randomSort from './sorts/fisher-yates-random';
 import * as chooseRandom from './sorts/number-random';
 import * as chooseRandomWeighted from './sorts/weighted-random';
 
-function measureAverageTime(fn: () => any, numTrials: number) {
+function measureAverageTime(fn: Function, numTrials: number) {
 	let totalTime = 0;
 
 	for (let i = 0; i < numTrials; i++) {
@@ -59,9 +59,9 @@ describe('count', () => {
 		[/ab?/, 2],
 		[/a{0,5}/, 6],
 		[/a*/, 101],
-		[/[ab]{3}/, Math.pow(2, 3)],
+		[/[ab]{3}/, 2 ** 3],
 		[/(a|b|c|d|e|f|g)/, 7],
-		[/aAa/i, Math.pow(2, 3)],
+		[/aAa/i, 2 ** 3],
 		[/[A-I]/, 9],
 		[/[^\W]/, 26 + 26 + 10 + 1], // upper and lower alphanumeric, and underscore
 		[/([ab]|(c|[d-e]){2,3})f(g?)/, 76],
@@ -109,7 +109,7 @@ describe('expand', () => {
 		expect(result).toEqual([]);
 
 		// Mirror this JavaScript behavior
-		const nativeRegex = new RegExp(null as any);
+		const nativeRegex = new RegExp((null as unknown) as string);
 		expect(nativeRegex.test('')).toBe(false);
 	});
 
@@ -120,7 +120,7 @@ describe('expand', () => {
 			expect(result).toEqual(['']);
 
 			// Mirror this JavaScript behavior
-			const nativeRegex = new RegExp(input as any);
+			const nativeRegex = new RegExp(input as string);
 			expect(nativeRegex.test('')).toBe(true);
 		}
 	);

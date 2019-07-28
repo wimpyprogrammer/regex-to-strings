@@ -194,7 +194,7 @@ declare module 'regexp-tree' {
 
 	export function optimize(
 		regexp: string | RegExp | AstRegExp,
-		transformsWhitelist?: Array<Optimizations>
+		transformsWhitelist?: Optimizations[]
 	): TransformResult;
 
 	export function parse(s: string | RegExp, options?: ParserOptions): AstRegExp;
@@ -214,7 +214,8 @@ declare module 'regexp-tree' {
 		replace<TNew extends AstClass>(
 			node: AsExpression<TNew>
 		): NodePath<TNew> | null;
-		update(nodeProps: Object): void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		update(nodeProps: Partial<this['node']>): void;
 		getPreviousSibling(): NodePath<AstClass> | null;
 		getNextSibling(): NodePath<AstClass> | null;
 		getChild(n?: number): NodePath<AstClass> | null;
@@ -229,7 +230,7 @@ declare module 'regexp-tree' {
 		init?: (ast: AstRegExp) => void;
 	};
 
-	type Handlers = Array<Handler> | Handler;
+	type Handlers = Handler[] | Handler;
 
 	export function transform(
 		s: string | RegExp | AstRegExp,

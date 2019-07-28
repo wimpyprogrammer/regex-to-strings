@@ -7,7 +7,7 @@ import { fill } from './utils';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
-	throw new Error('Unexpected quantifier: ' + x);
+	throw new Error(`Unexpected quantifier: ${x}`);
 }
 
 function getNumOccurrences(quantifier: Quantifier): [number, number] {
@@ -47,10 +47,8 @@ export function expandRepetition(this: Expander, node: Repetition): Expansion {
 		const expansionNTimes = new Array<Expansion>(numOccurrences).fill(
 			expansionOnce
 		);
-		const numPermutationsThisNumOccurrences = Math.pow(
-			expansionOnce.count,
-			numOccurrences
-		);
+		const numPermutationsThisNumOccurrences =
+			expansionOnce.count ** numOccurrences;
 
 		return new Expansion(
 			() => iteratePermutations(expansionNTimes),

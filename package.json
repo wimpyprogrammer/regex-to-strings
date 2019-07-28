@@ -23,8 +23,8 @@
     "build": "npm run clean && babel src -d lib --extensions '.js,.ts'",
     "clean": "rimraf lib/*",
     "format": "prettier --write 'src/**'",
-    "lint": "tsc -p ./tsconfig.release.json; tslint -p ./tsconfig.release.json",
-    "lint-tests": "tsc -p ./tsconfig.test.json; tslint -p ./tsconfig.test.json",
+    "lint": "tsc -p ./tsconfig.release.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.release.json",
+    "lint-tests": "tsc -p ./tsconfig.test.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.test.json",
     "precommit": "pretty-quick --staged",
     "test": "jest --coverage",
     "travisci": "npm run lint && npm run test && codecov"
@@ -38,7 +38,14 @@
     "@types/escape-string-regexp": "^1.0.0",
     "@types/jest": "^24.0.13",
     "@types/jest-when": "^2.4.1",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "codecov": "^3.3.0",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-import-resolver-typescript": "^1.1.1",
+    "eslint-plugin-import": "^2.18.2",
     "husky": "0.14.3",
     "jest": "^24.8.0",
     "jest-when": "^2.5.0",
@@ -46,7 +53,6 @@
     "pretty-quick": "1.7.0",
     "rimraf": "^2.6.2",
     "ts-jest": "^24.0.2",
-    "tslint": "^5.11.0",
     "typescript": "^3.4.5"
   },
   "dependencies": {

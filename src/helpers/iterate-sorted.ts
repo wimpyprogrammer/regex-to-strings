@@ -40,6 +40,7 @@ export function* iterateWeightedByCount(
  * @param expansions The expansions to combine in each permutation
  * @return An iterator that yields the permutations, ordered randomly
  */
+// eslint-disable-next-line consistent-return
 export function* iteratePermutations(
 	expansions: Expansion[]
 ): IterableIterator<string> {
@@ -67,7 +68,7 @@ export function* iteratePermutations(
 		numCompletedValuesThisIterator++;
 	}
 
-	const inProgressIterators: Array<IterableIterator<string>> = [];
+	const inProgressIterators: IterableIterator<string>[] = [];
 
 	while (numCompletedValuesThisIterator < thisExpansion.count) {
 		let iRandom = chooseRandomInRange(0, thisExpansion.count - 1);

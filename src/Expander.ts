@@ -10,24 +10,34 @@ import * as Guards from './types/regexp-tree-guards';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
-	throw new Error('Unexpected node type: ' + x);
+	throw new Error(`Unexpected node type: ${x}`);
 }
 
 class Expander {
-	protected expandAlternative = expandAlternative;
-	protected expandBackreference = expandBackreference;
-	protected expandChar = expandChar;
-	protected expandCharacterClass = expandCharacterClass;
-	protected expandDisjunction = expandDisjunction;
-	protected expandGroup = expandGroup;
-	protected expandRepetition = expandRepetition;
+	protected readonly expandAlternative = expandAlternative;
+
+	protected readonly expandBackreference = expandBackreference;
+
+	protected readonly expandChar = expandChar;
+
+	protected readonly expandCharacterClass = expandCharacterClass;
+
+	protected readonly expandDisjunction = expandDisjunction;
+
+	protected readonly expandGroup = expandGroup;
+
+	protected readonly expandRepetition = expandRepetition;
+
+	protected readonly flags: string;
 
 	/**
 	 * Create a generator for strings that match regular expression
 	 * patterns parsed by regexp-tree.
 	 * @param flags The regular expression modifier flags
 	 */
-	constructor(protected readonly flags: string) {}
+	public constructor(flags: string) {
+		this.flags = flags;
+	}
 
 	/**
 	 * Identify and expand an expression of any type.
