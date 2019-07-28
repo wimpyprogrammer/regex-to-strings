@@ -3,7 +3,7 @@ import Expander from '../Expander';
 import Expansion from '../Expansion';
 import sortRandom from '../sorts/fisher-yates-random';
 import * as Guards from '../types/regexp-tree-guards';
-import { fill } from './utils';
+import { fill } from '../helpers/utils';
 
 function getReferencedCodePoints(
 	expression: CharacterClass['expressions'][0]

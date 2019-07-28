@@ -1,11 +1,11 @@
 import { Expression } from 'regexp-tree/ast';
 import Expansion from './Expansion';
-import { expandAlternative } from './helpers/alternative-pattern';
-import { expandChar } from './helpers/char-pattern';
-import { expandCharacterClass } from './helpers/character-class-pattern';
-import { expandDisjunction } from './helpers/disjunction-pattern';
-import { expandBackreference, expandGroup } from './helpers/group-pattern';
-import { expandRepetition } from './helpers/repetition-pattern';
+import { expandAlternative } from './expanders/alternative-pattern';
+import { expandChar } from './expanders/char-pattern';
+import { expandCharacterClass } from './expanders/character-class-pattern';
+import { expandDisjunction } from './expanders/disjunction-pattern';
+import { expandBackreference, expandGroup } from './expanders/group-pattern';
+import { expandRepetition } from './expanders/repetition-pattern';
 import * as Guards from './types/regexp-tree-guards';
 
 /* istanbul ignore next */
