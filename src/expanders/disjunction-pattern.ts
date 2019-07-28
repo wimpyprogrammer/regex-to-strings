@@ -1,7 +1,7 @@
 import { Disjunction } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
-import { iterateWeightedByCount } from './iterate-sorted';
+import { iterateWeightedByCount } from '../helpers/iterate-sorted';
 
 /**
  * Expand an expression which represents one of two options, like "(a|b}"

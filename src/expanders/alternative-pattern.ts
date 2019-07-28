@@ -1,7 +1,7 @@
 import { Alternative, Expression } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
-import { iteratePermutations } from './iterate-sorted';
+import { iteratePermutations } from '../helpers/iterate-sorted';
 
 function traverseTree(this: Expander, tree: Expression[]): Expansion {
 	if (!tree.length) {
