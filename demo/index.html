@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="x-ua-compatible" content="ie=edge" />
+		<title>
+			Regex to Strings - Generate strings that satisfy a Regular Expression
+			pattern
+		</title>
+		<meta
+			name="description"
+			content="A tool to generate strings that satisfy a given Regular Expression pattern."
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.3.1/flatly/bootstrap.min.css"
+			integrity="sha256-0mhswpc4tUm8b+EHmWyk817AlGI+X5NmVsKbJkQ342c="
+			crossorigin="anonymous"
+		/>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+			<div class="container">
+				<a class="navbar-brand" href="javascript:void(0)">
+					RegEx Pattern Expander
+				</a>
+			</div>
+		</nav>
+
+		<div class="jumbotron">
+			<form class="container js-form">
+				<p class="lead">
+					Generate strings that satisfy a Regular Expression pattern.
+				</p>
+
+				<div class="form-group">
+					<label for="pattern">
+						The Regular Expression to expand to strings:
+					</label>
+					<textarea
+						required
+						id="pattern"
+						class="form-control js-pattern"
+					></textarea>
+				</div>
+
+				<div class="form-inline">
+					<div class="form-group">
+						<label for="delimiter">
+							Separate results by:
+						</label>
+						<select
+							id="delimiter"
+							class="form-control js-delimiter track-field"
+						>
+							<option value="&#10;" selected>Newline</option>
+							<option value=",">Comma</option>
+							<option value=" ">Space</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="max-results">
+							Maximum number of results:
+						</label>
+						<input
+							class="form-control js-max-results"
+							id="max-results"
+							required
+							type="number"
+							value="100"
+						/>
+					</div>
+				</div>
+
+				<div class="form-group submit-form-group">
+					<button
+						type="button"
+						class="btn btn-lg btn-primary js-generate track-generate"
+					>
+						Expand Regular Expression
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="container">
+			<section class="output">
+				<div class="form-group">
+					<label for="output">
+						Strings matched by your Regular Expression:
+					</label>
+					<textarea
+						readonly="readonly"
+						id="output"
+						class="form-control js-output"
+					></textarea>
+				</div>
+			</section>
+
+			<hr />
+
+			<footer>
+				<p class="float-left">
+					&copy;
+					<a href="http://www.wimpyprogrammer.com/">WimpyProgrammer.com</a> 2019
+				</p>
+				<p class="float-right">
+					<a href="https://github.com/wimpyprogrammer/regex-to-strings">
+						Fork me on GitHub
+					</a>
+					or
+					<a href="https://github.com/wimpyprogrammer/regex-to-strings/issues">
+						report an issue
+					</a>
+				</p>
+			</footer>
+		</div>
+
+		<script type="text/javascript" src="demo.js"></script>
+	</body>
+</html>

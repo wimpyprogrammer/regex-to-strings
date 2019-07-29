@@ -21,9 +21,11 @@
   },
   "scripts": {
     "build": "npm run clean && babel src -d lib --extensions '.js,.ts'",
+    "build-demo": "webpack --config demo/webpack.config.js",
     "clean": "rimraf lib/*",
     "format": "prettier --write 'src/**'",
     "lint": "tsc -p ./tsconfig.release.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.release.json",
+    "lint-demo": "tsc -p ./demo/tsconfig.json; eslint . --ext .js,.ts --parser-options=project:./demo/tsconfig.json",
     "lint-tests": "tsc -p ./tsconfig.test.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.test.json",
     "precommit": "pretty-quick --staged",
     "test": "jest --coverage",
@@ -54,7 +56,10 @@
     "pretty-quick": "1.7.0",
     "rimraf": "^2.6.2",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.4.5"
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.4.5",
+    "webpack": "^4.38.0",
+    "webpack-command": "^0.4.2"
   },
   "dependencies": {
     "escape-string-regexp": "^1.0.5",

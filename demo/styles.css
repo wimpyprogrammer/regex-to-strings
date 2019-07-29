@@ -1,0 +1,60 @@
+.jumbotron {
+	padding-bottom: 1em;
+	padding-top: 1em;
+}
+
+input:invalid,
+textarea:invalid,
+select:invalid {
+	border: 2px solid red;
+}
+
+#pattern {
+	height: 2.5em;
+}
+
+#max-results {
+	max-width: 8em;
+}
+
+label + select,
+label + input {
+	margin: 0 auto;
+}
+
+.form-inline {
+	flex-direction: column;
+}
+
+.form-group {
+	margin-top: 1em;
+}
+
+.submit-form-group {
+	text-align: center;
+	margin-top: 1em;
+}
+
+#output {
+	height: 20em;
+
+	border-width: 4px;
+	transition: border-color 0.6s ease-out;
+}
+
+@media (min-width: 576px) {
+	label + select,
+	label + input {
+		margin-left: 0.5em;
+	}
+}
+
+@media (min-width: 992px) {
+	.form-group:not(:first-of-type) {
+		margin-left: auto;
+	}
+
+	.form-inline {
+		flex-direction: row;
+	}
+}
