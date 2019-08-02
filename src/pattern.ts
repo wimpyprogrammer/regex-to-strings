@@ -1,10 +1,12 @@
-import { parse, transform } from 'regexp-tree';
+import { compatTranspile, parse, transform } from 'regexp-tree';
 import Expander from './Expander';
 import Expansion from './Expansion';
 // Circular reference for spying/mocking in tests
 // eslint-disable-next-line import/no-self-import
 import { expand } from './pattern';
 import transforms from './transforms/index';
+
+const regexAsStringPattern = /^\/.*[^\\]+\/[a-z]*$/i;
 
 /**
  * Calculate how many strings satisfy the regular expression pattern.
@@ -29,16 +31,24 @@ function unmockedExpand(pattern: string | RegExp): Expansion {
 		return Expansion.Blank;
 	}
 
-	let parsed;
+	let patternFormatted: string | RegExp;
 
 	if (pattern instanceof RegExp) {
-		const transformed = transform(pattern, transforms);
-		parsed = parse(transformed.toRegExp());
+		patternFormatted = pattern;
+	} else if (regexAsStringPattern.test(pattern.trim())) {
+		// The string looks like RegEx, e.g. "/abc/i"
+		patternFormatted = compatTranspile(pattern).toRegExp();
 	} else {
-		const transformed = transform(`/${pattern}/`, transforms);
-		parsed = parse(transformed.toString());
+		patternFormatted = `/${pattern}/`;
 	}
 
+	// Run custom RegEx mutations in /transforms
+	const transformed = transform(patternFormatted, transforms);
+
+	// Process the RegEx logic into a regexp-tree
+	const parsed = parse(transformed.toString());
+
+	// Create an expansion generator with regex-to-strings
 	const expander = new Expander(parsed.flags);
 	return expander.expandExpression(parsed.body);
 }

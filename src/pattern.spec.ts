@@ -125,7 +125,7 @@ describe('expand', () => {
 		}
 	);
 
-	it.each(['(', '[0-9', '*', '\\', '[z-a]'])(
+	it.each(['(', '[0-9', '*', '\\', '[z-a]', '/a', 'a/'])(
 		'throws on malformed pattern %p',
 		(input: string) => {
 			expect(() => expandAll(input)).toThrow();
@@ -141,6 +141,16 @@ describe('expand', () => {
 		const result = expandAll('abc|xyz');
 		expect(result).toEqual(['abc', 'xyz']);
 	});
+
+	it.each(['/[abcABC]/', '/[abc]/i', '/[a-c]/i', '/[a-cA-C]/'])(
+		'treats strings in the RegEx format as RegEx %p',
+		(input: string) => {
+			const result = expandAll(input);
+			const expectation = ['a', 'b', 'c', 'A', 'B', 'C'];
+			expect(result).toEqual(expect.arrayContaining(expectation));
+			expect(result).toHaveLength(6);
+		}
+	);
 
 	it('expands single-character groups', () => {
 		const result = expandAll('ba(r)');

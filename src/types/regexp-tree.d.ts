@@ -170,6 +170,13 @@ declare module 'regexp-tree' {
 		TransformResult,
 	} from 'regexp-tree/ast';
 
+	type Transforms = 'dotAll' | 'namedCapturingGroups' | 'xFlag';
+
+	export function compatTranspile(
+		regexp: string | RegExp | AstRegExp,
+		transformsWhitelist?: Transforms[]
+	): TransformResult;
+
 	interface ParserOptions {
 		captureLocations?: boolean;
 	}
