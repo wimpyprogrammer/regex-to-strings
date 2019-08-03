@@ -49,7 +49,7 @@ function onClickGenerate() {
 $submit.addEventListener('click', onClickGenerate);
 
 (() => {
-	const exampleInput = '\\d\\d\\d';
+	const exampleInput = String.raw`/^((https?|ftp|file):\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/`;
 	$input.value = exampleInput;
 
 	const results = generateStrings(exampleInput);
