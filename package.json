@@ -21,9 +21,10 @@
   },
   "scripts": {
     "build": "npm run clean && babel src -d lib --extensions '.js,.ts'",
-    "build-demo": "webpack --config demo/webpack.config.js",
+    "build-demo": "npm run clean-demo && webpack --config demo/webpack.config.js",
     "clean": "rimraf lib/*",
-    "format": "prettier --write 'src/**'",
+    "clean-demo": "rimraf demo/lib/*",
+    "format": "prettier --write '{src,demo/src}/**'",
     "lint": "tsc -p ./tsconfig.release.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.release.json",
     "lint-demo": "tsc -p ./demo/tsconfig.json; eslint . --ext .js,.ts --parser-options=project:./demo/tsconfig.json",
     "lint-tests": "tsc -p ./tsconfig.test.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.test.json",

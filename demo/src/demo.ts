@@ -1,4 +1,4 @@
-import { expandN } from '../src/pattern';
+import { expandN } from '../../src/pattern';
 
 function getElement<T extends Element>(selector: string) {
 	return document.querySelector(selector) as T;

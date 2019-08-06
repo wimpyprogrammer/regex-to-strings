@@ -1,4 +1,4 @@
 coverage/
-demo/demo.js
+demo/lib/
 node_modules/
 lib/

@@ -2,7 +2,7 @@
 const { resolve } = require('path');
 
 module.exports = {
-	entry: './demo/demo.ts',
+	entry: './demo/src/demo.ts',
 	mode: 'production',
 	module: {
 		rules: [
@@ -23,7 +23,7 @@ module.exports = {
 	},
 	output: {
 		filename: 'demo.js',
-		path: __dirname,
+		path: resolve(__dirname, './lib'),
 	},
 	resolve: {
 		extensions: ['.ts', '.js'],
