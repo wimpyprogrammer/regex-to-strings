@@ -41,10 +41,23 @@ label + input {
 }
 
 #output {
-	height: 20em;
+	border: 1px #2c3e50 dotted;
+	font-size: 1.1em;
+	height: 30em;
+	line-height: 1.6em;
+	padding: 0.5em;
+}
 
-	border-width: 4px;
-	transition: border-color 0.6s ease-out;
+#output.wrap-output {
+	white-space: pre-wrap;
+}
+
+#output > :nth-child(odd) {
+	color: #2c3e50;
+}
+
+#output > :nth-child(even) {
+	color: #18bc9c;
 }
 
 @media (min-width: 576px) {

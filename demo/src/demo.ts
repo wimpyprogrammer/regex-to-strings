@@ -25,7 +25,7 @@ const $inputErrorMessage = getElement<HTMLPreElement>(
 );
 const $delimiter = getElement<HTMLSelectElement>('.js-delimiter');
 const $numResults = getElement<HTMLInputElement>('.js-max-results');
-const $output = getElement<HTMLTextAreaElement>('.js-output');
+const $output = getElement<HTMLPreElement>('.js-output');
 const $submit = getElement<HTMLButtonElement>('.js-generate');
 
 function displayError(error: WorkerErrorMessage) {
@@ -47,19 +47,12 @@ function generateStrings(pattern: string) {
 	worker.postMessage(workerRequest);
 }
 
-let clearSuccessIndicatorHandle: number;
 function displayStrings(strings: string[]) {
 	const delimiter = $delimiter.options[$delimiter.selectedIndex].value;
-	$output.value = strings.join(delimiter);
-
-	// Temporarily style the output box as valid
-	$form.classList.add('is-valid');
-
-	clearTimeout(clearSuccessIndicatorHandle);
-	clearSuccessIndicatorHandle = setTimeout(
-		() => $output.classList.remove('is-valid'),
-		1000
-	);
+	$output.classList.toggle('wrap-output', delimiter !== '\n');
+	$output.innerHTML = strings
+		.map(string => `<span>${string}</span>`)
+		.join(delimiter);
 }
 
 worker.onmessage = (message: MessageEvent) => {
