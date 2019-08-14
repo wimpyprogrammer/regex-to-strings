@@ -7,6 +7,15 @@ module.exports = {
 	module: {
 		rules: [
 			{
+				test: /-worker\.ts$/,
+				use: [
+					{
+						loader: 'worker-loader',
+						options: { publicPath: 'lib/' },
+					},
+				],
+			},
+			{
 				exclude: /node_modules/,
 				test: /\.ts$/,
 				use: [

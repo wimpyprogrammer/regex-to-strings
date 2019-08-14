@@ -60,7 +60,8 @@
     "ts-loader": "^6.0.4",
     "typescript": "^3.4.5",
     "webpack": "^4.38.0",
-    "webpack-command": "^0.4.2"
+    "webpack-command": "^0.4.2",
+    "worker-loader": "^2.0.0"
   },
   "dependencies": {
     "escape-string-regexp": "^1.0.5",

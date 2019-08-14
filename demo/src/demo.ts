@@ -1,4 +1,15 @@
-import { expandN } from '../../src/pattern';
+// @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
+import DemoWorker from './demo-worker';
+
+import {
+	DemoWorkerResponse,
+	ExpandNRequest,
+	isExpandNError,
+	isExpandNResult,
+	WorkerErrorMessage,
+} from './demo-worker-messages';
+
+const worker: Worker = new DemoWorker();
 
 function getElement<T extends Element>(selector: string) {
 	return document.querySelector(selector) as T;
@@ -17,8 +28,8 @@ const $numResults = getElement<HTMLInputElement>('.js-max-results');
 const $output = getElement<HTMLTextAreaElement>('.js-output');
 const $submit = getElement<HTMLButtonElement>('.js-generate');
 
-function displayError(error: Error) {
-	$inputErrorMessage.textContent = error.message.trim();
+function displayError(error: WorkerErrorMessage) {
+	$inputErrorMessage.textContent = error.errorMessage.trim();
 	$inputErrorContainer.hidden = false;
 }
 
@@ -26,10 +37,14 @@ function hideError() {
 	$inputErrorContainer.hidden = true;
 }
 
-function generateStrings(pattern: string): string[] {
+function generateStrings(pattern: string) {
+	$submit.disabled = true;
+	hideError();
+
 	const numResults = Number($numResults.value);
-	const results = expandN(pattern, numResults);
-	return results;
+	const workerRequest = new ExpandNRequest(numResults, pattern);
+
+	worker.postMessage(workerRequest);
 }
 
 let clearSuccessIndicatorHandle: number;
@@ -47,19 +62,23 @@ function displayStrings(strings: string[]) {
 	);
 }
 
-function generateAndDisplayStrings(pattern: string): void {
-	let results: string[] = [];
-
-	try {
-		results = generateStrings(pattern);
-		hideError();
-	} catch (e) {
-		displayError(e);
-		throw e;
+worker.onmessage = (message: MessageEvent) => {
+	function assertNeverResponse(x: never): never {
+		throw new TypeError(`Unexpected message: ${x}`);
 	}
 
-	displayStrings(results);
-}
+	$submit.disabled = false;
+
+	const messageData: DemoWorkerResponse = message.data;
+
+	if (isExpandNResult(messageData)) {
+		displayStrings(messageData.expansions);
+	} else if (isExpandNError(messageData)) {
+		displayError(messageData);
+	} else {
+		assertNeverResponse(messageData);
+	}
+};
 
 function onClickGenerate() {
 	try {
@@ -71,7 +90,7 @@ function onClickGenerate() {
 	}
 
 	const pattern = $input.value;
-	generateAndDisplayStrings(pattern);
+	generateStrings(pattern);
 }
 
 $submit.addEventListener('click', onClickGenerate);
@@ -80,5 +99,5 @@ $submit.addEventListener('click', onClickGenerate);
 	const exampleInput = String.raw`/^((https?|ftp|file):\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/`;
 	$input.value = exampleInput;
 
-	generateAndDisplayStrings(exampleInput);
+	generateStrings(exampleInput);
 })();
