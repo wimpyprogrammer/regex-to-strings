@@ -52,6 +52,11 @@ label + input {
 	white-space: pre-wrap;
 }
 
+.is-waiting #output {
+	background: no-repeat center/5em
+		url('https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.19.3/images/loader-large.gif');
+}
+
 #output > :nth-child(odd) {
 	color: #2c3e50;
 }

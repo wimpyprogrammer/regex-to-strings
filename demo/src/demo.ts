@@ -15,6 +15,7 @@ function getElement<T extends Element>(selector: string) {
 	return document.querySelector(selector) as T;
 }
 
+const $body = getElement<HTMLBodyElement>('body');
 const $form = getElement<HTMLFormElement>('.js-form');
 const $input = getElement<HTMLTextAreaElement>('.js-pattern');
 const $inputErrorContainer = getElement<HTMLDivElement>(
@@ -37,9 +38,20 @@ function hideError() {
 	$inputErrorContainer.hidden = true;
 }
 
-function generateStrings(pattern: string) {
+function showWaitingState() {
+	$body.classList.add('is-waiting');
+	$output.innerHTML = '';
 	$submit.disabled = true;
+}
+
+function hideWaitingState() {
+	$body.classList.remove('is-waiting');
+	$submit.disabled = false;
+}
+
+function generateStrings(pattern: string) {
 	hideError();
+	showWaitingState();
 
 	const numResults = Number($numResults.value);
 	const workerRequest = new ExpandNRequest(numResults, pattern);
@@ -60,7 +72,7 @@ worker.onmessage = (message: MessageEvent) => {
 		throw new TypeError(`Unexpected message: ${x}`);
 	}
 
-	$submit.disabled = false;
+	hideWaitingState();
 
 	const messageData: DemoWorkerResponse = message.data;
 
