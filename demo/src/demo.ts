@@ -1,9 +1,9 @@
 // @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
 import DemoWorker from './demo-worker';
-
 import {
 	DemoWorkerResponse,
 	ExpandNRequest,
+	isCountResult,
 	isExpandNError,
 	isExpandNResult,
 	WorkerErrorMessage,
@@ -27,6 +27,8 @@ const $inputErrorMessage = getElement<HTMLPreElement>(
 const $delimiter = getElement<HTMLSelectElement>('.js-delimiter');
 const $numResults = getElement<HTMLInputElement>('.js-max-results');
 const $output = getElement<HTMLPreElement>('.js-output');
+const $outputCount = getElement<HTMLSpanElement>('.js-output-count');
+const $totalCount = getElement<HTMLSpanElement>('.js-total-count');
 const $submit = getElement<HTMLButtonElement>('.js-generate');
 
 function displayError(error: WorkerErrorMessage) {
@@ -42,6 +44,8 @@ function showWaitingState() {
 	$body.classList.add('is-waiting');
 	$output.innerHTML = '';
 	$submit.disabled = true;
+	$outputCount.innerText = '...';
+	$totalCount.innerText = '...';
 }
 
 function hideWaitingState() {
@@ -65,6 +69,7 @@ function displayStrings(strings: string[]) {
 	$output.innerHTML = strings
 		.map(string => `<span>${string}</span>`)
 		.join(delimiter);
+	$outputCount.innerText = strings.length.toLocaleString();
 }
 
 worker.onmessage = (message: MessageEvent) => {
@@ -72,13 +77,19 @@ worker.onmessage = (message: MessageEvent) => {
 		throw new TypeError(`Unexpected message: ${x}`);
 	}
 
-	hideWaitingState();
-
 	const messageData: DemoWorkerResponse = message.data;
 
 	if (isExpandNResult(messageData)) {
+		hideWaitingState();
 		displayStrings(messageData.expansions);
+	} else if (isCountResult(messageData)) {
+		const { totalNum } = messageData;
+		const isCompact = totalNum < 1e30 || totalNum === Infinity;
+		$totalCount.innerText = isCompact
+			? totalNum.toLocaleString()
+			: totalNum.toExponential();
 	} else if (isExpandNError(messageData)) {
+		hideWaitingState();
 		displayError(messageData);
 	} else {
 		assertNeverResponse(messageData);

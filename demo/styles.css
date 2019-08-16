@@ -72,6 +72,16 @@ label + input {
 	}
 }
 
+@media (min-width: 768px) {
+	.count {
+		float: right;
+	}
+
+	.count + * {
+		clear: both;
+	}
+}
+
 @media (min-width: 992px) {
 	.form-group:not(:first-of-type) {
 		margin-left: auto;
