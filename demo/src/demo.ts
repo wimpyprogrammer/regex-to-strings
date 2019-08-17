@@ -4,9 +4,7 @@ import {
 	DemoWorkerResponse,
 	ExpandNRequest,
 	isCountResult,
-	isExpandNError,
 	isExpandNResult,
-	WorkerErrorMessage,
 } from './demo-worker-messages';
 
 const worker: Worker = new DemoWorker();
@@ -31,8 +29,8 @@ const $outputCount = getElement<HTMLSpanElement>('.js-output-count');
 const $totalCount = getElement<HTMLSpanElement>('.js-total-count');
 const $submit = getElement<HTMLButtonElement>('.js-generate');
 
-function displayError(error: WorkerErrorMessage) {
-	$inputErrorMessage.textContent = error.errorMessage.trim();
+function displayError(errorMessage: string) {
+	$inputErrorMessage.textContent = errorMessage.trim();
 	$inputErrorContainer.hidden = false;
 }
 
@@ -88,12 +86,14 @@ worker.onmessage = (message: MessageEvent) => {
 		$totalCount.innerText = isCompact
 			? totalNum.toLocaleString()
 			: totalNum.toExponential();
-	} else if (isExpandNError(messageData)) {
-		hideWaitingState();
-		displayError(messageData);
 	} else {
 		assertNeverResponse(messageData);
 	}
+};
+
+worker.onerror = (error: ErrorEvent) => {
+	hideWaitingState();
+	displayError(error.message);
 };
 
 function onClickGenerate() {

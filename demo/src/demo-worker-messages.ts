@@ -5,12 +5,6 @@ interface WorkerMessage {
 	readonly kind: string;
 }
 
-export abstract class WorkerErrorMessage implements WorkerMessage {
-	public abstract readonly kind: string;
-
-	public constructor(public readonly errorMessage: string) {}
-}
-
 // Requests
 
 export class ExpandNRequest implements WorkerMessage {
@@ -40,11 +34,7 @@ export class ExpandNResult implements WorkerMessage {
 	public constructor(public readonly expansions: string[]) {}
 }
 
-export class ExpandNError extends WorkerErrorMessage {
-	public readonly kind: string = 'ExpandNError';
-}
-
-export type DemoWorkerResponse = CountResult | ExpandNResult | ExpandNError;
+export type DemoWorkerResponse = CountResult | ExpandNResult;
 
 // Type Guards
 
@@ -58,8 +48,4 @@ export function isCountResult(msg: WorkerMessage): msg is CountResult {
 
 export function isExpandNResult(msg: WorkerMessage): msg is ExpandNResult {
 	return msg.kind === 'ExpandNResult';
-}
-
-export function isExpandNError(msg: WorkerMessage): msg is ExpandNError {
-	return msg.kind === 'ExpandNError';
 }

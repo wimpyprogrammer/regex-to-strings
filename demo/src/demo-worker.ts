@@ -3,7 +3,6 @@ import {
 	DemoWorkerRequest,
 	DemoWorkerResponse,
 	ExpandNResult,
-	ExpandNError,
 	isExpandNRequest,
 } from './demo-worker-messages';
 import { expand } from '../../src/pattern';
@@ -36,17 +35,12 @@ function* processRequest(
 	const messageData: DemoWorkerRequest = message.data;
 
 	if (isExpandNRequest(messageData)) {
-		try {
-			const { numResults, pattern } = messageData;
-			const { count, getIterator } = expand(pattern);
-			yield new CountResult(count);
+		const { numResults, pattern } = messageData;
+		const { count, getIterator } = expand(pattern);
+		yield new CountResult(count);
 
-			const expansions = takeNIterations(getIterator(), numResults);
-			return yield new ExpandNResult(expansions);
-		} catch (e) {
-			console.error(e); // eslint-disable-line no-console
-			return yield new ExpandNError(e.message);
-		}
+		const expansions = takeNIterations(getIterator(), numResults);
+		return yield new ExpandNResult(expansions);
 	}
 
 	return assertNeverRequest(messageData);
