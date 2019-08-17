@@ -40,6 +40,11 @@ label + input {
 	margin-top: 1em;
 }
 
+span[title] {
+	border-bottom: 1px dotted gray;
+	cursor: help;
+}
+
 #output {
 	border: 1px #2c3e50 dotted;
 	font-size: 1.1em;
