@@ -2,8 +2,8 @@ import {
 	CountResult,
 	DemoWorkerRequest,
 	DemoWorkerResponse,
-	ExpandNResult,
-	isExpandNRequest,
+	ExpandResult,
+	isExpandRequest,
 } from './demo-worker-messages';
 import { expand } from '../../src/pattern';
 
@@ -34,13 +34,13 @@ function* processRequest(
 ): IterableIterator<DemoWorkerResponse> {
 	const messageData: DemoWorkerRequest = message.data;
 
-	if (isExpandNRequest(messageData)) {
+	if (isExpandRequest(messageData)) {
 		const { numResults, pattern } = messageData;
 		const { count, getIterator } = expand(pattern);
 		yield new CountResult(count);
 
 		const expansions = takeNIterations(getIterator(), numResults);
-		return yield new ExpandNResult(expansions);
+		return yield new ExpandResult(expansions);
 	}
 
 	return assertNeverRequest(messageData);

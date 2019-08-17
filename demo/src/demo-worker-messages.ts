@@ -7,8 +7,8 @@ interface WorkerMessage {
 
 // Requests
 
-export class ExpandNRequest implements WorkerMessage {
-	public readonly kind: string = 'ExpandNRequest';
+export class ExpandRequest implements WorkerMessage {
+	public readonly kind: string = 'ExpandRequest';
 
 	public constructor(
 		public numResults: number,
@@ -16,7 +16,7 @@ export class ExpandNRequest implements WorkerMessage {
 	) {}
 }
 
-export type DemoWorkerRequest = ExpandNRequest;
+export type DemoWorkerRequest = ExpandRequest;
 
 // Responses
 
@@ -28,24 +28,24 @@ export class CountResult implements WorkerMessage {
 	) {}
 }
 
-export class ExpandNResult implements WorkerMessage {
-	public readonly kind: string = 'ExpandNResult';
+export class ExpandResult implements WorkerMessage {
+	public readonly kind: string = 'ExpandResult';
 
 	public constructor(public readonly expansions: string[]) {}
 }
 
-export type DemoWorkerResponse = CountResult | ExpandNResult;
+export type DemoWorkerResponse = CountResult | ExpandResult;
 
 // Type Guards
 
-export function isExpandNRequest(msg: WorkerMessage): msg is ExpandNRequest {
-	return msg.kind === 'ExpandNRequest';
+export function isExpandRequest(msg: WorkerMessage): msg is ExpandRequest {
+	return msg.kind === 'ExpandRequest';
 }
 
 export function isCountResult(msg: WorkerMessage): msg is CountResult {
 	return msg.kind === 'CountResult';
 }
 
-export function isExpandNResult(msg: WorkerMessage): msg is ExpandNResult {
-	return msg.kind === 'ExpandNResult';
+export function isExpandResult(msg: WorkerMessage): msg is ExpandResult {
+	return msg.kind === 'ExpandResult';
 }

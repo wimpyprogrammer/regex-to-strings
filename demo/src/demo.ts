@@ -2,9 +2,9 @@
 import DemoWorker from './demo-worker';
 import {
 	DemoWorkerResponse,
-	ExpandNRequest,
+	ExpandRequest,
 	isCountResult,
-	isExpandNResult,
+	isExpandResult,
 } from './demo-worker-messages';
 
 const worker: Worker = new DemoWorker();
@@ -56,7 +56,7 @@ function generateStrings(pattern: string) {
 	showWaitingState();
 
 	const numResults = Number($numResults.value);
-	const workerRequest = new ExpandNRequest(numResults, pattern);
+	const workerRequest = new ExpandRequest(numResults, pattern);
 
 	worker.postMessage(workerRequest);
 }
@@ -77,7 +77,7 @@ worker.onmessage = (message: MessageEvent) => {
 
 	const messageData: DemoWorkerResponse = message.data;
 
-	if (isExpandNResult(messageData)) {
+	if (isExpandResult(messageData)) {
 		hideWaitingState();
 		displayStrings(messageData.expansions);
 	} else if (isCountResult(messageData)) {
