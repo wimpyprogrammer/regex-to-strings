@@ -1,3 +1,5 @@
+/* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["worker"] }] */
+
 import { autoExpandTextarea } from './auto-expand-field';
 // @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
 import DemoWorker from './demo-worker';
@@ -8,7 +10,7 @@ import {
 	isExpandResult,
 } from './demo-worker-messages';
 
-const worker: Worker = new DemoWorker();
+let worker: Worker;
 
 function getElement<T extends Element>(selector: string) {
 	return document.querySelector(selector) as T;
@@ -29,6 +31,7 @@ const $output = getElement<HTMLPreElement>('.js-output');
 const $outputCount = getElement<HTMLSpanElement>('.js-output-count');
 const $totalCount = getElement<HTMLSpanElement>('.js-total-count');
 const $submit = getElement<HTMLButtonElement>('.js-generate');
+const $cancel = getElement<HTMLButtonElement>('.js-cancel');
 
 function displayError(errorMessage: string) {
 	$inputErrorMessage.textContent = errorMessage.trim();
@@ -43,6 +46,7 @@ function showWaitingState() {
 	$body.classList.add('is-waiting');
 	$output.innerHTML = '';
 	$submit.disabled = true;
+	$cancel.disabled = false;
 	$outputCount.innerText = '...';
 	$totalCount.innerText = '...';
 }
@@ -50,6 +54,7 @@ function showWaitingState() {
 function hideWaitingState() {
 	$body.classList.remove('is-waiting');
 	$submit.disabled = false;
+	$cancel.disabled = true;
 }
 
 function generateStrings(pattern: string) {
@@ -71,7 +76,7 @@ function displayStrings(strings: string[]) {
 	$outputCount.innerText = strings.length.toLocaleString();
 }
 
-worker.onmessage = (message: MessageEvent) => {
+function onWorkerMessageReceived(message: MessageEvent) {
 	function assertNeverResponse(x: never): never {
 		throw new TypeError(`Unexpected message: ${x}`);
 	}
@@ -90,12 +95,18 @@ worker.onmessage = (message: MessageEvent) => {
 	} else {
 		assertNeverResponse(messageData);
 	}
-};
+}
 
-worker.onerror = (error: ErrorEvent) => {
+function onWorkerError(error: ErrorEvent) {
 	hideWaitingState();
 	displayError(error.message);
-};
+}
+
+function initializeNewWorker() {
+	worker = new DemoWorker();
+	worker.onmessage = onWorkerMessageReceived;
+	worker.onerror = onWorkerError;
+}
 
 function onClickGenerate() {
 	try {
@@ -111,6 +122,16 @@ function onClickGenerate() {
 }
 
 $submit.addEventListener('click', onClickGenerate);
+
+function onClickCancel() {
+	worker.terminate();
+	initializeNewWorker();
+	hideWaitingState();
+}
+
+$cancel.addEventListener('click', onClickCancel);
+
+initializeNewWorker();
 
 autoExpandTextarea($input);
 
