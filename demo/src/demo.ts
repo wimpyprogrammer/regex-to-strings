@@ -1,3 +1,4 @@
+import { autoExpandTextarea } from './auto-expand-field';
 // @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
 import DemoWorker from './demo-worker';
 import {
@@ -110,6 +111,8 @@ function onClickGenerate() {
 }
 
 $submit.addEventListener('click', onClickGenerate);
+
+autoExpandTextarea($input);
 
 (() => {
 	const exampleInput = String.raw`/^((https?|ftp|file):\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/`;

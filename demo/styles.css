@@ -9,8 +9,10 @@ select:invalid {
 	border: 2px solid red;
 }
 
-#pattern {
-	height: 2.5em;
+.automaticHeight {
+	box-sizing: padding-box;
+	overflow: hidden;
+	resize: none;
 }
 
 .alert pre {
