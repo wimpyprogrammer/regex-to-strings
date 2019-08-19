@@ -6,7 +6,8 @@ import Expansion from './Expansion';
 import { expand } from './pattern';
 import transforms from './transforms/index';
 
-const regexAsStringPattern = /^\/.*[^\\]+\/[a-z]*$/i;
+// From https://triin.net/2011/10/19/Meta_Regular_Expression
+const regexAsStringPattern = /^\/([^/\[\\]|\\.|\[([^\]\\]|\\.)*\])*\/[a-z]*$/i;
 
 /**
  * Calculate how many strings satisfy the regular expression pattern.
