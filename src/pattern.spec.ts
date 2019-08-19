@@ -34,6 +34,16 @@ describe('count', () => {
 		expect(result).toEqual(3);
 	});
 
+	it('normalizes pattern with toRegExp()', () => {
+		when(jest.spyOn(patternLib, 'toRegExp'))
+			.calledWith('/test/')
+			.mockReturnValue('/[123]/');
+
+		const result = count('/test/');
+
+		expect(result).toEqual(3);
+	});
+
 	it('does not sort to calculate count', () => {
 		const sortFn = jest.spyOn(randomSort, 'default');
 
@@ -104,6 +114,16 @@ describe('expand', () => {
 
 	afterEach(() => jest.restoreAllMocks());
 
+	it('normalizes pattern with toRegExp()', () => {
+		when(jest.spyOn(patternLib, 'toRegExp'))
+			.calledWith('/test/')
+			.mockReturnValue('/foo/');
+
+		const result = expand('/test/');
+
+		expect([...result.getIterator()]).toEqual(['foo']);
+	});
+
 	it('returns an empty list for null', () => {
 		const result = expandAll((null as unknown) as string);
 		expect(result).toEqual([]);
@@ -141,16 +161,6 @@ describe('expand', () => {
 		const result = expandAll('abc|xyz');
 		expect(result).toEqual(['abc', 'xyz']);
 	});
-
-	it.each(['/[abcABC]/', '/[abc]/i', '/[a-c]/i', '/[a-cA-C]/'])(
-		'treats strings in the RegEx format as RegEx %p',
-		(input: string) => {
-			const result = expandAll(input);
-			const expectation = ['a', 'b', 'c', 'A', 'B', 'C'];
-			expect(result).toEqual(expect.arrayContaining(expectation));
-			expect(result).toHaveLength(6);
-		}
-	);
 
 	it('expands single-character groups', () => {
 		const result = expandAll('ba(r)');
@@ -1526,6 +1536,16 @@ describe('expandN', () => {
 		expect(result).toEqual(['1', '2', '3']);
 	});
 
+	it('normalizes pattern with toRegExp()', () => {
+		when(jest.spyOn(patternLib, 'toRegExp'))
+			.calledWith('/test/')
+			.mockReturnValue('/foo/');
+
+		const result = expandN('/test/', 10);
+
+		expect(result).toEqual(['foo']);
+	});
+
 	it('returns at most the specified number of expansions', () => {
 		const result = expandN(/\d\d\d\d\d/, 10);
 		expect(result).toHaveLength(10);
@@ -1558,6 +1578,16 @@ describe('expandAll', () => {
 		expect(result).toEqual(['7', '8', '9']);
 	});
 
+	it('normalizes pattern with toRegExp()', () => {
+		when(jest.spyOn(patternLib, 'toRegExp'))
+			.calledWith('/test/')
+			.mockReturnValue('/foo/');
+
+		const result = expandAll('/test/');
+
+		expect(result).toEqual(['foo']);
+	});
+
 	it('returns all expansions', () => {
 		const result = expandAll(/\d\d\d\d\d/);
 		expect(result).toHaveLength(100000);
@@ -1567,5 +1597,70 @@ describe('expandAll', () => {
 		const trial = () => expandAll(/([ab]|(c|[d-e]){2,3})(\w?) \1/);
 		const averageTime = measureAverageTime(trial, 5);
 		expect(averageTime).toBeLessThanOrEqual(1000);
+	});
+});
+
+describe('toRegExp', () => {
+	const { toRegExp } = patternLib;
+
+	it('preserves a RegExp pattern as-is', () => {
+		const pattern = /[123]/gim;
+		const result = toRegExp(pattern);
+		expect(result).toBe(pattern);
+	});
+
+	it('converts RegEx-like string pattern to RegExp', () => {
+		const result = toRegExp('/[123]/');
+		expect(result).toStrictEqual(/[123]/);
+	});
+
+	it('converts RegEx-like string pattern with flags to RegExp', () => {
+		const result = toRegExp('/[123]/igm');
+		expect(result).toStrictEqual(/[123]/gim);
+	});
+
+	it.each([
+		'abc',
+		'[abc]',
+		'/abc',
+		'abc/',
+		'abc/i',
+		'a/bc/',
+		'a/bc/i',
+		'\\/abc/i',
+		'/abc\\/i',
+		'/abc/i/',
+	])(
+		'converts non-RegEx-like string pattern %p to RegEx-like string',
+		(input: string) => {
+			const result = toRegExp(input);
+			expect(result).toBe(`/${input}/`);
+		}
+	);
+
+	it('converts non-RegEx-like string pattern to RegEx-like string', () => {
+		const result = toRegExp('[123]');
+		expect(result).toBe('/[123]/');
+	});
+
+	it('applies and drops the "s" flag for compatibility with older RegEx engines', () => {
+		const result = toRegExp('/./s');
+		expect(result).toStrictEqual(/[\0-\uFFFF]/);
+	});
+
+	it('transforms named groups for compatibility with older RegEx engines', () => {
+		const result = toRegExp('/(?<name>a)\\k<name>/');
+		expect(result).toStrictEqual(/(a)\1/);
+	});
+
+	it('drops the "x" flag for compatibility with older RegEx engines', () => {
+		const result = toRegExp('/./x');
+		expect(result).toStrictEqual(/./);
+	});
+
+	it('is performant', () => {
+		const trial = () => toRegExp('/[123]/igm');
+		const averageTime = measureAverageTime(trial, 5);
+		expect(averageTime).toBeLessThanOrEqual(3);
 	});
 });
