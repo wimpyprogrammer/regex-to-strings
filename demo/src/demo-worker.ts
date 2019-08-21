@@ -1,11 +1,13 @@
+import { optimize } from 'regexp-tree';
 import {
 	CountResult,
 	DemoWorkerRequest,
 	DemoWorkerResponse,
 	ExpandResult,
 	isExpandRequest,
+	OptimizeResult,
 } from './demo-worker-messages';
-import { expand } from '../../src/pattern';
+import { expand, toRegExp } from '../../src/pattern';
 
 function assertNeverRequest(x: never): never {
 	throw new TypeError(`Unexpected message: ${x}`);
@@ -36,6 +38,10 @@ function* processRequest(
 
 	if (isExpandRequest(messageData)) {
 		const { numResults, pattern } = messageData;
+
+		const patternOptimized = optimize(toRegExp(pattern));
+		yield new OptimizeResult(patternOptimized.toString());
+
 		const { count, getIterator } = expand(pattern);
 		yield new CountResult(count);
 

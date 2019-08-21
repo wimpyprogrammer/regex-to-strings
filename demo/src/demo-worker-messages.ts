@@ -34,7 +34,13 @@ export class ExpandResult implements WorkerMessage {
 	public constructor(public readonly expansions: string[]) {}
 }
 
-export type DemoWorkerResponse = CountResult | ExpandResult;
+export class OptimizeResult implements WorkerMessage {
+	public readonly kind: string = 'OptimizeResult';
+
+	public constructor(public readonly optimizedPattern: string) {}
+}
+
+export type DemoWorkerResponse = CountResult | ExpandResult | OptimizeResult;
 
 // Type Guards
 
@@ -48,4 +54,8 @@ export function isCountResult(msg: WorkerMessage): msg is CountResult {
 
 export function isExpandResult(msg: WorkerMessage): msg is ExpandResult {
 	return msg.kind === 'ExpandResult';
+}
+
+export function isOptimizeResult(msg: WorkerMessage): msg is OptimizeResult {
+	return msg.kind === 'OptimizeResult';
 }

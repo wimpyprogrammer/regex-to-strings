@@ -4,6 +4,7 @@ import { autoExpandTextarea } from './auto-expand-field';
 // @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
 import DemoWorker from './demo-worker';
 import {
+	isOptimizeResult,
 	DemoWorkerResponse,
 	ExpandRequest,
 	isCountResult,
@@ -30,6 +31,10 @@ const $numResults = getElement<HTMLInputElement>('.js-max-results');
 const $output = getElement<HTMLPreElement>('.js-output');
 const $outputCount = getElement<HTMLSpanElement>('.js-output-count');
 const $totalCount = getElement<HTMLSpanElement>('.js-total-count');
+const $outputOptimized = getElement<HTMLDivElement>('.js-output-optimized');
+const $outputOptimizedContainer = getElement<HTMLDivElement>(
+	'.js-output-optimized-container'
+);
 const $submit = getElement<HTMLButtonElement>('.js-generate');
 const $cancel = getElement<HTMLButtonElement>('.js-cancel');
 
@@ -45,6 +50,7 @@ function hideError() {
 function showWaitingState() {
 	$body.classList.add('is-waiting');
 	$output.innerHTML = '';
+	$outputOptimizedContainer.hidden = true;
 	$submit.disabled = true;
 	$cancel.disabled = false;
 	$outputCount.innerText = '...';
@@ -92,6 +98,10 @@ function onWorkerMessageReceived(message: MessageEvent) {
 		$totalCount.innerText = isCompact
 			? totalNum.toLocaleString()
 			: totalNum.toExponential();
+	} else if (isOptimizeResult(messageData)) {
+		const { optimizedPattern } = messageData;
+		$outputOptimized.textContent = optimizedPattern;
+		$outputOptimizedContainer.hidden = false;
 	} else {
 		assertNeverResponse(messageData);
 	}
@@ -136,7 +146,7 @@ initializeNewWorker();
 autoExpandTextarea($input);
 
 (() => {
-	const exampleInput = String.raw`/^((https?|ftp|file):\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/`;
+	const exampleInput = String.raw`/^((https?|ftp|file):\/\/)?([0-9a-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/`;
 	$input.value = exampleInput;
 
 	generateStrings(exampleInput);
