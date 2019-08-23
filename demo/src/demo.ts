@@ -11,6 +11,8 @@ import {
 	isExpandResult,
 } from './demo-worker-messages';
 
+import '../styles.scss';
+
 let worker: Worker;
 
 function getElement<T extends Element>(selector: string) {
