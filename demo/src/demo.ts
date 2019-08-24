@@ -154,6 +154,15 @@ function onClickCancel() {
 
 $cancel.addEventListener('click', onClickCancel);
 
+function onInputKeydown(event: KeyboardEvent): boolean {
+	if (event.key !== 'Enter' || event.shiftKey) return true;
+	$submit.click();
+	event.preventDefault();
+	return false;
+}
+
+$input.addEventListener('keydown', onInputKeydown);
+
 checkForBrowserCompatibility();
 
 initializeNewWorker();
