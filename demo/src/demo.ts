@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["worker"] }] */
 
 import { autoExpandTextarea } from './auto-expand-field';
+import { colorizeRegex } from './colorize-regex';
 // @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
 import DemoWorker from './demo-worker';
 import {
@@ -103,6 +104,7 @@ function onWorkerMessageReceived(message: MessageEvent) {
 	} else if (isOptimizeResult(messageData)) {
 		const { optimizedPattern } = messageData;
 		$outputOptimized.textContent = optimizedPattern;
+		colorizeRegex($outputOptimized);
 		$outputOptimizedContainer.hidden = false;
 	} else {
 		assertNeverResponse(messageData);

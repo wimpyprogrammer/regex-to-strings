@@ -1,0 +1,68 @@
+@import '_variables';
+
+.regex {
+	/* metasequence */
+	b {
+		background: lighten($color: $cyan, $amount: 30);
+	}
+
+	/* char class */
+	i {
+		background: lighten($color: $yellow, $amount: 25);
+	}
+
+	/* char class: metasequence */
+	i b {
+		background: lighten($color: $cyan, $amount: 25);
+	}
+
+	/* char class: range-hyphen */
+	i u {
+		color: $dark;
+		font-weight: bold;
+	}
+
+	/* groups */
+	b[class] {
+		background: $white;
+
+		/* depth 1 */
+		&.g1 {
+			color: $indigo;
+		}
+
+		/* depth 2 */
+		&.g2 {
+			color: $pink;
+		}
+
+		/* depth 3 */
+		&.g3 {
+			color: $cyan;
+		}
+
+		/* depth 4 */
+		&.g4 {
+			color: $teal;
+		}
+
+		/* depth 5 */
+		&.g5 {
+			color: $orange;
+		}
+	}
+
+	/* error */
+	b.err {
+		background: $danger;
+		color: $white;
+	}
+
+	b,
+	i,
+	u {
+		font-weight: normal;
+		font-style: normal;
+		text-decoration: none;
+	}
+}

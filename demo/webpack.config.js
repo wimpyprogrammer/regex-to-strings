@@ -4,6 +4,9 @@ const { resolve } = require('path');
 module.exports = {
 	entry: './demo/src/demo.ts',
 	mode: 'production',
+	externals: {
+		RegexColorizer: 'RegexColorizer',
+	},
 	module: {
 		rules: [
 			{
