@@ -8,7 +8,7 @@
 input:invalid,
 textarea:invalid,
 select:invalid {
-	border: 2px solid red;
+	border: 2px solid $danger;
 }
 
 .automaticHeight {
@@ -59,7 +59,7 @@ label + input {
 }
 
 span[title] {
-	border-bottom: 1px dotted gray;
+	border-bottom: 1px dotted $gray;
 	cursor: help;
 }
 
