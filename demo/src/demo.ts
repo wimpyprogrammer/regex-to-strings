@@ -66,6 +66,15 @@ function hideWaitingState() {
 	$cancel.disabled = true;
 }
 
+function checkForBrowserCompatibility() {
+	if (window.Worker) return;
+
+	displayError(
+		'This page uses Web Workers, which your browser does not support.  Please try a different browser.'
+	);
+	$submit.disabled = true;
+}
+
 function generateStrings(pattern: string) {
 	hideError();
 	showWaitingState();
@@ -144,6 +153,8 @@ function onClickCancel() {
 }
 
 $cancel.addEventListener('click', onClickCancel);
+
+checkForBrowserCompatibility();
 
 initializeNewWorker();
 
