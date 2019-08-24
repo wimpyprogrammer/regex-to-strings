@@ -1,3 +1,5 @@
+@import '_variables';
+
 .jumbotron {
 	padding-bottom: 1em;
 	padding-top: 1em;
@@ -27,14 +29,28 @@ select:invalid {
 label + select,
 label + input {
 	margin: 0 auto;
+
+	@media (min-width: $breakpoint-sm) {
+		margin-left: 0.5em;
+	}
 }
 
 .form-inline {
 	flex-direction: column;
+
+	@media (min-width: $breakpoint-lg) {
+		flex-direction: row;
+	}
 }
 
 .form-group {
 	margin-top: 1em;
+
+	@media (min-width: $breakpoint-lg) {
+		&:not(:first-of-type) {
+			margin-left: auto;
+		}
+	}
 }
 
 .submit-form-group {
@@ -48,53 +64,36 @@ span[title] {
 }
 
 #output {
-	border: 1px #2c3e50 dotted;
+	border: 1px $primary dotted;
 	font-size: 1.1em;
 	height: 30em;
 	line-height: 1.6em;
 	padding: 0.5em;
-}
 
-#output.wrap-output {
-	white-space: pre-wrap;
-}
+	&.wrap-output {
+		white-space: pre-wrap;
+	}
 
-.is-waiting #output {
-	background: no-repeat center/5em
-		url('https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.19.3/images/loader-large.gif');
-}
+	.is-waiting & {
+		background: no-repeat center/5em
+			url('https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.19.3/images/loader-large.gif');
+	}
 
-#output > :nth-child(odd) {
-	color: #2c3e50;
-}
+	& > :nth-child(odd) {
+		color: $blue;
+	}
 
-#output > :nth-child(even) {
-	color: #18bc9c;
-}
-
-@media (min-width: 576px) {
-	label + select,
-	label + input {
-		margin-left: 0.5em;
+	& > :nth-child(even) {
+		color: $green;
 	}
 }
 
-@media (min-width: 768px) {
+@media (min-width: $breakpoint-md) {
 	.count {
 		float: right;
 	}
 
 	.count + * {
 		clear: both;
-	}
-}
-
-@media (min-width: 992px) {
-	.form-group:not(:first-of-type) {
-		margin-left: auto;
-	}
-
-	.form-inline {
-		flex-direction: row;
 	}
 }
