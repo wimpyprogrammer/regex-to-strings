@@ -11,7 +11,7 @@ import {
 	isExpandResult,
 } from './demo-worker-messages';
 
-import '../styles.scss';
+import '../styles/demo.scss';
 
 let worker: Worker;
 
