@@ -11,14 +11,12 @@ import {
 	isCountResult,
 	isExpandResult,
 } from './demo-worker-messages';
+import { getElement } from './dom-utils';
+import Dropdown from './dropdown';
 
 import '../styles/demo.scss';
 
 let worker: Worker;
-
-function getElement<T extends Element>(selector: string) {
-	return document.querySelector(selector) as T;
-}
 
 const $body = getElement<HTMLBodyElement>('body');
 const $form = getElement<HTMLFormElement>('.js-form');
@@ -29,7 +27,7 @@ const $inputErrorContainer = getElement<HTMLDivElement>(
 const $inputErrorMessage = getElement<HTMLPreElement>(
 	'.js-pattern-error-message'
 );
-const $delimiter = getElement<HTMLSelectElement>('.js-delimiter');
+const $delimiter = new Dropdown('.js-delimiter');
 const $numResults = getElement<HTMLInputElement>('.js-max-results');
 const $output = getElement<HTMLPreElement>('.js-output');
 const $outputCount = getElement<HTMLSpanElement>('.js-output-count');
@@ -86,7 +84,7 @@ function generateStrings(pattern: string) {
 }
 
 function displayStrings(strings: string[]) {
-	const delimiter = $delimiter.options[$delimiter.selectedIndex].value;
+	const delimiter = $delimiter.getValue();
 	$output.classList.toggle('wrap-output', delimiter !== '\n');
 	$output.innerHTML = strings
 		.map(string => `<span>${string}</span>`)
