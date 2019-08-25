@@ -67,7 +67,7 @@ function hideWaitingState() {
 }
 
 function checkForBrowserCompatibility() {
-	if (window.Worker) return;
+	if (typeof Worker !== 'undefined') return;
 
 	displayError(
 		'This page uses Web Workers, which your browser does not support.  Please try a different browser.'
