@@ -24,7 +24,8 @@
 			{
 				"ignore": [
 					// Workaround for alexgorbatchev/eslint-import-resolver-typescript#17
-					"regexp-tree/ast"
+					"regexp-tree/ast",
+					"RegexColorizer"
 				]
 			}
 		],

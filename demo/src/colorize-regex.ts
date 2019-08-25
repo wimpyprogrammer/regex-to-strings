@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 import RegexColorizer from 'RegexColorizer';
 
 import '../styles/colorize-regex.scss';
