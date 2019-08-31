@@ -1,21 +1,21 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["worker"] }] */
 
-import { autoExpandTextarea } from './auto-expand-field';
-import { colorizeRegex } from './colorize-regex';
-// @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
-import DemoWorker from './demo-worker';
+import { autoExpandTextarea } from './utils/auto-expand-field';
+import { colorizeRegex } from './utils/colorize-regex';
+import { getElement } from './utils/dom';
+import Dropdown from './utils/dropdown';
+import * as UrlStorage from './utils/url-storage';
 import {
 	isOptimizeResult,
 	DemoWorkerResponse,
 	ExpandRequest,
 	isCountResult,
 	isExpandResult,
-} from './demo-worker-messages';
-import { getElement } from './dom-utils';
-import Dropdown from './dropdown';
-import * as UrlStorage from './url-storage';
+} from './worker/messages';
+// @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
+import DemoWorker from './worker';
 
-import '../styles/demo.scss';
+import './demo.scss';
 
 let worker: Worker;
 

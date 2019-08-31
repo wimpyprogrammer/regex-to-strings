@@ -11,7 +11,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /-worker\.ts$/,
+				test: /worker[/]index\.ts$/,
 				use: [
 					{
 						loader: 'worker-loader',

@@ -1,4 +1,4 @@
-import './demo-worker-polyfill';
+import './polyfills';
 
 import { optimize } from 'regexp-tree';
 import {
@@ -8,8 +8,8 @@ import {
 	ExpandResult,
 	isExpandRequest,
 	OptimizeResult,
-} from './demo-worker-messages';
-import { expand, toRegExp } from '../../src/pattern';
+} from './messages';
+import { expand, toRegExp } from '../../../src/pattern';
 
 function assertNeverRequest(x: never): never {
 	throw new TypeError(`Unexpected message: ${x}`);
