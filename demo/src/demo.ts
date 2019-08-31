@@ -13,6 +13,7 @@ import {
 } from './demo-worker-messages';
 import { getElement } from './dom-utils';
 import Dropdown from './dropdown';
+import * as UrlStorage from './url-storage';
 
 import '../styles/demo.scss';
 
@@ -73,18 +74,27 @@ function checkForBrowserCompatibility() {
 	$submit.disabled = true;
 }
 
-function generateStrings(pattern: string) {
+function generateStrings() {
 	hideError();
 	showWaitingState();
 
+	const pattern = $input.value;
 	const numResults = Number($numResults.value);
 	const workerRequest = new ExpandRequest(numResults, pattern);
 
 	worker.postMessage(workerRequest);
 }
 
+function populateForm(newData: UrlStorage.StoredInput) {
+	const { delimiter, numResults, pattern } = newData;
+
+	if (pattern !== undefined) $input.value = pattern;
+	if (delimiter !== undefined) $delimiter.setValue(delimiter);
+	if (numResults !== undefined) $numResults.value = numResults.toString();
+}
+
 function displayStrings(strings: string[]) {
-	const delimiter = $delimiter.getValue();
+	const delimiter = $delimiter.getSelectedValue();
 	$output.classList.toggle('wrap-output', delimiter !== '\n');
 	$output.innerHTML = strings
 		.map(string => `<span>${string}</span>`)
@@ -129,17 +139,23 @@ function initializeNewWorker() {
 	worker.onerror = onWorkerError;
 }
 
-function onClickGenerate() {
+function validateForm() {
 	try {
-		if (!$form.reportValidity()) {
-			return;
-		}
+		return $form.reportValidity();
 	} catch (ex) {
 		// Ignore browsers that don't support reportValidity()
+		return true;
 	}
+}
 
-	const pattern = $input.value;
-	generateStrings(pattern);
+function onClickGenerate() {
+	// Store the form inputs in the URL
+	const formData: UrlStorage.FormInput = {
+		delimiter: $delimiter.getSelectedValue(),
+		numResults: Number($numResults.value),
+		pattern: $input.value,
+	};
+	UrlStorage.write(formData);
 }
 
 $submit.addEventListener('click', onClickGenerate);
@@ -161,6 +177,12 @@ function onInputKeydown(event: KeyboardEvent): boolean {
 
 $input.addEventListener('keydown', onInputKeydown);
 
+UrlStorage.onChange(newData => {
+	populateForm(newData);
+	if (!validateForm()) return;
+	generateStrings();
+});
+
 checkForBrowserCompatibility();
 
 initializeNewWorker();
@@ -168,8 +190,14 @@ initializeNewWorker();
 autoExpandTextarea($input);
 
 (() => {
+	// Populate the form with values from the URL or fallback values, then submit.
+	const urlData = UrlStorage.read();
 	const exampleInput = String.raw`/^((https?|ftp|file):\/\/)?([0-9a-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/`;
-	$input.value = exampleInput;
-
-	generateStrings(exampleInput);
+	const initialData = {
+		delimiter: urlData.delimiter || '&#10;', // newline
+		numResults: urlData.numResults || 100,
+		pattern: urlData.pattern || exampleInput,
+	};
+	// Store initial data in the URL
+	UrlStorage.write(initialData);
 })();

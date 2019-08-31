@@ -23,6 +23,7 @@
 			"error",
 			{
 				"ignore": [
+					"history",
 					// Workaround for alexgorbatchev/eslint-import-resolver-typescript#17
 					"regexp-tree/ast",
 					"RegexColorizer"

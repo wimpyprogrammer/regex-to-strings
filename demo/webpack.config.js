@@ -5,6 +5,7 @@ module.exports = {
 	entry: './demo/src/demo.ts',
 	mode: 'production',
 	externals: {
+		history: 'History',
 		RegexColorizer: 'RegexColorizer',
 	},
 	module: {
