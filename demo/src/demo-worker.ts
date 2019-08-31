@@ -1,3 +1,5 @@
+import './demo-worker-polyfill';
+
 import { optimize } from 'regexp-tree';
 import {
 	CountResult,
