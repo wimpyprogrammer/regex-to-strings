@@ -1,12 +1,5 @@
 import * as History from 'history';
-
-export interface StoredInput {
-	delimiter?: string;
-	numResults?: number;
-	pattern?: string;
-}
-
-export type FormInput = Required<StoredInput>;
+import { FormInput, StoredInput } from '../demo-form';
 
 const history = History.createBrowserHistory({
 	basename: window.location.pathname,

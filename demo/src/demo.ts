@@ -1,9 +1,7 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["worker"] }] */
 
-import { autoExpandTextarea } from './utils/auto-expand-field';
 import { colorizeRegex } from './utils/colorize-regex';
 import { getElement } from './utils/dom';
-import Dropdown from './utils/dropdown';
 import * as UrlStorage from './utils/url-storage';
 import {
 	isOptimizeResult,
@@ -14,22 +12,14 @@ import {
 } from './worker/messages';
 // @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
 import DemoWorker from './worker';
+import DemoForm from './demo-form';
 
 import './demo.scss';
 
 let worker: Worker;
 
 const $body = getElement<HTMLBodyElement>('body');
-const $form = getElement<HTMLFormElement>('.js-form');
-const $input = getElement<HTMLTextAreaElement>('.js-pattern');
-const $inputErrorContainer = getElement<HTMLDivElement>(
-	'.js-pattern-error-container'
-);
-const $inputErrorMessage = getElement<HTMLPreElement>(
-	'.js-pattern-error-message'
-);
-const $delimiter = new Dropdown('.js-delimiter');
-const $numResults = getElement<HTMLInputElement>('.js-max-results');
+const $form = new DemoForm();
 const $output = getElement<HTMLPreElement>('.js-output');
 const $outputCount = getElement<HTMLSpanElement>('.js-output-count');
 const $totalCount = getElement<HTMLSpanElement>('.js-total-count');
@@ -37,64 +27,45 @@ const $outputOptimized = getElement<HTMLDivElement>('.js-output-optimized');
 const $outputOptimizedContainer = getElement<HTMLDivElement>(
 	'.js-output-optimized-container'
 );
-const $submit = getElement<HTMLButtonElement>('.js-generate');
 const $cancel = getElement<HTMLButtonElement>('.js-cancel');
 
-function displayError(errorMessage: string) {
-	$inputErrorMessage.textContent = errorMessage.trim();
-	$inputErrorContainer.hidden = false;
-}
-
-function hideError() {
-	$inputErrorContainer.hidden = true;
-}
-
 function showWaitingState() {
+	$form.disable();
 	$body.classList.add('is-waiting');
 	$output.innerHTML = '';
 	$outputOptimizedContainer.hidden = true;
-	$submit.disabled = true;
 	$cancel.disabled = false;
 	$outputCount.innerText = '...';
 	$totalCount.innerText = '...';
 }
 
 function hideWaitingState() {
+	$form.enable();
 	$body.classList.remove('is-waiting');
-	$submit.disabled = false;
 	$cancel.disabled = true;
 }
 
 function checkForBrowserCompatibility() {
 	if (typeof Worker !== 'undefined') return;
 
-	displayError(
+	$form.displayError(
 		'This page uses Web Workers, which your browser does not support.  Please try a different browser.'
 	);
-	$submit.disabled = true;
+	$form.disable();
 }
 
 function generateStrings() {
-	hideError();
+	$form.hideError();
 	showWaitingState();
 
-	const pattern = $input.value;
-	const numResults = Number($numResults.value);
+	const { numResults, pattern } = $form.read();
 	const workerRequest = new ExpandRequest(numResults, pattern);
 
 	worker.postMessage(workerRequest);
 }
 
-function populateForm(newData: UrlStorage.StoredInput) {
-	const { delimiter, numResults, pattern } = newData;
-
-	if (pattern !== undefined) $input.value = pattern;
-	if (delimiter !== undefined) $delimiter.setValue(delimiter);
-	if (numResults !== undefined) $numResults.value = numResults.toString();
-}
-
 function displayStrings(strings: string[]) {
-	const delimiter = $delimiter.getSelectedValue();
+	const { delimiter } = $form.read();
 	$output.classList.toggle('wrap-output', delimiter !== '\n');
 	$output.innerHTML = strings
 		.map(string => `<span>${string}</span>`)
@@ -130,7 +101,7 @@ function onWorkerMessageReceived(message: MessageEvent) {
 
 function onWorkerError(error: ErrorEvent) {
 	hideWaitingState();
-	displayError(error.message);
+	$form.displayError(error.message);
 }
 
 function initializeNewWorker() {
@@ -139,26 +110,14 @@ function initializeNewWorker() {
 	worker.onerror = onWorkerError;
 }
 
-function validateForm() {
-	try {
-		return $form.reportValidity();
-	} catch (ex) {
-		// Ignore browsers that don't support reportValidity()
-		return true;
-	}
-}
-
-function onClickGenerate() {
+function onFormSubmit() {
 	// Store the form inputs in the URL
-	const formData: UrlStorage.FormInput = {
-		delimiter: $delimiter.getSelectedValue(),
-		numResults: Number($numResults.value),
-		pattern: $input.value,
-	};
+	const formData = $form.read();
 	UrlStorage.write(formData);
+	return false;
 }
 
-$submit.addEventListener('click', onClickGenerate);
+$form.onSubmit = onFormSubmit;
 
 function onClickCancel() {
 	worker.terminate();
@@ -168,26 +127,15 @@ function onClickCancel() {
 
 $cancel.addEventListener('click', onClickCancel);
 
-function onInputKeydown(event: KeyboardEvent): boolean {
-	if (event.key !== 'Enter' || event.shiftKey) return true;
-	$submit.click();
-	event.preventDefault();
-	return false;
-}
-
-$input.addEventListener('keydown', onInputKeydown);
-
 UrlStorage.onChange(newData => {
-	populateForm(newData);
-	if (!validateForm()) return;
+	$form.populate(newData);
+	if (!$form.validate()) return;
 	generateStrings();
 });
 
 checkForBrowserCompatibility();
 
 initializeNewWorker();
-
-autoExpandTextarea($input);
 
 (() => {
 	// Populate the form with values from the URL or fallback values, then submit.
