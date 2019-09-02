@@ -80,7 +80,10 @@ export default class DemoForm {
 	public populate(newData: StoredInput): void {
 		const { delimiter, numResults, pattern } = newData;
 
-		if (pattern !== undefined) this.$pattern.value = pattern;
+		if (pattern !== undefined) {
+			this.$pattern.value = pattern;
+			this.$pattern.dispatchEvent(new Event('input'));
+		}
 		if (delimiter !== undefined) this.$delimiter.setValue(delimiter);
 		if (numResults !== undefined)
 			this.$numResults.value = numResults.toString();
