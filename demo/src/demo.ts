@@ -40,9 +40,6 @@ function checkForBrowserCompatibility() {
 }
 
 function generateStrings() {
-	$form.hideError();
-	showWaitingState();
-
 	const { numResults, pattern } = $form.read();
 	const workerRequest = new ExpandRequest(numResults, pattern);
 
@@ -82,26 +79,25 @@ function initializeNewWorker() {
 	worker.onerror = onWorkerError;
 }
 
-function onFormSubmit() {
+$form.onSubmit = () => {
 	// Store the form inputs in the URL
 	const formData = $form.read();
 	UrlStorage.write(formData);
 	return false;
-}
+};
 
-$form.onSubmit = onFormSubmit;
-
-function onClickCancel() {
+$form.onCancel = () => {
 	worker.terminate();
 	initializeNewWorker();
 	hideWaitingState();
-}
-
-$form.onCancel = onClickCancel;
+};
 
 UrlStorage.onChange(newData => {
 	$form.populate(newData);
 	if (!$form.validate()) return;
+
+	$form.hideError();
+	showWaitingState();
 	generateStrings();
 });
 
