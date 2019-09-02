@@ -42,8 +42,12 @@ export default class DemoForm {
 		this.$errorContainer = getElement('.js-pattern-error-container');
 		this.$errorMessage = getElement('.js-pattern-error-message');
 
+		this.onInputKeydown = this.onInputKeydown.bind(this);
+
+		this.$numResults.addEventListener('keydown', this.onInputKeydown);
+
 		autoExpandTextarea(this.$pattern);
-		this.$pattern.addEventListener('keydown', this.onInputKeydown.bind(this));
+		this.$pattern.addEventListener('keydown', this.onInputKeydown);
 
 		this.$submit.addEventListener('click', () => this.onSubmit());
 	}
