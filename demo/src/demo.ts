@@ -1,6 +1,5 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["worker"] }] */
 
-import { getElement } from './utils/dom';
 import * as UrlStorage from './utils/url-storage';
 import {
 	isOptimizeResult,
@@ -20,18 +19,15 @@ let worker: Worker;
 
 const $form = new DemoForm();
 const $output = new DemoOutput();
-const $cancel = getElement<HTMLButtonElement>('.js-cancel');
 
 function showWaitingState() {
 	$form.disable();
 	$output.showWaiting();
-	$cancel.disabled = false;
 }
 
 function hideWaitingState() {
 	$form.enable();
 	$output.hideWaiting();
-	$cancel.disabled = true;
 }
 
 function checkForBrowserCompatibility() {
@@ -101,7 +97,7 @@ function onClickCancel() {
 	hideWaitingState();
 }
 
-$cancel.addEventListener('click', onClickCancel);
+$form.onCancel = onClickCancel;
 
 UrlStorage.onChange(newData => {
 	$form.populate(newData);

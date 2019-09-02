@@ -20,11 +20,13 @@ export default class DemoForm {
 	protected $pattern: HTMLTextAreaElement;
 
 	protected $submit: HTMLButtonElement;
+	protected $cancel: HTMLButtonElement;
 
 	protected $errorContainer: HTMLDivElement;
 	protected $errorMessage: HTMLPreElement;
 
 	public onSubmit: () => void = () => {};
+	public onCancel: () => void = () => {};
 
 	private onInputKeydown(event: KeyboardEvent): boolean {
 		if (event.key !== 'Enter' || event.shiftKey) return true;
@@ -39,6 +41,7 @@ export default class DemoForm {
 		this.$numResults = getElement('.js-max-results');
 		this.$pattern = getElement('.js-pattern');
 		this.$submit = getElement('.js-generate');
+		this.$cancel = getElement('.js-cancel');
 		this.$errorContainer = getElement('.js-pattern-error-container');
 		this.$errorMessage = getElement('.js-pattern-error-message');
 
@@ -50,10 +53,12 @@ export default class DemoForm {
 		this.$pattern.addEventListener('keydown', this.onInputKeydown);
 
 		this.$submit.addEventListener('click', () => this.onSubmit());
+		this.$cancel.addEventListener('click', () => this.onCancel());
 	}
 
 	public disable(): void {
 		this.$submit.disabled = true;
+		this.$cancel.disabled = false;
 	}
 
 	public displayError(errorMessage: string): void {
@@ -63,6 +68,7 @@ export default class DemoForm {
 
 	public enable(): void {
 		this.$submit.disabled = false;
+		this.$cancel.disabled = true;
 	}
 
 	public hideError(): void {
