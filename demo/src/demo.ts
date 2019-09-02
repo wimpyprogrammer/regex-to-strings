@@ -1,6 +1,8 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["worker"] }] */
 
 import * as UrlStorage from './utils/url-storage';
+import DemoForm from './components/demo-form';
+import DemoOutput from './components/demo-output';
 import {
 	isOptimizeResult,
 	DemoWorkerResponse,
@@ -10,8 +12,6 @@ import {
 } from './worker/messages';
 // @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
 import DemoWorker from './worker';
-import DemoForm from './demo-form';
-import DemoOutput from './demo-output';
 
 import './demo.scss';
 

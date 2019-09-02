@@ -1,8 +1,8 @@
 /* eslint-disable lines-between-class-members */
 
-import { autoExpandTextarea } from './utils/auto-expand-field';
-import { getElement } from './utils/dom';
-import Dropdown from './utils/dropdown';
+import { autoExpandTextarea } from '../utils/auto-expand-field';
+import { getElement } from '../utils/dom';
+import Dropdown from './dropdown';
 
 import './demo-form.scss';
 

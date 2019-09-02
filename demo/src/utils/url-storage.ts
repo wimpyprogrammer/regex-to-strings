@@ -1,5 +1,5 @@
 import * as History from 'history';
-import { FormInput, StoredInput } from '../demo-form';
+import { FormInput, StoredInput } from '../components/demo-form';
 
 const history = History.createBrowserHistory({
 	basename: window.location.pathname,

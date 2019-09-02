@@ -1,7 +1,7 @@
 /* eslint-disable lines-between-class-members */
 
-import { colorizeRegex } from './utils/colorize-regex';
-import { getElement } from './utils/dom';
+import { colorizeRegex } from '../utils/colorize-regex';
+import { getElement } from '../utils/dom';
 
 import './demo-output.scss';
 

@@ -1,4 +1,4 @@
-import { getElement } from './dom';
+import { getElement } from '../utils/dom';
 
 /**
  * Wrapper for HTMLSelectElement to streamline interactions.
