@@ -1,6 +1,5 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["worker"] }] */
 
-import { colorizeRegex } from './utils/colorize-regex';
 import { getElement } from './utils/dom';
 import * as UrlStorage from './utils/url-storage';
 import {
@@ -13,35 +12,25 @@ import {
 // @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
 import DemoWorker from './worker';
 import DemoForm from './demo-form';
+import DemoOutput from './demo-output';
 
 import './demo.scss';
 
 let worker: Worker;
 
-const $body = getElement<HTMLBodyElement>('body');
 const $form = new DemoForm();
-const $output = getElement<HTMLPreElement>('.js-output');
-const $outputCount = getElement<HTMLSpanElement>('.js-output-count');
-const $totalCount = getElement<HTMLSpanElement>('.js-total-count');
-const $outputOptimized = getElement<HTMLDivElement>('.js-output-optimized');
-const $outputOptimizedContainer = getElement<HTMLDivElement>(
-	'.js-output-optimized-container'
-);
+const $output = new DemoOutput();
 const $cancel = getElement<HTMLButtonElement>('.js-cancel');
 
 function showWaitingState() {
 	$form.disable();
-	$body.classList.add('is-waiting');
-	$output.innerHTML = '';
-	$outputOptimizedContainer.hidden = true;
+	$output.showWaiting();
 	$cancel.disabled = false;
-	$outputCount.innerText = '...';
-	$totalCount.innerText = '...';
 }
 
 function hideWaitingState() {
 	$form.enable();
-	$body.classList.remove('is-waiting');
+	$output.hideWaiting();
 	$cancel.disabled = true;
 }
 
@@ -64,15 +53,6 @@ function generateStrings() {
 	worker.postMessage(workerRequest);
 }
 
-function displayStrings(strings: string[]) {
-	const { delimiter } = $form.read();
-	$output.classList.toggle('wrap-output', delimiter !== '\n');
-	$output.innerHTML = strings
-		.map(string => `<span>${string}</span>`)
-		.join(delimiter);
-	$outputCount.innerText = strings.length.toLocaleString();
-}
-
 function onWorkerMessageReceived(message: MessageEvent) {
 	function assertNeverResponse(x: never): never {
 		throw new TypeError(`Unexpected message: ${x}`);
@@ -82,18 +62,14 @@ function onWorkerMessageReceived(message: MessageEvent) {
 
 	if (isExpandResult(messageData)) {
 		hideWaitingState();
-		displayStrings(messageData.expansions);
+		const { delimiter } = $form.read();
+		$output.display(messageData.expansions, delimiter);
 	} else if (isCountResult(messageData)) {
 		const { totalNum } = messageData;
-		const isCompact = totalNum < 1e30 || totalNum === Infinity;
-		$totalCount.innerText = isCompact
-			? totalNum.toLocaleString()
-			: totalNum.toExponential();
+		$output.setTotalCount(totalNum);
 	} else if (isOptimizeResult(messageData)) {
 		const { optimizedPattern } = messageData;
-		$outputOptimized.textContent = optimizedPattern;
-		colorizeRegex($outputOptimized);
-		$outputOptimizedContainer.hidden = false;
+		$output.setOptimizedPattern(optimizedPattern);
 	} else {
 		assertNeverResponse(messageData);
 	}

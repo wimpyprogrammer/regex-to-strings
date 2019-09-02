@@ -74,7 +74,7 @@ span[title] {
 		white-space: pre-wrap;
 	}
 
-	.is-waiting & {
+	&.is-waiting {
 		background: no-repeat center/5em
 			url('https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.19.3/images/loader-large.gif');
 	}
