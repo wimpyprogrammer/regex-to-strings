@@ -3,6 +3,8 @@
 import { colorizeRegex } from './utils/colorize-regex';
 import { getElement } from './utils/dom';
 
+import './demo-output.scss';
+
 export default class DemoOutput {
 	protected $expansions: HTMLPreElement;
 	protected $displayCount: HTMLSpanElement;

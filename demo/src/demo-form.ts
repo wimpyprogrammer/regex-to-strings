@@ -4,6 +4,8 @@ import { autoExpandTextarea } from './utils/auto-expand-field';
 import { getElement } from './utils/dom';
 import Dropdown from './utils/dropdown';
 
+import './demo-form.scss';
+
 export interface StoredInput {
 	delimiter?: string;
 	numResults?: number;
