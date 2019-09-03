@@ -1,7 +1,9 @@
 // From options at https://github.com/wessberg/polyfiller#feature-names
 const featuresToPolyfill = [
+	'es.array.fill',
 	'es.array.includes',
 	'es.array.iterator',
+	'es.number.is-finite',
 	'es.object.assign',
 	'es.string.code-point-at',
 	'es.string.from-code-point',
