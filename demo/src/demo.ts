@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["worker"] }] */
 
 import * as UrlStorage from './utils/url-storage';
+import DemoFeedback from './components/demo-feedback';
 import DemoForm from './components/demo-form';
 import DemoOutput from './components/demo-output';
 import {
@@ -17,10 +18,12 @@ import './demo.scss';
 
 let worker: Worker;
 
+const $feedback = new DemoFeedback();
 const $form = new DemoForm();
 const $output = new DemoOutput();
 
 function showWaitingState() {
+	$feedback.disable();
 	$form.disable();
 	$output.showWaiting();
 }
@@ -33,6 +36,7 @@ function hideWaitingState() {
 function checkForBrowserCompatibility() {
 	if (typeof Worker !== 'undefined') return;
 
+	$feedback.disable();
 	$form.displayError(
 		'This page uses Web Workers, which your browser does not support.  Please try a different browser.'
 	);
@@ -55,6 +59,7 @@ function onWorkerMessageReceived(message: MessageEvent) {
 
 	if (isExpandResult(messageData)) {
 		hideWaitingState();
+		$feedback.reset();
 		const { delimiter } = $form.read();
 		$output.display(messageData.expansions, delimiter);
 	} else if (isCountResult(messageData)) {

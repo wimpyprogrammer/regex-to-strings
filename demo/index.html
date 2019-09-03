@@ -47,7 +47,7 @@
 		></script>
 	</head>
 
-	<body>
+	<body class="tracking-disabled">
 		<!-- Google Tag Manager (noscript) -->
 		<noscript>
 			<iframe
@@ -181,6 +181,28 @@
 						</span>
 					</div>
 					<pre id="output" class="js-output"></pre>
+				</div>
+
+				<div
+					class="card text-white bg-primary feedback js-feedback track-feedback"
+				>
+					<div class="card-body">
+						<h5 class="card-title">Was this result helpful?</h5>
+						<button class="btn btn-light js-feedback-positive" type="button">
+							Yes
+						</button>
+						<button class="btn btn-light js-feedback-negative" type="button">
+							No
+						</button>
+					</div>
+				</div>
+				<div
+					class="card text-white bg-success feedback js-feedback-thanks"
+					hidden="hidden"
+				>
+					<div class="card-body js-thanks">
+						<h5 class="card-title">Thanks for your feedback!</h5>
+					</div>
 				</div>
 			</section>
 
