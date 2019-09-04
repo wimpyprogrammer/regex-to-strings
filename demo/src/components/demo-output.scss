@@ -5,6 +5,10 @@ span[title] {
 	cursor: help;
 }
 
+.output-container {
+	margin-top: 1em;
+}
+
 #output {
 	border: 1px $primary dotted;
 	font-size: 1.1em;

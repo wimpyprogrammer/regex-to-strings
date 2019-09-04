@@ -40,7 +40,11 @@ label + input {
 }
 
 .form-group {
-	margin-top: 1em;
+	@media (max-width: $breakpoint-lg) {
+		&:not(:first-of-type) {
+			margin-top: 1em;
+		}
+	}
 
 	@media (min-width: $breakpoint-lg) {
 		&:not(:first-of-type) {
