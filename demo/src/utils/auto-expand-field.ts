@@ -1,5 +1,21 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["field"] }] */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * @see https://gist.github.com/fr-ser/ded7690b245223094cd876069456ed6c
+ */
+function debounce<F extends Function>(func: F, wait: number): F {
+	let timeoutID: number;
+
+	return (function debounced(this: any, ...args: any[]) {
+		clearTimeout(timeoutID);
+		const context = this;
+
+		timeoutID = window.setTimeout(() => func.apply(context, args), wait);
+	} as any) as F;
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 /**
  * Grow or shrink a <textarea> field's height to fit its contents.
  * From https://codepen.io/vsync/pen/frudD.
@@ -27,5 +43,5 @@ export function autoExpandTextarea(field: HTMLTextAreaElement) {
 	}
 
 	field.addEventListener('input', recalculateHeight, false);
-	window.addEventListener('resize', recalculateHeight, false);
+	window.addEventListener('resize', debounce(recalculateHeight, 100), false);
 }
