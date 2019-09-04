@@ -134,24 +134,26 @@ declare module 'regexp-tree/ast' {
 	export type AsExpression<T extends AstClass> = T extends 'Char'
 		? Char
 		: T extends 'ClassRange'
-			? ClassRange
-			: T extends 'CharacterClass'
-				? CharacterClass
-				: T extends 'Alternative'
-					? Alternative
-					: T extends 'Disjunction'
-						? Disjunction
-						: T extends 'Group'
-							? Group
-							: T extends 'Backreference'
-								? Backreference
-								: T extends 'Repetition'
-									? Repetition
-									: T extends 'Quantifier'
-										? Quantifier
-										: T extends 'Assertion'
-											? Assertion
-											: T extends 'RegExp' ? AstRegExp : never;
+		? ClassRange
+		: T extends 'CharacterClass'
+		? CharacterClass
+		: T extends 'Alternative'
+		? Alternative
+		: T extends 'Disjunction'
+		? Disjunction
+		: T extends 'Group'
+		? Group
+		: T extends 'Backreference'
+		? Backreference
+		: T extends 'Repetition'
+		? Repetition
+		: T extends 'Quantifier'
+		? Quantifier
+		: T extends 'Assertion'
+		? Assertion
+		: T extends 'RegExp'
+		? AstRegExp
+		: never;
 
 	export interface TransformResult {
 		getAST(): AstRegExp;
@@ -169,6 +171,13 @@ declare module 'regexp-tree' {
 		AsExpression,
 		TransformResult,
 	} from 'regexp-tree/ast';
+
+	type Transforms = 'dotAll' | 'namedCapturingGroups' | 'xFlag';
+
+	export function compatTranspile(
+		regexp: string | RegExp | AstRegExp,
+		transformsWhitelist?: Transforms[]
+	): TransformResult;
 
 	interface ParserOptions {
 		captureLocations?: boolean;
@@ -225,7 +234,7 @@ declare module 'regexp-tree' {
 	}
 
 	type Handler = {
-		[nodeType in AstClass]?: (path: NodePath<nodeType>) => void
+		[nodeType in AstClass]?: (path: NodePath<nodeType>) => void;
 	} & {
 		init?: (ast: AstRegExp) => void;
 	};

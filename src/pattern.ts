@@ -1,10 +1,13 @@
-import { parse, transform } from 'regexp-tree';
+import { compatTranspile, parse, transform } from 'regexp-tree';
 import Expander from './Expander';
 import Expansion from './Expansion';
 // Circular reference for spying/mocking in tests
 // eslint-disable-next-line import/no-self-import
-import { expand } from './pattern';
+import { expand, toRegExp } from './pattern';
 import transforms from './transforms/index';
+
+// From https://triin.net/2011/10/19/Meta_Regular_Expression
+const regexAsStringPattern = /^\/([^/\[\\]|\\.|\[([^\]\\]|\\.)*\])*\/[a-z]*$/i;
 
 /**
  * Calculate how many strings satisfy the regular expression pattern.
@@ -29,16 +32,15 @@ function unmockedExpand(pattern: string | RegExp): Expansion {
 		return Expansion.Blank;
 	}
 
-	let parsed;
+	const patternFormatted = toRegExp(pattern);
 
-	if (pattern instanceof RegExp) {
-		const transformed = transform(pattern, transforms);
-		parsed = parse(transformed.toRegExp());
-	} else {
-		const transformed = transform(`/${pattern}/`, transforms);
-		parsed = parse(transformed.toString());
-	}
+	// Run custom RegEx mutations in /transforms
+	const transformed = transform(patternFormatted, transforms);
 
+	// Process the RegEx logic into a regexp-tree
+	const parsed = parse(transformed.toString());
+
+	// Create an expansion generator with regex-to-strings
 	const expander = new Expander(parsed.flags);
 	return expander.expandExpression(parsed.body);
 }
@@ -77,3 +79,21 @@ export function expandN(
 export function expandAll(pattern: string | RegExp): string[] {
 	return [...expand(pattern).getIterator()];
 }
+
+/**
+ * Normalize a regular expression pattern to a format that regexp-tree can parse.
+ * Distinguish RegEx-like strings (e.g. "/abc/i") from plain strings (e.g. "abc").
+ * @param pattern The unnormalized regular expression pattern
+ * @returns pattern as a RegExp or RegEx-like string
+ */
+export function unmockedToRegExp(pattern: string | RegExp): string | RegExp {
+	if (pattern instanceof RegExp) {
+		return pattern;
+	} else if (regexAsStringPattern.test(pattern.trim())) {
+		// The string looks like RegEx, e.g. "/abc/i"
+		return compatTranspile(pattern).toRegExp();
+	} else {
+		return `/${pattern}/`;
+	}
+}
+export { unmockedToRegExp as toRegExp };

@@ -2,8 +2,11 @@ import { Quantifier, Repetition } from 'regexp-tree/ast';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
 import * as Guards from '../types/regexp-tree-guards';
-import { iteratePermutations, iterateWeightedByCount } from './iterate-sorted';
-import { fill } from './utils';
+import {
+	iteratePermutations,
+	iterateWeightedByCount,
+} from '../helpers/iterate-sorted';
+import { fill } from '../helpers/utils';
 
 /* istanbul ignore next */
 function assertNever(x: never): never {
