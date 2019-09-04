@@ -113,7 +113,7 @@ initializeNewWorker();
 (() => {
 	// Populate the form with values from the URL or fallback values, then submit.
 	const urlData = UrlStorage.read();
-	const exampleInput = String.raw`/^((https?|ftp|file):\/\/)?([0-9a-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/`;
+	const exampleInput = String.raw`/^((https?|ftp|file):\/\/)?([\d\-a-z]{1,5}\.){2,5}([a-z]{2,6})\/([\d\-._a-z]{1,10}\/){0,5}$/`;
 	const initialData = {
 		delimiter: urlData.delimiter || '&#10;', // newline
 		numResults: urlData.numResults || 100,
