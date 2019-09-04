@@ -1,0 +1,10 @@
+.jumbotron {
+	padding-bottom: 1em;
+	padding-top: 1em;
+}
+
+footer:after {
+	content: '';
+	clear: both;
+	display: table;
+}

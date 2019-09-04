@@ -1,0 +1,18 @@
+.feedback {
+	max-width: 300px;
+	margin: 0 auto;
+	text-align: center;
+
+	button {
+		width: 4em;
+	}
+
+	button + button {
+		margin-left: 2em;
+	}
+
+	// Hide if Google Tag Manager has not loaded
+	.tracking-disabled & {
+		display: none !important;
+	}
+}

@@ -1,0 +1,45 @@
+@import '../_variables';
+
+span[title] {
+	border-bottom: 1px dotted $gray;
+	cursor: help;
+}
+
+.output-container {
+	margin-top: 1em;
+}
+
+#output {
+	border: 1px $primary dotted;
+	font-size: 1.1em;
+	height: 30em;
+	line-height: 1.6em;
+	padding: 0.5em;
+
+	&.wrap-output {
+		white-space: pre-wrap;
+	}
+
+	&.is-waiting {
+		background: no-repeat center/5em
+			url('https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.19.3/images/loader-large.gif');
+	}
+
+	& > :nth-child(odd) {
+		color: $blue;
+	}
+
+	& > :nth-child(even) {
+		color: $green;
+	}
+}
+
+@media (min-width: $breakpoint-md) {
+	.count {
+		float: right;
+	}
+
+	.count + * {
+		clear: both;
+	}
+}

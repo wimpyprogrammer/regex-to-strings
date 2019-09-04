@@ -21,6 +21,6 @@
 		"sourceMap": true,
 		"strict": true
 	},
-	"exclude": ["**/*.spec.ts"],
+	"exclude": ["**/*.spec.ts", "**/*.config.js"],
 	"include": ["src"]
 }
