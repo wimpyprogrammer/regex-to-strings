@@ -74,7 +74,7 @@
     "escape-string-regexp": "^1.0.5",
     "pandemonium": "^1.4.1",
     "regexp-tree": "0.1.11",
-    "snyk": "^1.222.1"
+    "snyk": "^1.224.0"
   },
   "snyk": true
 }
