@@ -32,7 +32,7 @@
     "prepublish": "npm run snyk-protect",
     "snyk-protect": "snyk protect",
     "test": "jest --coverage",
-    "travisci": "npm run lint && npm run test && codecov && snyk test"
+    "travisci": "npm run lint && npm run test && codecov && npx snyk test"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -73,8 +73,7 @@
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "pandemonium": "^1.4.1",
-    "regexp-tree": "0.1.11",
-    "snyk": "^1.224.0"
+    "regexp-tree": "0.1.11"
   },
   "snyk": true
 }
