@@ -30,7 +30,7 @@
     "lint-tests": "tsc -p ./tsconfig.test.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.test.json",
     "precommit": "pretty-quick --staged",
     "test": "jest --coverage",
-    "travisci": "npm run lint && npm run test && codecov"
+    "travisci": "npm run lint && npm run test && codecov && npx snyk test"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -72,5 +72,6 @@
     "escape-string-regexp": "^1.0.5",
     "pandemonium": "^1.4.1",
     "regexp-tree": "0.1.11"
-  }
+  },
+  "snyk": true
 }
