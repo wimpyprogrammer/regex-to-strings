@@ -13,8 +13,10 @@
   "author": "Drew Keller <drew@wimpyprogrammer.com>",
   "license": "MIT",
   "main": "lib/index.js",
+  "types": "./lib/index.d.ts",
   "files": [
-    "lib/**/!(*.spec).js"
+    "lib/**/!(*.spec).js",
+    "lib/**/*.d.ts"
   ],
   "sideEffects": [
     "demo/**/polyfills.ts",
@@ -24,8 +26,9 @@
     "node": ">=8"
   },
   "scripts": {
-    "build": "npm run clean && babel src -d lib --extensions '.js,.ts'",
+    "build": "npm run clean && babel src -d lib --extensions '.js,.ts' && npm run build-types",
     "build-demo": "npm run clean-demo && webpack --config demo/webpack.config.js",
+    "build-types": "tsc -p ./tsconfig.release-types.json",
     "clean": "rimraf lib/*",
     "clean-demo": "rimraf demo/lib/*",
     "format": "prettier --write '{src,demo/src}/**'",
