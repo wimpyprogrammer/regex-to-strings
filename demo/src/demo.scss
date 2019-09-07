@@ -1,3 +1,19 @@
+.navbar {
+	> .container {
+		justify-content: inherit;
+	}
+
+	> .container > * {
+		margin-right: 1rem;
+	}
+
+	svg {
+		background-color: black;
+		border-radius: 50%;
+		fill: white;
+	}
+}
+
 .jumbotron {
 	padding-bottom: 1em;
 	padding-top: 1em;
