@@ -17,6 +17,7 @@
     "lib/**/!(*.spec).js"
   ],
   "sideEffects": [
+    "demo/**/polyfills.ts",
     "*.scss"
   ],
   "engines": {
