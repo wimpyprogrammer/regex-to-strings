@@ -16,6 +16,9 @@
   "files": [
     "lib/**/!(*.spec).js"
   ],
+  "sideEffects": [
+    "*.scss"
+  ],
   "engines": {
     "node": ">=8"
   },
