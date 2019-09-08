@@ -12,16 +12,23 @@
   "description": "Expand a regular expression pattern into a set of words",
   "author": "Drew Keller <drew@wimpyprogrammer.com>",
   "license": "MIT",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "main": "lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/**/!(*.spec).js",
+    "lib/**/*.d.ts"
+  ],
+  "sideEffects": [
+    "demo/**/polyfills.ts",
+    "*.scss"
+  ],
   "engines": {
     "node": ">=8"
   },
   "scripts": {
-    "build": "npm run clean && babel src -d lib --extensions '.js,.ts'",
+    "build": "npm run clean && babel src -d lib --extensions '.js,.ts' && npm run build-types",
     "build-demo": "npm run clean-demo && webpack --config demo/webpack.config.js",
+    "build-types": "tsc -p ./tsconfig.release-types.json",
     "clean": "rimraf lib/*",
     "clean-demo": "rimraf demo/lib/*",
     "format": "prettier --write '{src,demo/src}/**'",
@@ -29,6 +36,9 @@
     "lint-demo": "tsc -p ./demo/tsconfig.json; eslint . --ext .js,.ts --parser-options=project:./demo/tsconfig.json",
     "lint-tests": "tsc -p ./tsconfig.test.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.test.json",
     "precommit": "pretty-quick --staged",
+    "prepublish": "npx publish-please guard",
+    "publish-please": "npx publish-please",
+    "publish-please-prereqs": "npm run lint && npm run test && npm run build",
     "test": "jest --coverage",
     "travisci": "npm run lint && npm run test && codecov && npx snyk test"
   },

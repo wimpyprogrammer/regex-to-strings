@@ -1,5 +1,5 @@
 /* eslint-disable no-empty-function, no-useless-constructor, @typescript-eslint/no-parameter-properties */
-import { expand } from '../../../src/pattern';
+import { expand } from '../../../src/index';
 
 interface WorkerMessage {
 	readonly kind: string;

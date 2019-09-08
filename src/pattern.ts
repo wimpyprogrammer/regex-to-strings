@@ -2,8 +2,10 @@ import { compatTranspile, parse, transform } from 'regexp-tree';
 import Expander from './Expander';
 import Expansion from './Expansion';
 // Circular reference for spying/mocking in tests
-// eslint-disable-next-line import/no-self-import
-import { expand, toRegExp } from './pattern';
+import {
+	expand as mockableExpand,
+	toRegExp as mockableToRegExp,
+} from './index';
 import transforms from './transforms/index';
 
 // From https://triin.net/2011/10/19/Meta_Regular_Expression
@@ -16,7 +18,7 @@ const regexAsStringPattern = /^\/([^/\[\\]|\\.|\[([^\]\\]|\\.)*\])*\/[a-z]*$/i;
  * @throws When pattern is invalid or unsupported syntax
  */
 export function count(pattern: string | RegExp): number {
-	return expand(pattern).count;
+	return mockableExpand(pattern).count;
 }
 
 /**
@@ -25,14 +27,14 @@ export function count(pattern: string | RegExp): number {
  * @return The Expansion of pattern
  * @throws When pattern is invalid or unsupported syntax
  */
-function unmockedExpand(pattern: string | RegExp): Expansion {
+export function expand(pattern: string | RegExp): Expansion {
 	if (pattern === null) {
 		return Expansion.Empty;
 	} else if (!pattern) {
 		return Expansion.Blank;
 	}
 
-	const patternFormatted = toRegExp(pattern);
+	const patternFormatted = mockableToRegExp(pattern);
 
 	// Run custom RegEx mutations in /transforms
 	const transformed = transform(patternFormatted, transforms);
@@ -44,7 +46,6 @@ function unmockedExpand(pattern: string | RegExp): Expansion {
 	const expander = new Expander(parsed.flags);
 	return expander.expandExpression(parsed.body);
 }
-export { unmockedExpand as expand };
 
 /**
  * Calculate up to N strings that satisfy the regular expression pattern.
@@ -59,7 +60,7 @@ export function expandN(
 	maxExpansions: number
 ): string[] {
 	const results = [];
-	const generator = expand(pattern).getIterator();
+	const generator = mockableExpand(pattern).getIterator();
 
 	let expansion = generator.next();
 	while (!expansion.done && results.length < maxExpansions) {
@@ -77,7 +78,7 @@ export function expandN(
  * @throws When pattern is invalid or unsupported syntax
  */
 export function expandAll(pattern: string | RegExp): string[] {
-	return [...expand(pattern).getIterator()];
+	return [...mockableExpand(pattern).getIterator()];
 }
 
 /**
@@ -86,7 +87,7 @@ export function expandAll(pattern: string | RegExp): string[] {
  * @param pattern The unnormalized regular expression pattern
  * @returns pattern as a RegExp or RegEx-like string
  */
-export function unmockedToRegExp(pattern: string | RegExp): string | RegExp {
+export function toRegExp(pattern: string | RegExp): string | RegExp {
 	if (pattern instanceof RegExp) {
 		return pattern;
 	} else if (regexAsStringPattern.test(pattern.trim())) {
@@ -96,4 +97,3 @@ export function unmockedToRegExp(pattern: string | RegExp): string | RegExp {
 		return `/${pattern}/`;
 	}
 }
-export { unmockedToRegExp as toRegExp };
