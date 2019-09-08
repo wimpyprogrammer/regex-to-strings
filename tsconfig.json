@@ -1,0 +1,4 @@
+// These settings are only directed at IDEs that auto-detect the tsconfig file.
+{
+	"extends": "./tsconfig.test.json"
+}

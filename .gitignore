@@ -1,0 +1,6 @@
+package-lock.json
+
+coverage/
+demo/lib/
+node_modules/
+lib/
