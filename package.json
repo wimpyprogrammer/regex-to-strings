@@ -36,6 +36,9 @@
     "lint-demo": "tsc -p ./demo/tsconfig.json; eslint . --ext .js,.ts --parser-options=project:./demo/tsconfig.json",
     "lint-tests": "tsc -p ./tsconfig.test.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.test.json",
     "precommit": "pretty-quick --staged",
+    "prepublish": "npx publish-please guard",
+    "publish-please": "npx publish-please",
+    "publish-please-prereqs": "npm run lint && npm run test && npm run build",
     "test": "jest --coverage",
     "travisci": "npm run lint && npm run test && codecov && npx snyk test"
   },
