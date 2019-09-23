@@ -223,7 +223,6 @@ declare module 'regexp-tree' {
 		replace<TNew extends AstClass>(
 			node: AsExpression<TNew>
 		): NodePath<TNew> | null;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		update(nodeProps: Partial<this['node']>): void;
 		getPreviousSibling(): NodePath<AstClass> | null;
 		getNextSibling(): NodePath<AstClass> | null;
