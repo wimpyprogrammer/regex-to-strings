@@ -15,8 +15,7 @@
   "main": "lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
-    "lib/**/!(*.spec).js",
-    "lib/**/*.d.ts"
+    "lib/"
   ],
   "sideEffects": [
     "demo/**/polyfills.ts",
@@ -26,7 +25,7 @@
     "node": ">=8"
   },
   "scripts": {
-    "build": "npm run clean && babel src -d lib --extensions '.js,.ts' && npm run build-types",
+    "build": "npm run clean && babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.js','**/*.spec.ts' && npm run build-types",
     "build-demo": "npm run clean-demo && webpack --config demo/webpack.config.js",
     "build-types": "tsc -p ./tsconfig.release-types.json",
     "clean": "rimraf lib/*",
