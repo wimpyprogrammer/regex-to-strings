@@ -9,11 +9,7 @@ module.exports = {
 			tsConfig: 'tsconfig.test.json',
 		},
 	},
-	moduleFileExtensions: ['js', 'json', 'ts'],
+	preset: 'ts-jest',
 	testEnvironment: 'node',
-	testMatch: ['**/src/**/?*.spec.(js|ts)'],
-	transform: {
-		'^.+\\.ts$': 'ts-jest',
-	},
 	verbose: true,
 };
