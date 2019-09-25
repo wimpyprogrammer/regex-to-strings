@@ -1,4 +1,5 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["field"] }] */
+import './auto-expand-field.scss';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**

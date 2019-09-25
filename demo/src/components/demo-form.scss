@@ -6,12 +6,6 @@ select:invalid {
 	border: 2px solid $danger;
 }
 
-.automaticHeight {
-	box-sizing: padding-box;
-	overflow: hidden;
-	resize: none;
-}
-
 .alert pre {
 	color: inherit;
 	margin-top: 1em;
