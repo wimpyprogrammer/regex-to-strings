@@ -15,8 +15,7 @@
   "main": "lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
-    "lib/**/!(*.spec).js",
-    "lib/**/*.d.ts"
+    "lib/"
   ],
   "sideEffects": [
     "demo/**/polyfills.ts",
@@ -26,15 +25,15 @@
     "node": ">=8"
   },
   "scripts": {
-    "build": "npm run clean && babel src -d lib --extensions '.js,.ts' && npm run build-types",
+    "build": "npm run clean && babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.js','**/*.spec.ts' && npm run build-types",
     "build-demo": "npm run clean-demo && webpack --config demo/webpack.config.js",
     "build-types": "tsc -p ./tsconfig.release-types.json",
     "clean": "rimraf lib/*",
     "clean-demo": "rimraf demo/lib/*",
     "format": "prettier --write '{src,demo/src}/**'",
-    "lint": "tsc -p ./tsconfig.release.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.release.json",
-    "lint-demo": "tsc -p ./demo/tsconfig.json; eslint . --ext .js,.ts --parser-options=project:./demo/tsconfig.json",
-    "lint-tests": "tsc -p ./tsconfig.test.json; eslint . --ext .js,.ts --parser-options=project:./tsconfig.test.json",
+    "lint": "tsc -p ./tsconfig.release.json && eslint . --ext .js,.ts --report-unused-disable-directives --parser-options=project:./tsconfig.release.json",
+    "lint-demo": "tsc -p ./demo/tsconfig.json && eslint . --ext .js,.ts --report-unused-disable-directives --parser-options=project:./demo/tsconfig.json",
+    "lint-tests": "tsc -p ./tsconfig.test.json && eslint . --ext .js,.ts --report-unused-disable-directives --parser-options=project:./tsconfig.test.json",
     "precommit": "pretty-quick --staged",
     "prepublish": "npx publish-please guard",
     "publish-please": "npx publish-please",

@@ -22,8 +22,6 @@ function measureAverageTime(fn: Function, numTrials: number) {
 describe('count', () => {
 	const { count } = patternLib;
 
-	afterEach(() => jest.restoreAllMocks());
-
 	it('passes pattern to expand()', () => {
 		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test')
@@ -111,8 +109,6 @@ describe('expand', () => {
 			.spyOn(chooseRandom, 'default')
 			.mockImplementation(minValue => minValue);
 	});
-
-	afterEach(() => jest.restoreAllMocks());
 
 	it('normalizes pattern with toRegExp()', () => {
 		when(jest.spyOn(patternLib, 'toRegExp'))
@@ -1524,8 +1520,6 @@ describe('expand', () => {
 describe('expandN', () => {
 	const { expandN } = patternLib;
 
-	afterEach(() => jest.restoreAllMocks());
-
 	it('passes pattern to expand()', () => {
 		when(jest.spyOn(patternLib, 'expand'))
 			.calledWith('test')
@@ -1565,8 +1559,6 @@ describe('expandN', () => {
 
 describe('expandAll', () => {
 	const { expandAll } = patternLib;
-
-	afterEach(() => jest.restoreAllMocks());
 
 	it('passes pattern to expand()', () => {
 		when(jest.spyOn(patternLib, 'expand'))
