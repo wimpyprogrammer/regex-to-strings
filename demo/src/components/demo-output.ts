@@ -7,14 +7,14 @@ import { getElement } from '../utils/dom';
 import './demo-output.scss';
 
 export default class DemoOutput {
-	protected $expansions: HTMLPreElement;
+	protected $expansionsRaw: HTMLPreElement;
 	protected $displayCount: HTMLSpanElement;
 	protected $totalCount: HTMLSpanElement;
 	protected $optimized: HTMLDivElement;
 	protected $optimizedContainer: HTMLDivElement;
 
 	public constructor() {
-		this.$expansions = getElement('.js-output');
+		this.$expansionsRaw = getElement('.js-output-plaintext');
 		this.$displayCount = getElement('.js-output-count');
 		this.$totalCount = getElement('.js-total-count');
 		this.$optimized = getElement('.js-output-optimized');
@@ -22,15 +22,15 @@ export default class DemoOutput {
 	}
 
 	public display(expansions: string[], delimiter: string) {
-		this.$expansions.classList.toggle('wrap-output', delimiter !== '\n');
-		this.$expansions.innerHTML = expansions
+		this.$expansionsRaw.classList.toggle('wrap-output', delimiter !== '\n');
+		this.$expansionsRaw.innerHTML = expansions
 			.map(string => `<span>${escape(string)}</span>`)
 			.join(delimiter);
 		this.$displayCount.innerText = expansions.length.toLocaleString();
 	}
 
 	public hideWaiting() {
-		this.$expansions.classList.remove('is-waiting');
+		this.$expansionsRaw.classList.remove('is-waiting');
 	}
 
 	public setOptimizedPattern(optimizedPattern: string) {
@@ -47,8 +47,8 @@ export default class DemoOutput {
 	}
 
 	public showWaiting() {
-		this.$expansions.innerHTML = '';
-		this.$expansions.classList.add('is-waiting');
+		this.$expansionsRaw.innerHTML = '';
+		this.$expansionsRaw.classList.add('is-waiting');
 		this.$optimizedContainer.hidden = true;
 		this.$displayCount.innerText = '...';
 		this.$totalCount.innerText = '...';
