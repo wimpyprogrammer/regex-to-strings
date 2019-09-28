@@ -12,8 +12,9 @@ span[title] {
 #output {
 	border: 1px $primary dotted;
 	font-size: 1.1em;
-	height: 30em;
 	line-height: 1.6em;
+	max-height: 30em;
+	min-height: 20px + 64px + 20px; // height of loading graphic, plus padding
 	padding: 0.5em;
 
 	&.wrap-output {
