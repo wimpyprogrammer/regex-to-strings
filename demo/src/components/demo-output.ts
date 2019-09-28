@@ -7,6 +7,7 @@ import { getElement } from '../utils/dom';
 import './demo-output.scss';
 
 export default class DemoOutput {
+	protected $container: HTMLDivElement;
 	protected $expansionsRaw: HTMLPreElement;
 	protected $displayCount: HTMLSpanElement;
 	protected $totalCount: HTMLSpanElement;
@@ -14,6 +15,7 @@ export default class DemoOutput {
 	protected $optimizedContainer: HTMLDivElement;
 
 	public constructor() {
+		this.$container = getElement('.js-output-container');
 		this.$expansionsRaw = getElement('.js-output-plaintext');
 		this.$displayCount = getElement('.js-output-count');
 		this.$totalCount = getElement('.js-total-count');
@@ -30,7 +32,7 @@ export default class DemoOutput {
 	}
 
 	public hideWaiting() {
-		this.$expansionsRaw.classList.remove('is-waiting');
+		this.$container.classList.remove('is-waiting');
 	}
 
 	public setOptimizedPattern(optimizedPattern: string) {
@@ -47,8 +49,8 @@ export default class DemoOutput {
 	}
 
 	public showWaiting() {
+		this.$container.classList.add('is-waiting');
 		this.$expansionsRaw.innerHTML = '';
-		this.$expansionsRaw.classList.add('is-waiting');
 		this.$optimizedContainer.hidden = true;
 		this.$displayCount.innerText = '...';
 		this.$totalCount.innerText = '...';
