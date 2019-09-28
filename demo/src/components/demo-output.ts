@@ -1,5 +1,6 @@
 /* eslint-disable lines-between-class-members */
 
+import { escape } from 'lodash'; // eslint-disable-line import/no-extraneous-dependencies
 import { colorizeRegex } from '../utils/colorize-regex';
 import { getElement } from '../utils/dom';
 
@@ -23,7 +24,7 @@ export default class DemoOutput {
 	public display(expansions: string[], delimiter: string) {
 		this.$expansions.classList.toggle('wrap-output', delimiter !== '\n');
 		this.$expansions.innerHTML = expansions
-			.map(string => `<span>${string}</span>`)
+			.map(string => `<span>${escape(string)}</span>`)
 			.join(delimiter);
 		this.$displayCount.innerText = expansions.length.toLocaleString();
 	}

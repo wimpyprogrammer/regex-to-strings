@@ -6,6 +6,7 @@ module.exports = {
 	mode: 'production',
 	externals: {
 		history: 'History',
+		lodash: '_',
 		RegexColorizer: 'RegexColorizer',
 	},
 	module: {
