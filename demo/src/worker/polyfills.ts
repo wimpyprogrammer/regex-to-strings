@@ -4,6 +4,7 @@ const featuresToPolyfill = [
 	'es.array.includes',
 	'es.array.iterator',
 	'es.number.is-finite',
+	'es.number.is-integer',
 	'es.object.assign',
 	'es.string.code-point-at',
 	'es.string.from-code-point',
