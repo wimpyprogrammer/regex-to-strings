@@ -66,7 +66,7 @@ export default class DemoOutput {
 		this.$expansions.classList.remove('plaintext-output', 'wrap-output');
 		this.$expansions.innerHTML = '';
 
-		this.$optimizedContainer.hidden = true;
+		this.$optimized.textContent = '...';
 		this.$displayCount.innerText = '...';
 		this.$totalCount.innerText = '...';
 	}
