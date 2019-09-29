@@ -16,7 +16,6 @@ span[title] {
 	&.plaintext-output {
 		border: 1px $primary dotted;
 		max-height: 30em;
-		min-height: 20px + 64px + 20px; // height of loading graphic, plus padding
 		padding: 0.5em;
 	}
 
@@ -36,6 +35,7 @@ span[title] {
 	.is-waiting & {
 		background: no-repeat center/5em
 			url('https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.19.3/images/loader-large.gif');
+		height: 20px + 64px + 20px; // height of loading graphic, plus padding
 	}
 
 	& > :nth-child(odd) {

@@ -62,7 +62,10 @@ export default class DemoOutput {
 
 	public showWaiting() {
 		this.$container.classList.add('is-waiting');
+
+		this.$expansions.classList.remove('plaintext-output', 'wrap-output');
 		this.$expansions.innerHTML = '';
+
 		this.$optimizedContainer.hidden = true;
 		this.$displayCount.innerText = '...';
 		this.$totalCount.innerText = '...';
