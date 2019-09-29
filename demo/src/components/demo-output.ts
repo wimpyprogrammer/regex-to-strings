@@ -8,7 +8,7 @@ import './demo-output.scss';
 
 export default class DemoOutput {
 	protected $container: HTMLDivElement;
-	protected $expansionsRaw: HTMLPreElement;
+	protected $expansions: HTMLPreElement;
 	protected $displayCount: HTMLSpanElement;
 	protected $totalCount: HTMLSpanElement;
 	protected $optimized: HTMLDivElement;
@@ -16,7 +16,7 @@ export default class DemoOutput {
 
 	public constructor() {
 		this.$container = getElement('.js-output-container');
-		this.$expansionsRaw = getElement('.js-output-plaintext');
+		this.$expansions = getElement('.js-output');
 		this.$displayCount = getElement('.js-output-count');
 		this.$totalCount = getElement('.js-total-count');
 		this.$optimized = getElement('.js-output-optimized');
@@ -24,10 +24,22 @@ export default class DemoOutput {
 	}
 
 	public display(expansions: string[], delimiter: string) {
-		this.$expansionsRaw.classList.toggle('wrap-output', delimiter !== '\n');
-		this.$expansionsRaw.innerHTML = expansions
-			.map(string => `<span>${escape(string)}</span>`)
-			.join(delimiter);
+		const isBlockOutput = delimiter === 'block';
+		const isWrappingDelimiter = ['\n', 'block'].includes(delimiter);
+
+		this.$expansions.classList.toggle('plaintext-output', !isBlockOutput);
+		this.$expansions.classList.toggle('wrap-output', !isWrappingDelimiter);
+
+		if (isBlockOutput) {
+			this.$expansions.innerHTML = expansions
+				.map(string => `<div class="alert alert-light">${escape(string)}</div>`)
+				.join('\n');
+		} else {
+			this.$expansions.innerHTML = expansions
+				.map(string => `<span>${escape(string)}</span>`)
+				.join(delimiter);
+		}
+
 		this.$displayCount.innerText = expansions.length.toLocaleString();
 	}
 
@@ -50,7 +62,7 @@ export default class DemoOutput {
 
 	public showWaiting() {
 		this.$container.classList.add('is-waiting');
-		this.$expansionsRaw.innerHTML = '';
+		this.$expansions.innerHTML = '';
 		this.$optimizedContainer.hidden = true;
 		this.$displayCount.innerText = '...';
 		this.$totalCount.innerText = '...';

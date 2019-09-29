@@ -9,16 +9,28 @@ span[title] {
 	margin-top: 1em;
 }
 
-#output-plaintext {
-	border: 1px $primary dotted;
+#output {
 	font-size: 1.1em;
 	line-height: 1.6em;
-	max-height: 30em;
-	min-height: 20px + 64px + 20px; // height of loading graphic, plus padding
-	padding: 0.5em;
+
+	&.plaintext-output {
+		border: 1px $primary dotted;
+		max-height: 30em;
+		min-height: 20px + 64px + 20px; // height of loading graphic, plus padding
+		padding: 0.5em;
+	}
 
 	&.wrap-output {
 		white-space: pre-wrap;
+	}
+
+	&:not(.plaintext-output) > * {
+		margin-bottom: -0.75em;
+		overflow: auto;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
 	}
 
 	.is-waiting & {

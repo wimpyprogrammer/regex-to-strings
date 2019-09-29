@@ -43,7 +43,7 @@
 
 		<script
 			crossorigin="anonymous"
-			src="https://polyfill.app/api/polyfill?features=class-list,url,es.number.is-nan,es.string.raw,event.constructor&context=window"
+			src="https://polyfill.app/api/polyfill?features=class-list,es.array.includes,es.number.is-nan,es.string.raw,event.constructor,url&context=window"
 		></script>
 	</head>
 
@@ -125,6 +125,7 @@
 							id="delimiter"
 							class="form-control js-delimiter track-field"
 						>
+							<option value="block">Block</option>
 							<option value="&#10;">Newline</option>
 							<option value=",">Comma</option>
 							<option value=" ">Space</option>
@@ -185,7 +186,7 @@
 				</div>
 
 				<div class="form-group output-container js-output-container">
-					<label for="output-plaintext">
+					<label for="output">
 						Strings matched by your Regular Expression:
 					</label>
 					<div class="count">
@@ -200,7 +201,7 @@
 							results
 						</span>
 					</div>
-					<pre id="output-plaintext" class="js-output-plaintext"></pre>
+					<pre id="output" class="js-output"></pre>
 				</div>
 
 				<div
