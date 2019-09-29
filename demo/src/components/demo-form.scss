@@ -1,6 +1,9 @@
 @import '../_variables';
 
-#pattern,
+#pattern {
+	font-size: 140%;
+}
+
 #max-results,
 #delimiter {
 	// Inherit from <body>: https://stackoverflow.com/a/2875114
