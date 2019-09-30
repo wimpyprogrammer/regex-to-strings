@@ -9,20 +9,37 @@ span[title] {
 	margin-top: 1em;
 }
 
+.output-optimized {
+	font-size: 125%;
+}
+
 #output {
-	border: 1px $primary dotted;
-	font-size: 1.1em;
-	height: 30em;
-	line-height: 1.6em;
-	padding: 0.5em;
+	font-size: 1rem;
+	line-height: 1.6rem;
+
+	&.plaintext-output {
+		border: 1px $primary dotted;
+		max-height: 30em;
+		padding: 0.5em;
+	}
 
 	&.wrap-output {
 		white-space: pre-wrap;
 	}
 
-	&.is-waiting {
+	&:not(.plaintext-output) > * {
+		margin-bottom: -0.75em;
+		overflow: auto;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	.is-waiting & {
 		background: no-repeat center/5em
 			url('https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.19.3/images/loader-large.gif');
+		height: 20px + 64px + 20px; // height of loading graphic, plus padding
 	}
 
 	& > :nth-child(odd) {

@@ -30,3 +30,15 @@ $breakpoint-sm: 576px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 992px;
 $breakpoint-xl: 1200px;
+
+@mixin md-only {
+	@media (min-width: #{$breakpoint-md}) and (max-width: #{$breakpoint-lg - 1px}) {
+		@content;
+	}
+}
+
+@mixin lg-up {
+	@media (min-width: #{$breakpoint-lg}) {
+		@content;
+	}
+}
