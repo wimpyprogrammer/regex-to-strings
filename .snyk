@@ -3,3 +3,6 @@ version: v1.13.5
 ignore: {}
 # patches apply the minimum changes required to fix a vulnerability
 patch:
+  SNYK-JS-HTTPSPROXYAGENT-469131:
+    - codecov > teeny-request > https-proxy-agent:
+        patched: '2019-10-13T23:26:47.885Z'
