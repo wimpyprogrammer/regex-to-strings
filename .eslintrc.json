@@ -12,6 +12,12 @@
 		"ecmaVersion": 2018
 	},
 	"rules": {
+		"import/extensions": [
+			"error",
+			{
+				"ts": "never"
+			}
+		],
 		"import/no-cycle": "off",
 		"import/no-extraneous-dependencies": [
 			"error",
