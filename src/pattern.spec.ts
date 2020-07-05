@@ -1,7 +1,7 @@
 import { when } from 'jest-when';
 import Expansion from './Expansion';
 import { fill } from './helpers/utils';
-import * as patternLib from './index';
+import * as patternLib from './pattern';
 import * as randomSort from './sorts/fisher-yates-random';
 import * as chooseRandom from './sorts/number-random';
 import * as chooseRandomWeighted from './sorts/weighted-random';
