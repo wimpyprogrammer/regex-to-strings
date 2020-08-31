@@ -716,11 +716,6 @@ describe('expand', () => {
 		expect(iterator2.next().value).toBe('z z');
 	});
 
-	it('expands backreferences with numeric names', () => {
-		const result = expandAll('(?<20>a) \\k<20> (?<50>z) \\k<50>');
-		expect(result).toEqual(['a a z z']);
-	});
-
 	it('is performant', () => {
 		const trial = () => expand(/([ab]|(c|[d-e]){2,3})(\w?) \1/);
 		const averageTime = measureAverageTime(trial, 5);
@@ -900,6 +895,7 @@ describe('expand', () => {
 			['capture group', "(?'x'abc)"],
 			['capture group', '(?P<x>abc)'],
 			['capture group with duplicate names', '(?<x>a)|(?<x>b)'],
+			['capture group with numeric name', '(?<20>a)'],
 			['capture group with negative number name', '(?<-17>abc)'],
 			['backreference', '(?<x>a) (?P=x)'],
 			['backreference nested with group', '(?<x>a\\k<x>?)'],
@@ -1472,7 +1468,6 @@ describe('expand', () => {
 			['backreference', "(?<x>ab) \\k'x'"],
 			['backreference', '(?<x>ab) \\k{x}'],
 			['backreference', '(?<x>ab) \\g{x}'],
-			['capture groups override numbered index', '(?<17>ab) \\17'],
 			['failed backreference', '(?<x>ab)? \\k<x>'],
 		])(
 			'does not recognize RegEx syntax: %s /%s/',
