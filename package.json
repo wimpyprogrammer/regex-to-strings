@@ -22,7 +22,7 @@
     "*.scss"
   ],
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "scripts": {
     "build": "npm run clean && babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.js','**/*.spec.ts' && npm run build-types",
@@ -49,7 +49,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "@types/escape-string-regexp": "^1.0.0",
     "@types/history": "^4.7.3",
-    "@types/jest": "^24.0.18",
+    "@types/jest": "^26.0.10",
     "@types/jest-when": "^2.4.1",
     "@types/lodash": "^4.14.140",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
@@ -63,7 +63,7 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^22.16.0",
     "husky": "0.14.3",
-    "jest": "^24.9.0",
+    "jest": "^26.4.2",
     "jest-when": "^2.7.0",
     "node-sass": "^4.12.0",
     "prettier": "1.18.2",
@@ -71,7 +71,7 @@
     "rimraf": "^2.7.1",
     "sass-loader": "^7.3.1",
     "style-loader": "^1.0.0",
-    "ts-jest": "^24.0.2",
+    "ts-jest": "^26.3.0",
     "ts-loader": "^6.0.4",
     "typescript": "^3.6.2",
     "webpack": "^4.39.3",
