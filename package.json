@@ -81,7 +81,7 @@
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "pandemonium": "^1.4.1",
-    "regexp-tree": "0.1.11"
+    "regexp-tree": "^0.1.21"
   },
   "snyk": true
 }
