@@ -1,11 +1,13 @@
 /* eslint-disable lines-between-class-members */
 
+import { escape } from 'lodash'; // eslint-disable-line import/no-extraneous-dependencies
 import { colorizeRegex } from '../utils/colorize-regex';
 import { getElement } from '../utils/dom';
 
 import './demo-output.scss';
 
 export default class DemoOutput {
+	protected $container: HTMLDivElement;
 	protected $expansions: HTMLPreElement;
 	protected $displayCount: HTMLSpanElement;
 	protected $totalCount: HTMLSpanElement;
@@ -13,6 +15,7 @@ export default class DemoOutput {
 	protected $optimizedContainer: HTMLDivElement;
 
 	public constructor() {
+		this.$container = getElement('.js-output-container');
 		this.$expansions = getElement('.js-output');
 		this.$displayCount = getElement('.js-output-count');
 		this.$totalCount = getElement('.js-total-count');
@@ -21,15 +24,27 @@ export default class DemoOutput {
 	}
 
 	public display(expansions: string[], delimiter: string) {
-		this.$expansions.classList.toggle('wrap-output', delimiter !== '\n');
-		this.$expansions.innerHTML = expansions
-			.map(string => `<span>${string}</span>`)
-			.join(delimiter);
+		const isBlockOutput = delimiter === 'block';
+		const isWrappingDelimiter = ['\n', 'block'].includes(delimiter);
+
+		this.$expansions.classList.toggle('plaintext-output', !isBlockOutput);
+		this.$expansions.classList.toggle('wrap-output', !isWrappingDelimiter);
+
+		if (isBlockOutput) {
+			this.$expansions.innerHTML = expansions
+				.map(string => `<div class="alert alert-light">${escape(string)}</div>`)
+				.join('\n');
+		} else {
+			this.$expansions.innerHTML = expansions
+				.map(string => `<span>${escape(string)}</span>`)
+				.join(delimiter);
+		}
+
 		this.$displayCount.innerText = expansions.length.toLocaleString();
 	}
 
 	public hideWaiting() {
-		this.$expansions.classList.remove('is-waiting');
+		this.$container.classList.remove('is-waiting');
 	}
 
 	public setOptimizedPattern(optimizedPattern: string) {
@@ -46,9 +61,12 @@ export default class DemoOutput {
 	}
 
 	public showWaiting() {
+		this.$container.classList.add('is-waiting');
+
+		this.$expansions.classList.remove('plaintext-output', 'wrap-output');
 		this.$expansions.innerHTML = '';
-		this.$expansions.classList.add('is-waiting');
-		this.$optimizedContainer.hidden = true;
+
+		this.$optimized.textContent = '...';
 		this.$displayCount.innerText = '...';
 		this.$totalCount.innerText = '...';
 	}

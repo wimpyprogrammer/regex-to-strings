@@ -43,7 +43,7 @@
 
 		<script
 			crossorigin="anonymous"
-			src="https://polyfill.app/api/polyfill?features=url,es.number.is-nan,es.string.raw,event.constructor&context=window"
+			src="https://polyfill.app/api/polyfill?features=class-list,es.array.includes,es.number.is-nan,es.string.raw,event.constructor,url&context=window"
 		></script>
 	</head>
 
@@ -125,6 +125,7 @@
 							id="delimiter"
 							class="form-control js-delimiter track-field"
 						>
+							<option value="block">Block</option>
 							<option value="&#10;">Newline</option>
 							<option value=",">Comma</option>
 							<option value=" ">Space</option>
@@ -171,7 +172,7 @@
 					<div class="card-header">
 						Your Regular Expression, optimized and colored:
 					</div>
-					<div class="card-body js-output-optimized"></div>
+					<div class="card-body output-optimized js-output-optimized"></div>
 					<div class="card-footer text-muted">
 						Optimization by
 						<a
@@ -184,7 +185,7 @@
 					</div>
 				</div>
 
-				<div class="form-group output-container">
+				<div class="form-group output-container js-output-container">
 					<label for="output">
 						Strings matched by your Regular Expression:
 					</label>
@@ -249,6 +250,11 @@
 			crossorigin="anonymous"
 			integrity="sha256-MuBtHI2giF+TT2E9FjNxVovCaSkndV8cq59ddt915Co="
 			src="https://cdnjs.cloudflare.com/ajax/libs/history/4.9.0/history.min.js"
+		></script>
+		<script
+			crossorigin="anonymous"
+			integrity="sha256-yEkk5ZYVs/fZgvxWU+sCb8bHTk9jScxIaZQD+CZ4vcg="
+			src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.core.min.js"
 		></script>
 		<script src="https://cdn.jsdelivr.net/gh/slevithan/regex-colorizer@0.3.1/regex-colorizer.min.js"></script>
 		<script type="text/javascript" src="lib/demo.js"></script>

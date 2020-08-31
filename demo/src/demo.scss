@@ -1,3 +1,14 @@
+@import './_variables';
+
+body {
+	@include md-only {
+		font-size: 1em;
+	}
+	@include lg-up {
+		font-size: 1.1em;
+	}
+}
+
 .navbar {
 	> .container {
 		justify-content: inherit;
