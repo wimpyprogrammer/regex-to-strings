@@ -62,7 +62,10 @@ const replacer: NodeReplacer = {
 const optionsAlpha = [createClassRange('a', 'z'), createClassRange('A', 'Z')];
 const optionsDigit = createClassRange('0', '9');
 const optionUnderscore = createEscapedSimpleChar('_');
-const optionsWhitespaceNoBreak = createSimpleChars(' \t');
+const optionsWhitespaceNoBreak = [
+	...createSimpleChars(' \t'),
+	createSimpleChar(String.fromCharCode(160)), // &nbsp;
+];
 const optionsWhitespace = [
 	...optionsWhitespaceNoBreak,
 	...createSimpleChars('\r\n'),
@@ -74,6 +77,13 @@ const optionsOther = [
 	createEscapedSimpleChar('\\'),
 ];
 const optionsNewLine = createSimpleChar('\n');
+const optionsExtendedAscii = [
+	...createSimpleChars('àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ'),
+	...createSimpleChars('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞß'),
+	...createSimpleChars('¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿'),
+	...createSimpleChars('€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ×÷'),
+	createSimpleChar(String.fromCharCode(173)), // &shy;
+];
 
 function getMetaCharExpressions(
 	metaChar: SpecialChar,
@@ -89,13 +99,14 @@ function getMetaCharExpressions(
 				...optionsWhitespaceNoBreak,
 				...optionsOther,
 				optionUnderscore,
+				...optionsExtendedAscii,
 				...dotAllOptions,
 			];
 		}
 		case '\\w':
 			return [...optionsAlpha, optionsDigit, optionUnderscore];
 		case '\\W':
-			return [...optionsWhitespace, ...optionsOther];
+			return [...optionsWhitespace, ...optionsOther, ...optionsExtendedAscii];
 		case '\\d':
 			return [optionsDigit];
 		case '\\D':
@@ -104,11 +115,18 @@ function getMetaCharExpressions(
 				...optionsWhitespace,
 				...optionsOther,
 				optionUnderscore,
+				...optionsExtendedAscii,
 			];
 		case '\\s':
 			return optionsWhitespace;
 		case '\\S':
-			return [...optionsAlpha, optionsDigit, ...optionsOther, optionUnderscore];
+			return [
+				...optionsAlpha,
+				optionsDigit,
+				...optionsOther,
+				optionUnderscore,
+				...optionsExtendedAscii,
+			];
 		default:
 			return [];
 	}

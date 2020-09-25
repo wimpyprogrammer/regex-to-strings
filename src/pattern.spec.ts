@@ -150,13 +150,13 @@ describe('expand', () => {
 	);
 
 	it('reproduces static patterns', () => {
-		const result = expandAll('abc');
-		expect(result).toEqual(['abc']);
+		const result = expandAll('abcáï®');
+		expect(result).toEqual(['abcáï®']);
 	});
 
 	it('reproduces static alternation patterns', () => {
-		const result = expandAll('abc|xyz');
-		expect(result).toEqual(['abc', 'xyz']);
+		const result = expandAll('abc†|xyz‡');
+		expect(result).toEqual(['abc†', 'xyz‡']);
 	});
 
 	it('expands single-character groups', () => {
@@ -165,8 +165,8 @@ describe('expand', () => {
 	});
 
 	it('expands multi-character groups', () => {
-		const result = expandAll('foo(bar)');
-		expect(result).toEqual(['foobar']);
+		const result = expandAll('foo(bar½)');
+		expect(result).toEqual(['foobar½']);
 	});
 
 	it('expands single-character alternation groups', () => {
@@ -175,8 +175,8 @@ describe('expand', () => {
 	});
 
 	it('expands multi-character alternation groups', () => {
-		const result = expandAll('b(ar|az)');
-		expect(result).toEqual(['bar', 'baz']);
+		const result = expandAll('b(ar†|az‡)');
+		expect(result).toEqual(['bar†', 'baz‡']);
 	});
 
 	it('expands nested alternation groups', () => {
@@ -250,6 +250,14 @@ describe('expand', () => {
 		}
 	);
 
+	it.each([/ab…+/, /ab…+?/])(
+		'expands repeating extended ASCII character %p',
+		(repeat: RegExp) => {
+			const result = expandN(repeat, 5);
+			expect(result).toEqual(['ab…', 'ab……', 'ab………', 'ab…………', 'ab……………']);
+		}
+	);
+
 	it('expands alphabetic single-character set', () => {
 		const result = expandAll('[aeiou]');
 		expect(result).toEqual(['a', 'e', 'i', 'o', 'u']);
@@ -260,6 +268,11 @@ describe('expand', () => {
 		expect(result).toEqual(['2', '3', '4', '7', '8', '9']);
 	});
 
+	it('expands extended ASCII single-character set', () => {
+		const result = expandAll('[ÁÉÍÓÚÝ]');
+		expect(result).toEqual(['Á', 'É', 'Í', 'Ó', 'Ú', 'Ý']);
+	});
+
 	it('expands alphabetic range character set', () => {
 		const result = expandAll('[a-f]');
 		expect(result).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
@@ -268,6 +281,11 @@ describe('expand', () => {
 	it('expands numeric range character set', () => {
 		const result = expandAll('[0-5]');
 		expect(result).toEqual(['0', '1', '2', '3', '4', '5']);
+	});
+
+	it('expands extended ASCII range character set', () => {
+		const result = expandAll('[À-Æ]');
+		expect(result).toEqual(['À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ']);
 	});
 
 	it('expands permutations of sibling character sets', () => {
@@ -364,7 +382,7 @@ describe('expand', () => {
 		}
 
 		const result = expandAll('[^abc]');
-		expect(result).toHaveLength(95);
+		expect(result).toHaveLength(218);
 		result.forEach(testExpansion);
 	});
 
@@ -375,7 +393,18 @@ describe('expand', () => {
 		}
 
 		const result = expandAll('[^246]');
-		expect(result).toHaveLength(95);
+		expect(result).toHaveLength(218);
+		result.forEach(testExpansion);
+	});
+
+	it('expands negated extended ASCII character set', () => {
+		function testExpansion(expansion: string) {
+			expect(expansion).toHaveLength(1);
+			expect(expansion).toMatch(/[^ÁÉÍÓÚÝ]/);
+		}
+
+		const result = expandAll('[^ÁÉÍÓÚÝ]');
+		expect(result).toHaveLength(215);
 		result.forEach(testExpansion);
 	});
 
@@ -386,7 +415,7 @@ describe('expand', () => {
 		}
 
 		const result = expandAll('[^a-p]');
-		expect(result).toHaveLength(82);
+		expect(result).toHaveLength(205);
 		result.forEach(testExpansion);
 	});
 
@@ -397,18 +426,29 @@ describe('expand', () => {
 		}
 
 		const result = expandAll('[^0-8]');
-		expect(result).toHaveLength(89);
+		expect(result).toHaveLength(212);
+		result.forEach(testExpansion);
+	});
+
+	it('expands negated extended ASCII range character set', () => {
+		function testExpansion(expansion: string) {
+			expect(expansion).toHaveLength(1);
+			expect(expansion).toMatch(/[^À-Æ]/);
+		}
+
+		const result = expandAll('[^À-Æ]');
+		expect(result).toHaveLength(214);
 		result.forEach(testExpansion);
 	});
 
 	it('expands negated character set with multiple ranges', () => {
 		function testExpansion(expansion: string) {
 			expect(expansion).toHaveLength(1);
-			expect(expansion).toMatch(/[^aeiou0-5A-T]/);
+			expect(expansion).toMatch(/[^aeiou0-5A-Tð-ö]/);
 		}
 
-		const result = expandAll('[^aeiou0-5A-T]');
-		expect(result).toHaveLength(67);
+		const result = expandAll('[^aeiou0-5A-Tð-ö]');
+		expect(result).toHaveLength(183);
 		result.forEach(testExpansion);
 	});
 
@@ -495,8 +535,9 @@ describe('expand', () => {
 	it.each([/\w\w\w/, /\w\d\s/, /\W\w\w/, /\W\D\S/, /\s\w\S/, /\d\W\D/])(
 		'expands the multiple character class %p',
 		(charClassSet: RegExp) => {
-			const result = expandAll(charClassSet);
-			expect(result.length).toBeGreaterThan(1);
+			// Too many possible combinations - limit to 1,000
+			const result = expandN(charClassSet, 1000);
+			expect(result).toHaveLength(1000);
 			expect(result[0]).toHaveLength(3);
 			expect(result[0]).toMatch(charClassSet);
 		}
@@ -733,7 +774,7 @@ describe('expand', () => {
 	});
 
 	it('is performant', () => {
-		const trial = () => expand(/([ab]|(c|[d-e]){2,3})(\w?) \1/);
+		const trial = () => expand(/([ab]|(c|[ù-ü]){2,3})(\w?) \1/);
 		const averageTime = measureAverageTime(trial, 5);
 		expect(averageTime).toBeLessThanOrEqual(10);
 	});
@@ -766,7 +807,7 @@ describe('expand', () => {
 			[/a{0,5}/, ['', 'a', 'aa', 'aaa', 'aaaa', 'aaaaa']],
 			[/[ab]{3}/, ['aaa', 'aab', 'aba', 'abb', 'baa', 'bab', 'bba', 'bbb']],
 			[/(a|b|c|d|e|f|g)/, ['a', 'b', 'c', 'd', 'e', 'f', 'g']],
-			[/aAa/i, ['aaa', 'aaA', 'aAa', 'Aaa', 'aAA', 'AaA', 'AAa', 'AAA']],
+			[/aAä/i, ['aaä', 'aaÄ', 'aAä', 'Aaä', 'aAÄ', 'AaÄ', 'AAä', 'AAÄ']],
 			[/[A-I]/, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],
 		])(
 			'sorts patterns without losing accuracy: %p',
@@ -820,11 +861,27 @@ describe('expand', () => {
 			}
 		);
 
+		it.each([/àÑ/, /\340\321/, /\xE0\xD1/, /\u00E0\u00D1/])(
+			'expands extended ASCII exact casing when the case-insensitive flag is omitted: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['àÑ']);
+			}
+		);
+
 		it.each([/aB/i, /\141\102/i, /\x61\x42/i, /\u0061\u0042/i])(
 			'expands casing variants when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
 				expect(result).toEqual(['ab', 'aB', 'Ab', 'AB']);
+			}
+		);
+
+		it.each([/àÑ/i, /\340\321/i, /\xE0\xD1/i, /\u00E0\u00D1/i])(
+			'expands extended ASCII casing variants when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['àñ', 'àÑ', 'Àñ', 'ÀÑ']);
 			}
 		);
 
@@ -836,11 +893,27 @@ describe('expand', () => {
 			}
 		);
 
+		it.each([/©×/i, /\251\327/i, /\xA9\xD7/i, /\u00A9\u00D7/i])(
+			'does not expand uncased extended ASCII characters when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['©×']);
+			}
+		);
+
 		it.each([/[aB]/, /[\141\102]/, /[\x61\x42]/, /[\u0061\u0042]/])(
 			'expands exact casing in static set when the case-insensitive flag is omitted: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
 				expect(result).toEqual(['a', 'B']);
+			}
+		);
+
+		it.each([/[àÑ]/, /[\340\321]/, /[\xE0\xD1]/, /[\u00E0\u00D1]/])(
+			'expands extended ASCII exact casing in static set when the case-insensitive flag is omitted: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['à', 'Ñ']);
 			}
 		);
 
@@ -852,11 +925,27 @@ describe('expand', () => {
 			}
 		);
 
+		it.each([/[àÑ]/i, /[\340\321]/i, /[\xE0\xD1]/i, /[\u00E0\u00D1]/i])(
+			'expands extended ASCII casing variants in static set when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['à', 'À', 'ñ', 'Ñ']);
+			}
+		);
+
 		it.each([/[4%]/i, /[\64\45]/i, /[\x34\x25]/i, /[\u0034\u0025]/i])(
 			'does not expand uncased characters in static set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
 				expect(result).toEqual(['4', '%']);
+			}
+		);
+
+		it.each([/[©×]/i, /[\251\327]/i, /[\xA9\xD7]/i, /[\u00A9\u00D7]/i])(
+			'does not expand uncased extended ASCII characters in static set when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['©', '×']);
 			}
 		);
 
@@ -868,6 +957,14 @@ describe('expand', () => {
 			}
 		);
 
+		it.each([/[Ì-Ï]/, /[\314-\317]/, /[\xCC-\xCF]/, /[\u00CC-\u00CF]/])(
+			'expands extended ASCII exact casing in range set when the case-insensitive flag is omitted: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['Ì', 'Í', 'Î', 'Ï']);
+			}
+		);
+
 		it.each([/[a-d]/i, /[\141-\144]/i, /[\x61-\x64]/i, /[\u0061-\u0064]/i])(
 			'expands casing variants in range set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
@@ -876,11 +973,27 @@ describe('expand', () => {
 			}
 		);
 
+		it.each([/[Ì-Ï]/i, /[\314-\317]/i, /[\xCC-\xCF]/i, /[\u00CC-\u00CF]/i])(
+			'expands extended ASCII casing variants in range set when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['ì', 'Ì', 'í', 'Í', 'î', 'Î', 'ï', 'Ï']);
+			}
+		);
+
 		it.each([/[1-4]/i, /[\61-\64]/i, /[\x31-\x34]/i, /[\u0031-\u0034]/i])(
 			'does not expand uncased characters in range set when the case-insensitive flag is included: %p',
 			(input: RegExp) => {
 				const result = expandAll(input);
 				expect(result).toEqual(['1', '2', '3', '4']);
+			}
+		);
+
+		it.each([/[¼-¿]/i, /[\274-\277]/i, /[\xBC-\xBF]/i, /[\u00BC-\u00BF]/i])(
+			'does not expand extended ASCII uncased characters in range set when the case-insensitive flag is included: %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).toEqual(['¼', '½', '¾', '¿']);
 			}
 		);
 
