@@ -1,4 +1,5 @@
 import { when } from 'jest-when';
+import { Chars } from './constants';
 import Expansion from './Expansion';
 import { fill } from './helpers/utils';
 import * as patternLib from './pattern';
@@ -363,7 +364,7 @@ describe('expand', () => {
 		}
 
 		const result = expandAll('[^abc]');
-		expect(result.length).toBeGreaterThan(1);
+		expect(result).toHaveLength(95);
 		result.forEach(testExpansion);
 	});
 
@@ -374,7 +375,7 @@ describe('expand', () => {
 		}
 
 		const result = expandAll('[^246]');
-		expect(result.length).toBeGreaterThan(1);
+		expect(result).toHaveLength(95);
 		result.forEach(testExpansion);
 	});
 
@@ -385,7 +386,7 @@ describe('expand', () => {
 		}
 
 		const result = expandAll('[^a-p]');
-		expect(result.length).toBeGreaterThan(1);
+		expect(result).toHaveLength(82);
 		result.forEach(testExpansion);
 	});
 
@@ -396,7 +397,7 @@ describe('expand', () => {
 		}
 
 		const result = expandAll('[^0-8]');
-		expect(result.length).toBeGreaterThan(1);
+		expect(result).toHaveLength(89);
 		result.forEach(testExpansion);
 	});
 
@@ -407,7 +408,7 @@ describe('expand', () => {
 		}
 
 		const result = expandAll('[^aeiou0-5A-T]');
-		expect(result.length).toBeGreaterThan(1);
+		expect(result).toHaveLength(67);
 		result.forEach(testExpansion);
 	});
 
@@ -438,10 +439,14 @@ describe('expand', () => {
 	it.each([/./, /\w/, /\W/, /\d/, /\D/, /\s/, /\S/])(
 		'expands the single character class %p',
 		(charClass: RegExp) => {
+			function testExpansion(expansion: string) {
+				expect(expansion).toHaveLength(1);
+				expect(expansion).toMatch(charClass);
+			}
+
 			const result = expandAll(charClass);
 			expect(result.length).toBeGreaterThan(1);
-			expect(result[0]).toHaveLength(1);
-			expect(result[0]).toMatch(charClass);
+			result.forEach(testExpansion);
 		}
 	);
 
@@ -559,6 +564,17 @@ describe('expand', () => {
 			const result = expandN(charClassSet, 1000);
 			expect(result).toHaveLength(1000);
 			result.forEach(testExpansion);
+		}
+	);
+
+	it.each([/(.|\r)/s, /[\s\S]/])(
+		'includes all supported characters in %p',
+		regex => {
+			const result = expandAll(regex);
+
+			Chars.all.forEach(char => {
+				expect(result).toContain(char);
+			});
 		}
 	);
 

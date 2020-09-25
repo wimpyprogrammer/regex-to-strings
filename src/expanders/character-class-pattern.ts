@@ -1,4 +1,5 @@
 import { CharacterClass } from 'regexp-tree/ast';
+import { Chars } from '../constants';
 import Expander from '../Expander';
 import Expansion from '../Expansion';
 import sortRandom from '../sorts/fisher-yates-random';
@@ -18,16 +19,7 @@ function getReferencedCodePoints(
 	return [expression.codePoint];
 }
 
-const allCharOptions =
-	' \t\r\n' +
-	'abcdefghijklmnopqrstuvwxyz' +
-	'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-	'0123456789' +
-	'~`!@#$%^&*()-_=+<,>.?/[]{}|\\:;"\'';
-
-const allCodePointOptions = allCharOptions
-	.split('')
-	.map(char => char.charCodeAt(0));
+const allCodePointOptions = Chars.all.map(char => char.charCodeAt(0));
 
 /**
  * Expand an expression which represents a single character from a
