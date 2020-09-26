@@ -608,11 +608,12 @@ describe('expand', () => {
 		}
 	);
 
-	it.each([/(.|\r)/s, /[\s\S]/])(
+	it.each([/(.|\r)/s, /[\s\S]/, /[\w\W]/, /[\d\D]/])(
 		'includes all supported characters in %p',
 		regex => {
 			const result = expandAll(regex);
 
+			expect(result).toHaveLength(Chars.all.length);
 			Chars.all.forEach(char => {
 				expect(result).toContain(char);
 			});
