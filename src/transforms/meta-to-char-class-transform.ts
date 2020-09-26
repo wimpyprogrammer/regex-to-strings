@@ -7,13 +7,9 @@ import {
 	CharacterClass,
 	SpecialChar,
 } from 'regexp-tree/ast';
+import { Chars } from '../constants';
 import * as Guards from '../types/regexp-tree-guards';
-import {
-	createClassRange,
-	createEscapedSimpleChar,
-	createSimpleChar,
-	createSimpleChars,
-} from './utils';
+import { createEscapedSimpleChar, createSimpleChar } from './utils';
 
 type Replace<ParentType extends AstClass> = (
 	parentNode: AsExpression<ParentType>,
@@ -59,21 +55,19 @@ const replacer: NodeReplacer = {
 	},
 };
 
-const optionsAlpha = [createClassRange('a', 'z'), createClassRange('A', 'Z')];
-const optionsDigit = createClassRange('0', '9');
-const optionUnderscore = createEscapedSimpleChar('_');
-const optionsWhitespaceNoBreak = createSimpleChars(' \t');
-const optionsWhitespace = [
-	...optionsWhitespaceNoBreak,
-	...createSimpleChars('\r\n'),
-];
+const optionsAlpha = Chars.basicAlpha.map(createSimpleChar);
+const optionsDigit = Chars.digits.map(createSimpleChar);
+
+const optionsWhitespace = Chars.whitespace.map(createSimpleChar);
+
+const needEscape = [']', '-', '\\'];
+const noEscape = Chars.basicSpecial.filter(c => !needEscape.includes(c));
 const optionsOther = [
-	...createSimpleChars('~`!@#$%^&*()=+<,>.?/[{}|:;"\''),
-	createEscapedSimpleChar(']'),
-	createEscapedSimpleChar('-'),
-	createEscapedSimpleChar('\\'),
+	...noEscape.map(createSimpleChar),
+	...needEscape.map(createEscapedSimpleChar),
 ];
-const optionsNewLine = createSimpleChar('\n');
+
+const optionsExtended = Chars.extended.map(createSimpleChar);
 
 function getMetaCharExpressions(
 	metaChar: SpecialChar,
@@ -81,34 +75,44 @@ function getMetaCharExpressions(
 ): CharacterClass['expressions'] {
 	switch (metaChar.value) {
 		case '.': {
-			const dotAllOptions = regExpFlags.includes('s') ? [optionsNewLine] : [];
+			const optionsNewLine = createSimpleChar('\n');
+			const optionsDotAll = regExpFlags.includes('s') ? [optionsNewLine] : [];
+			const whitespaceNoBreaks = Chars.whitespace.filter(
+				c => !'\r\n'.includes(c)
+			);
+			const optionsWhitespaceNoBreak = whitespaceNoBreaks.map(createSimpleChar);
 
 			return [
 				...optionsAlpha,
-				optionsDigit,
+				...optionsDigit,
 				...optionsWhitespaceNoBreak,
 				...optionsOther,
-				optionUnderscore,
-				...dotAllOptions,
+				...optionsExtended,
+				...optionsDotAll,
 			];
 		}
 		case '\\w':
-			return [...optionsAlpha, optionsDigit, optionUnderscore];
+			return [...optionsAlpha, ...optionsDigit];
 		case '\\W':
-			return [...optionsWhitespace, ...optionsOther];
+			return [...optionsWhitespace, ...optionsOther, ...optionsExtended];
 		case '\\d':
-			return [optionsDigit];
+			return optionsDigit;
 		case '\\D':
 			return [
 				...optionsAlpha,
 				...optionsWhitespace,
 				...optionsOther,
-				optionUnderscore,
+				...optionsExtended,
 			];
 		case '\\s':
 			return optionsWhitespace;
 		case '\\S':
-			return [...optionsAlpha, optionsDigit, ...optionsOther, optionUnderscore];
+			return [
+				...optionsAlpha,
+				...optionsDigit,
+				...optionsOther,
+				...optionsExtended,
+			];
 		default:
 			return [];
 	}

@@ -1,4 +1,4 @@
-import { ClassRange, SimpleChar } from 'regexp-tree/ast';
+import { SimpleChar } from 'regexp-tree/ast';
 
 export function createSimpleChar(value: string): SimpleChar {
 	if (value.length !== 1) throw new Error('value must be a char');
@@ -16,17 +16,5 @@ export function createEscapedSimpleChar(value: string): SimpleChar {
 	return {
 		...createSimpleChar(value),
 		escaped: true,
-	};
-}
-
-export function createSimpleChars(values: string): SimpleChar[] {
-	return values.split('').map(createSimpleChar);
-}
-
-export function createClassRange(from: string, to: string): ClassRange {
-	return {
-		from: createSimpleChar(from),
-		to: createSimpleChar(to),
-		type: 'ClassRange',
 	};
 }
