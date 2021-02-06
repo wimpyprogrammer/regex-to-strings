@@ -3,6 +3,7 @@
 [![npm package](https://badge.fury.io/js/regex-to-strings.svg)](https://badge.fury.io/js/regex-to-strings)
 ![node version](https://img.shields.io/node/v/regex-to-strings.svg)
 ![npm type definitions](https://img.shields.io/npm/types/regex-to-strings)
+![Tests](https://github.com/wimpyprogrammer/regex-to-strings/workflows/Tests/badge.svg)
 [![codecov](https://codecov.io/gh/wimpyprogrammer/regex-to-strings/branch/main/graph/badge.svg)](https://codecov.io/gh/wimpyprogrammer/regex-to-strings)
 [![Known Vulnerabilities](https://snyk.io/test/github/wimpyprogrammer/regex-to-strings/badge.svg)](https://snyk.io/test/github/wimpyprogrammer/regex-to-strings)
 
