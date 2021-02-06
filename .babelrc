@@ -10,5 +10,6 @@
 			}
 		]
 	],
-	"plugins": ["@babel/plugin-proposal-class-properties"]
+	"plugins": ["@babel/plugin-proposal-class-properties"],
+	"ignore": ["**/*.spec.js", "**/*.spec.ts"]
 }
