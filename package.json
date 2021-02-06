@@ -40,8 +40,7 @@
     "prepublish": "npx publish-please guard",
     "publish-please": "npx publish-please",
     "publish-please-prereqs": "npm run lint && npm run test && npm run build",
-    "test": "jest --coverage",
-    "travisci": "npm run lint && npm run test && codecov && npx snyk test"
+    "test": "jest --coverage"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
