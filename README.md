@@ -3,8 +3,8 @@
 [![npm package](https://badge.fury.io/js/regex-to-strings.svg)](https://badge.fury.io/js/regex-to-strings)
 ![node version](https://img.shields.io/node/v/regex-to-strings.svg)
 ![npm type definitions](https://img.shields.io/npm/types/regex-to-strings)
-[![Build Status](https://travis-ci.org/wimpyprogrammer/regex-to-strings.svg?branch=master)](https://travis-ci.org/wimpyprogrammer/regex-to-strings)
-[![codecov](https://codecov.io/gh/wimpyprogrammer/regex-to-strings/branch/master/graph/badge.svg)](https://codecov.io/gh/wimpyprogrammer/regex-to-strings)
+[![Build Status](https://travis-ci.org/wimpyprogrammer/regex-to-strings.svg?branch=main)](https://travis-ci.org/wimpyprogrammer/regex-to-strings)
+[![codecov](https://codecov.io/gh/wimpyprogrammer/regex-to-strings/branch/main/graph/badge.svg)](https://codecov.io/gh/wimpyprogrammer/regex-to-strings)
 [![Known Vulnerabilities](https://snyk.io/test/github/wimpyprogrammer/regex-to-strings/badge.svg)](https://snyk.io/test/github/wimpyprogrammer/regex-to-strings)
 
 Generate strings that match a Regular Expression pattern. Efficiently generate all possible matches, or only the quantity you need.
@@ -108,7 +108,7 @@ console.log(strings); // ['6', '5', '0', '2', '7', '9', '4', '3', '1', '8']
 
 `regex-to-strings` uses [`regexp-tree`](https://www.npmjs.com/package/regexp-tree) to parse your Regular Expression, and so the Regular Expression syntax you can use is largely determined by that library. If your pattern is not recognized by `regex-to-strings`, [try parsing it with `regexp-tree`](https://astexplorer.net/#/gist/4ea2b52f0e546af6fb14f9b2f5671c1c/39b55944da3e5782396ffa1fea3ba68d126cd394) to see if the syntax is supported.
 
-`regex-to-strings` also includes [extensive positive **and** negative tests](https://github.com/wimpyprogrammer/regex-to-strings/blob/master/src/pattern.spec.ts) that track which Regular Expression features are supported.
+`regex-to-strings` also includes [extensive positive **and** negative tests](https://github.com/wimpyprogrammer/regex-to-strings/blob/main/src/pattern.spec.ts) that track which Regular Expression features are supported.
 
 ### Regular Expressions with unbounded repetition
 
