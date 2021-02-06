@@ -35,7 +35,7 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - run: npm run test
-      - run: npx testpack-cli --keep={ts-jest,typescript} src/e2e.spec.ts tsconfig.release.json tsconfig.test.json
+      - run: npx testpack-cli --verbose --keep={ts-jest,typescript} src/e2e.spec.ts tsconfig.release.json tsconfig.test.json
 
       - name: Upload test coverage report to Codecov
         uses: codecov/codecov-action@v1
