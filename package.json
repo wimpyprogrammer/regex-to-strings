@@ -26,7 +26,7 @@
   },
   "scripts": {
     "build": "run-s clean:* build:*",
-    "build:src": "babel src -d lib --extensions '.js,.ts'",
+    "build:src": "babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.js','**/*.spec.ts'",
     "build:demo": "webpack --config demo/webpack.config.js",
     "build:types": "tsc -p ./tsconfig.release-types.json",
     "clean:src": "rimraf lib/*",
