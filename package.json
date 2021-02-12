@@ -28,7 +28,7 @@
     "build": "run-s clean:* build:*",
     "build:src": "babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.js','**/*.spec.ts'",
     "build:demo": "wp --config demo/webpack.config.js",
-    "build:types": "tsc -p ./tsconfig.release-types.json",
+    "build:types": "tsc -p ./tsconfig.release.json --noEmit false --emitDeclarationOnly",
     "clean:src": "rimraf lib/*",
     "clean:demo": "rimraf demo/lib/*",
     "format": "prettier --write '{src,demo/src}/**'",
