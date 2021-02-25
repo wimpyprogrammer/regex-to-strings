@@ -1,5 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
 	entry: './demo/src/demo.ts',
@@ -9,6 +10,7 @@ module.exports = {
 		lodash: '_',
 		RegexColorizer: 'RegexColorizer',
 	},
+	plugins: [new CleanWebpackPlugin()],
 	module: {
 		rules: [
 			{

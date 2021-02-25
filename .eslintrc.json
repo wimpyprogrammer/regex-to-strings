@@ -22,7 +22,7 @@
 		"import/no-extraneous-dependencies": [
 			"error",
 			{
-				"devDependencies": ["**/*.spec.{js,ts}", "**/jest.config.js"]
+				"devDependencies": ["**/*.spec.{js,ts}", "**/*.config.js"]
 			}
 		],
 		"import/no-unresolved": [
