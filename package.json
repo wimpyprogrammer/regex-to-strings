@@ -77,7 +77,7 @@
   },
   "dependencies": {
     "escape-string-regexp": "^4.0.0",
-    "pandemonium": "^1.4.1",
+    "pandemonium": "^2.0.0",
     "regexp-tree": "^0.1.23"
   },
   "snyk": true
