@@ -1,4 +1,4 @@
-import * as indexLib from './index';
+import * as indexLib from '.';
 import * as patternLib from './pattern';
 
 describe('index', () => {

@@ -1,3 +1,4 @@
+/// <reference types="node" />;
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -31,6 +32,7 @@ module.exports = {
 						options: {
 							compilerOptions: { noEmit: false },
 							configFile: resolve(__dirname, './tsconfig.json'),
+							projectReferences: true,
 						},
 					},
 				],

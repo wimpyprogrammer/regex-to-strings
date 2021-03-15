@@ -7,7 +7,7 @@ import * as randomSort from './sorts/fisher-yates-random';
 import * as chooseRandom from './sorts/number-random';
 import * as chooseRandomWeighted from './sorts/weighted-random';
 
-function measureAverageTime(fn: Function, numTrials: number) {
+function measureAverageTime(fn: () => void, numTrials: number) {
 	let totalTime = 0;
 
 	for (let i = 0; i < numTrials; i++) {

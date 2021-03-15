@@ -1,18 +1,18 @@
 /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["field"] }] */
 import './auto-expand-field.scss';
 
+type anyFn = (...args: unknown[]) => void;
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @see https://gist.github.com/fr-ser/ded7690b245223094cd876069456ed6c
  */
-function debounce<F extends Function>(func: F, wait: number): F {
+function debounce<F extends anyFn>(func: F, wait: number): F {
 	let timeoutID: number;
 
 	return (function debounced(this: any, ...args: any[]) {
 		clearTimeout(timeoutID);
-		const context = this;
-
-		timeoutID = window.setTimeout(() => func.apply(context, args), wait);
+		timeoutID = window.setTimeout(() => func.apply(this, args), wait);
 	} as any) as F;
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */

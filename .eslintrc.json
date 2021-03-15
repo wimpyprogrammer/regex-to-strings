@@ -9,7 +9,8 @@
 		"prettier/@typescript-eslint"
 	],
 	"parserOptions": {
-		"ecmaVersion": 2018
+		"ecmaVersion": 2018,
+		"project": ["./**/tsconfig.json", "./**/tsconfig.test.json"]
 	},
 	"rules": {
 		"import/extensions": [
@@ -49,7 +50,8 @@
 			"LabeledStatement",
 			"WithStatement"
 		],
-		"@typescript-eslint/explicit-function-return-type": "off"
+		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/explicit-module-boundary-types": "off"
 	},
 	"settings": {
 		"import/parsers": {
