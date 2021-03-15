@@ -32,11 +32,11 @@ export default class DemoOutput {
 
 		if (isBlockOutput) {
 			this.$expansions.innerHTML = expansions
-				.map(string => `<div class="alert alert-light">${escape(string)}</div>`)
+				.map((value) => `<div class="alert alert-light">${escape(value)}</div>`)
 				.join('\n');
 		} else {
 			this.$expansions.innerHTML = expansions
-				.map(string => `<span>${escape(string)}</span>`)
+				.map((value) => `<span>${escape(value)}</span>`)
 				.join(delimiter);
 		}
 

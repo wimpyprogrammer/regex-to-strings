@@ -56,7 +56,7 @@ export function write(data: FormInput) {
  * @param fn The function to run and receive the new data
  */
 export function onChange(fn: (newData: StoredInput) => void) {
-	return history.listen(location => {
+	return history.listen((location) => {
 		const newData = parse(location);
 		fn(newData);
 	});

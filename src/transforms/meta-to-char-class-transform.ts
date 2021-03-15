@@ -61,7 +61,7 @@ const optionsDigit = Chars.digits.map(createSimpleChar);
 const optionsWhitespace = Chars.whitespace.map(createSimpleChar);
 
 const needEscape = [']', '-', '\\'];
-const noEscape = Chars.basicSpecial.filter(c => !needEscape.includes(c));
+const noEscape = Chars.basicSpecial.filter((c) => !needEscape.includes(c));
 const optionsOther = [
 	...noEscape.map(createSimpleChar),
 	...needEscape.map(createEscapedSimpleChar),
@@ -78,7 +78,7 @@ function getMetaCharExpressions(
 			const optionsNewLine = createSimpleChar('\n');
 			const optionsDotAll = regExpFlags.includes('s') ? [optionsNewLine] : [];
 			const whitespaceNoBreaks = Chars.whitespace.filter(
-				c => !'\r\n'.includes(c)
+				(c) => !'\r\n'.includes(c)
 			);
 			const optionsWhitespaceNoBreak = whitespaceNoBreaks.map(createSimpleChar);
 

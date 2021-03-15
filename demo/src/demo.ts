@@ -97,7 +97,7 @@ $form.onCancel = () => {
 	hideWaitingState();
 };
 
-UrlStorage.onChange(newData => {
+UrlStorage.onChange((newData) => {
 	$form.populate(newData);
 	if (!$form.validate()) return;
 

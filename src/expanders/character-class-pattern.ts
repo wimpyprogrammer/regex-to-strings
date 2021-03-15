@@ -19,7 +19,7 @@ function getReferencedCodePoints(
 	return [expression.codePoint];
 }
 
-const allCodePointOptions = Chars.all.map(char => char.charCodeAt(0));
+const allCodePointOptions = Chars.all.map((char) => char.charCodeAt(0));
 
 /**
  * Expand an expression which represents a single character from a
@@ -47,10 +47,10 @@ export function expandCharacterClass(this: Expander, node: CharacterClass) {
 
 	const expandedClass = allCodePointOptions
 		// For a whitelist set, discard code points not referenced in the set
-		.filter(option => !node.negative || !referencedCodePoints.includes(option))
+		.filter((opt) => !node.negative || !referencedCodePoints.includes(opt))
 		// For a blacklist set, discard code points referenced in the set
-		.filter(option => node.negative || referencedCodePoints.includes(option))
-		.map(codePoint => String.fromCodePoint(codePoint))
+		.filter((opt) => node.negative || referencedCodePoints.includes(opt))
+		.map((codePoint) => String.fromCodePoint(codePoint))
 		.reduce(applyCaseInsensitiveFlag, []);
 	const sortChars = () => sortRandom(expandedClass);
 
