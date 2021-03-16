@@ -1,4 +1,4 @@
-import { SimpleChar } from 'regexp-tree/ast';
+import type { SimpleChar } from 'regexp-tree/ast';
 
 export function createSimpleChar(value: string): SimpleChar {
 	if (value.length !== 1) throw new Error('value must be a char');

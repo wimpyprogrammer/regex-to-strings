@@ -42,7 +42,7 @@ export function expandRepetition(this: Expander, node: Repetition): Expansion {
 
 	// Calculate the expansions for each quantity of repetition, like "a{1}",
 	// "a{2}", "a{3}", etc.
-	const allExpansions = numOccurrenceOptions.map(numOccurrences => {
+	const allExpansions = numOccurrenceOptions.map((numOccurrences) => {
 		if (numOccurrences <= 0) {
 			return Expansion.Blank;
 		}

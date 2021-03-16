@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"lib": [
+			"es5",
+			"es2015.core",
+			"es2015.iterable",
+			"es2016.array.include",
+			"es2017.string"
+		],
+		"types": ["jest", "regexp-tree", "./types/regexp-tree"]
+	},
+	"extends": "../tsconfig.json",
+	"include": ["./**/*.spec.ts", "../**/*.config.js"],
+	"references": [{ "path": "./" }]
+}

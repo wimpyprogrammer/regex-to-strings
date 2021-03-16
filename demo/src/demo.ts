@@ -11,7 +11,7 @@ import {
 	isCountResult,
 	isExpandResult,
 } from './worker/messages';
-// @ts-ignore Ignore lack of default export.  This is handled by worker-loader.
+// @ts-expect-error Ignore lack of default export.  This is handled by worker-loader.
 import DemoWorker from './worker';
 
 import './demo.scss';
@@ -97,7 +97,7 @@ $form.onCancel = () => {
 	hideWaitingState();
 };
 
-UrlStorage.onChange(newData => {
+UrlStorage.onChange((newData) => {
 	$form.populate(newData);
 	if (!$form.validate()) return;
 

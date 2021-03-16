@@ -13,7 +13,7 @@ const featuresToPolyfill = [
 	'es.symbol.iterator',
 ].join(',');
 
-// @ts-ignore worker-specific function that is unrecognized
+// @ts-expect-error worker-specific function that is unrecognized
 importScripts(
 	`https://polyfill.app/api/polyfill?features=${featuresToPolyfill}&context=worker`
 );
