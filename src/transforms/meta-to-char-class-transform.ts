@@ -1,6 +1,6 @@
-import { Handler } from 'regexp-tree';
-import {
-	AsExpression,
+import type { TransformHandlers } from 'regexp-tree';
+import type {
+	AstClassMap,
 	AstClass,
 	AstRegExp,
 	Char,
@@ -12,7 +12,7 @@ import * as Guards from '../types/regexp-tree-guards';
 import { createEscapedSimpleChar, createSimpleChar } from './utils';
 
 type Replace<ParentType extends AstClass> = (
-	parentNode: AsExpression<ParentType>,
+	parentNode: AstClassMap[ParentType],
 	replacement: CharacterClass,
 	child: Char
 ) => void;
@@ -61,7 +61,7 @@ const optionsDigit = Chars.digits.map(createSimpleChar);
 const optionsWhitespace = Chars.whitespace.map(createSimpleChar);
 
 const needEscape = [']', '-', '\\'];
-const noEscape = Chars.basicSpecial.filter(c => !needEscape.includes(c));
+const noEscape = Chars.basicSpecial.filter((c) => !needEscape.includes(c));
 const optionsOther = [
 	...noEscape.map(createSimpleChar),
 	...needEscape.map(createEscapedSimpleChar),
@@ -78,7 +78,7 @@ function getMetaCharExpressions(
 			const optionsNewLine = createSimpleChar('\n');
 			const optionsDotAll = regExpFlags.includes('s') ? [optionsNewLine] : [];
 			const whitespaceNoBreaks = Chars.whitespace.filter(
-				c => !'\r\n'.includes(c)
+				(c) => !'\r\n'.includes(c)
 			);
 			const optionsWhitespaceNoBreak = whitespaceNoBreaks.map(createSimpleChar);
 
@@ -122,7 +122,7 @@ function getMetaCharExpressions(
  * Convert meta character classes like "\d", "\W", and "." to their ranged character
  * set equivalents like "[0-9]" and "[ \t\r\n~`!@#$%^&*()=+<,>.?/[{}|:;"'\]\-\\]".
  */
-interface MetaToCharClassTransform extends Handler {
+interface MetaToCharClassTransform extends TransformHandlers {
 	flags: string;
 }
 const metaToCharClassTransform: MetaToCharClassTransform = {

@@ -13,7 +13,7 @@ import { iterateWeightedByCount } from '../helpers/iterate-sorted';
  */
 export function expandDisjunction(this: Expander, node: Disjunction) {
 	const expressions = [node.left, node.right];
-	const expansions = expressions.map(e => this.expandExpression(e));
+	const expansions = expressions.map((e) => this.expandExpression(e));
 
 	const expandBothSides = () => iterateWeightedByCount(expansions);
 	const iterationsSum = expansions[0].count + expansions[1].count;

@@ -1,13 +1,13 @@
+import type { TransformHandlers } from 'regexp-tree';
+import type { Char } from 'regexp-tree/ast';
 import escapeStringRegexp from 'escape-string-regexp';
-import { Handler } from 'regexp-tree';
-import { Char } from 'regexp-tree/ast';
 
 /**
  * Interpret \#, \##, and \### escape sequences as Octal, not Decimal.
  * Transform them to their basic character equivalents.
  * Workaround for https://github.com/DmitrySoshnikov/regexp-tree/issues/74.
  */
-const decimalCharToSimpleCharTransform: Handler = {
+const decimalCharToSimpleCharTransform: TransformHandlers = {
 	Char(charPath) {
 		const { node: char } = charPath;
 

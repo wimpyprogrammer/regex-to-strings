@@ -5,10 +5,10 @@
 			"es5",
 			"es2015.core",
 			"es2015.iterable",
-			"es2016.array.include",
-			"es2017.string"
+			"es2016.array.include"
 		]
 	},
-	"extends": "../tsconfig.release.json",
-	"include": ["../src", "./src"]
+	"extends": "../tsconfig.json",
+	"include": ["src"],
+	"references": [{ "path": "../src" }]
 }

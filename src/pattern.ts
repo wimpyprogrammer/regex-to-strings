@@ -2,11 +2,8 @@ import { compatTranspile, parse, transform } from 'regexp-tree';
 import Expander from './Expander';
 import Expansion from './Expansion';
 // Circular reference for spying/mocking in tests
-import {
-	expand as mockableExpand,
-	toRegExp as mockableToRegExp,
-} from './index';
-import transforms from './transforms/index';
+import { expand as mockableExpand, toRegExp as mockableToRegExp } from '.';
+import transforms from './transforms';
 
 // From https://triin.net/2011/10/19/Meta_Regular_Expression
 const regexAsStringPattern = /^\/([^/\[\\]|\\.|\[([^\]\\]|\\.)*\])*\/[a-z]*$/i;

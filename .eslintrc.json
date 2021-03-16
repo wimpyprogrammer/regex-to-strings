@@ -5,11 +5,11 @@
 		"plugin:jest/recommended",
 		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended",
-		"prettier",
-		"prettier/@typescript-eslint"
+		"prettier"
 	],
 	"parserOptions": {
-		"ecmaVersion": 2018
+		"ecmaVersion": 2018,
+		"project": ["./**/tsconfig.json", "./**/tsconfig.test.json"]
 	},
 	"rules": {
 		"import/extensions": [
@@ -22,7 +22,7 @@
 		"import/no-extraneous-dependencies": [
 			"error",
 			{
-				"devDependencies": ["**/*.spec.{js,ts}", "**/jest.config.js"]
+				"devDependencies": ["**/*.spec.{js,ts}", "**/*.config.js"]
 			}
 		],
 		"import/no-unresolved": [
@@ -49,7 +49,8 @@
 			"LabeledStatement",
 			"WithStatement"
 		],
-		"@typescript-eslint/explicit-function-return-type": "off"
+		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/explicit-module-boundary-types": "off"
 	},
 	"settings": {
 		"import/parsers": {

@@ -1,5 +1,5 @@
-/* eslint-disable no-empty-function, no-useless-constructor, @typescript-eslint/no-parameter-properties */
-import { expand } from '../../../src/index';
+/* eslint-disable max-classes-per-file, no-useless-constructor */
+import { expand } from '../../../src';
 
 interface WorkerMessage {
 	readonly kind: string;
