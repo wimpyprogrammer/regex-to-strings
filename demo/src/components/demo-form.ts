@@ -27,7 +27,9 @@ export default class DemoForm {
 	protected $errorContainer: HTMLDivElement;
 	protected $errorMessage: HTMLPreElement;
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	public onSubmit: () => void = () => {};
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	public onCancel: () => void = () => {};
 
 	private onInputKeydown(event: KeyboardEvent): boolean {

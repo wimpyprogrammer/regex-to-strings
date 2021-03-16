@@ -1,5 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+/// <reference types="node" />;
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
 	entry: './demo/src/demo.ts',
@@ -9,6 +11,7 @@ module.exports = {
 		lodash: '_',
 		RegexColorizer: 'RegexColorizer',
 	},
+	plugins: [new CleanWebpackPlugin()],
 	module: {
 		rules: [
 			{
@@ -29,6 +32,7 @@ module.exports = {
 						options: {
 							compilerOptions: { noEmit: false },
 							configFile: resolve(__dirname, './tsconfig.json'),
+							projectReferences: true,
 						},
 					},
 				],

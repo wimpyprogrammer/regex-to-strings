@@ -9,7 +9,7 @@ import {
 	isExpandRequest,
 	OptimizeResult,
 } from './messages';
-import { expand, toRegExp } from '../../../src/index';
+import { expand, toRegExp } from '../../../src';
 
 function assertNeverRequest(x: never): never {
 	throw new TypeError(`Unexpected message: ${x}`);

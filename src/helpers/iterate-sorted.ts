@@ -11,8 +11,8 @@ import chooseRandomWeighted from '../sorts/weighted-random';
 export function* iterateWeightedByCount(
 	options: Expansion[]
 ): IterableIterator<string> {
-	const iterators = options.map(option => option.getIterator());
-	const weights = options.map(option => option.count);
+	const iterators = options.map((option) => option.getIterator());
+	const weights = options.map((option) => option.count);
 
 	while (iterators.length > 0) {
 		// Randomly choose an option, weighted by the size of the expansion.

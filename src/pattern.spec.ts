@@ -7,7 +7,7 @@ import * as randomSort from './sorts/fisher-yates-random';
 import * as chooseRandom from './sorts/number-random';
 import * as chooseRandomWeighted from './sorts/weighted-random';
 
-function measureAverageTime(fn: Function, numTrials: number) {
+function measureAverageTime(fn: () => void, numTrials: number) {
 	let totalTime = 0;
 
 	for (let i = 0; i < numTrials; i++) {
@@ -100,7 +100,7 @@ describe('expand', () => {
 		// Keep a stable order for consistent tests.
 		sortFn = jest
 			.spyOn(randomSort, 'default')
-			.mockImplementation(items => [...items]);
+			.mockImplementation((items) => [...items]);
 
 		randomWeightedFn = jest
 			.spyOn(chooseRandomWeighted, 'default')
@@ -108,7 +108,7 @@ describe('expand', () => {
 
 		randomFn = jest
 			.spyOn(chooseRandom, 'default')
-			.mockImplementation(minValue => minValue);
+			.mockImplementation((minValue) => minValue);
 	});
 
 	it('normalizes pattern with toRegExp()', () => {
@@ -610,18 +610,18 @@ describe('expand', () => {
 
 	it.each([/(.|\r)/s, /[\s\S]/, /[\w\W]/, /[\d\D]/])(
 		'includes all supported characters in %p',
-		regex => {
+		(regex) => {
 			const result = expandAll(regex);
 
 			expect(result).toHaveLength(Chars.all.length);
-			Chars.all.forEach(char => {
+			Chars.all.forEach((char) => {
 				expect(result).toContain(char);
 			});
 		}
 	);
 
 	it('expands repeated character class', () => {
-		const allTwoDigitNumbers = fill(0, 99).map(num =>
+		const allTwoDigitNumbers = fill(0, 99).map((num) =>
 			num.toString().padStart(2, '0')
 		);
 
@@ -787,7 +787,7 @@ describe('expand', () => {
 
 		// Re-enable the normal sorting behavior
 		beforeEach(() => {
-			[sortFn, randomWeightedFn, randomFn].forEach(mockFn =>
+			[sortFn, randomWeightedFn, randomFn].forEach((mockFn) =>
 				mockFn.mockRestore()
 			);
 		});
@@ -825,7 +825,7 @@ describe('expand', () => {
 				const results = expandN(/[ab]{1,2}/, 2);
 				resultsAllTrials = resultsAllTrials.concat(results);
 			}
-			const resultsByLength = resultsAllTrials.map(result => result.length);
+			const resultsByLength = resultsAllTrials.map((result) => result.length);
 			const uniqueLengths = resultsByLength.filter(isUnique);
 
 			expect(uniqueLengths.length).toBeGreaterThan(1);
@@ -842,7 +842,7 @@ describe('expand', () => {
 				(iChar: number) => {
 					const results = expandN(input, 50);
 
-					const resultsThisChar = results.map(result =>
+					const resultsThisChar = results.map((result) =>
 						result.charAt(iChar - 1)
 					);
 					const uniqueThisChar = resultsThisChar.filter(isUnique);
@@ -1083,7 +1083,7 @@ describe('expand', () => {
 			'e', // POSIX ERE
 			'q', // Literal
 			'X', // Extra syntax
-		].forEach(modeModifier => {
+		].forEach((modeModifier) => {
 			it.each([
 				['positive at start', `(?${modeModifier})test`],
 				['positive in middle', `te(?${modeModifier})st`],
@@ -1175,7 +1175,7 @@ describe('expand', () => {
 			'u', // upper
 			'h', // blank
 			'V', // vertical whitespace
-		].forEach(posixClass => {
+		].forEach((posixClass) => {
 			it.each([
 				['POSIX class', `[[:${posixClass}:]]`],
 				['negative POSIX class', `[[:^${posixClass}:]]`],
@@ -1204,7 +1204,7 @@ describe('expand', () => {
 			'Upper',
 			'Word',
 			'XDigit',
-		].forEach(javaPosixClass => {
+		].forEach((javaPosixClass) => {
 			it.each([
 				['Java POSIX class', `\p{${javaPosixClass}}`],
 				['Java POSIX class', `\p{Is${javaPosixClass}}`],
@@ -1265,7 +1265,7 @@ describe('expand', () => {
 			'Thai',
 			'Tibetan',
 			'Yi',
-		].forEach(unicodeScript => {
+		].forEach((unicodeScript) => {
 			it.each([`\p{${unicodeScript}}`, `\p{Is${unicodeScript}}`])(
 				'does not recognize RegEx syntax: Unicode script /%s/',
 				(input: string) => {
@@ -1383,7 +1383,7 @@ describe('expand', () => {
 			'Arabic_Presentation_Forms-B',
 			'Halfwidth_and_Fullwidth_Forms',
 			'Specials',
-		].forEach(unicodeBlock => {
+		].forEach((unicodeBlock) => {
 			function testUnicodeBlock(_: string, input: string) {
 				const result = expandAll(input);
 				expect(result).toHaveLength(1);
@@ -1501,7 +1501,7 @@ describe('expand', () => {
 			'Cs',
 			'Unassigned',
 			'Cn',
-		].forEach(unicodeCategory => {
+		].forEach((unicodeCategory) => {
 			it.each([
 				['Longhand format', `\p{${unicodeCategory}}`],
 				['Longhand format', `\p{Is${unicodeCategory}}`],
@@ -1529,7 +1529,7 @@ describe('expand', () => {
 		});
 
 		// From https://www.regular-expressions.info/unicode.html#category
-		['L', 'M', 'Z', 'S', 'N', 'P', 'C'].forEach(unicodeCategory => {
+		['L', 'M', 'Z', 'S', 'N', 'P', 'C'].forEach((unicodeCategory) => {
 			it.each([['Shorthand format', `\p${unicodeCategory}`]])(
 				'does not recognize RegEx syntax: Unicode category %s /%s/',
 				(_: string, input: string) => {
