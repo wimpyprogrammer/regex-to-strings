@@ -30,7 +30,7 @@
     "build:demo": "wp --config demo/webpack.config.js",
     "build:types": "tsc --noEmit false --emitDeclarationOnly",
     "format": "prettier --write '{src,demo/src}/**'",
-    "lint": "tsc -b && eslint . --report-unused-disable-directives",
+    "lint": "tsc -b ./tsconfig.lint.json && eslint . --report-unused-disable-directives",
     "precommit": "pretty-quick --staged",
     "prepublish": "npx publish-please guard",
     "publish-please": "npx publish-please",
