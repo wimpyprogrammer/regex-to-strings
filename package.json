@@ -35,7 +35,8 @@
     "prepublishOnly": "publish-please guard",
     "publish-please": "publish-please",
     "publish-please-prereqs": "npm run lint && npm run test && npm run build",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test-package": "tsc -b ./tsconfig.lint.json && jest --coverage"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.10",
