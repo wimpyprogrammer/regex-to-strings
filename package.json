@@ -16,8 +16,7 @@
   "types": "./lib/index.d.ts",
   "files": [
     "lib/**/*.js",
-    "lib/**/*.js.map",
-    "lib/**/*.d.ts"
+    "lib/**/*.js.map"
   ],
   "sideEffects": [
     "demo/**/polyfills.ts",
