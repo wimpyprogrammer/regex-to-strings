@@ -32,8 +32,8 @@
     "format": "prettier --write '{src,demo/src}/**'",
     "lint": "tsc -b ./tsconfig.lint.json && eslint . --report-unused-disable-directives",
     "precommit": "pretty-quick --staged",
-    "prepublish": "npx publish-please guard",
-    "publish-please": "npx publish-please",
+    "prepublishOnly": "publish-please guard",
+    "publish-please": "publish-please",
     "publish-please-prereqs": "npm run lint && npm run test && npm run build",
     "test": "jest --coverage"
   },
@@ -66,6 +66,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "2.2.1",
     "pretty-quick": "3.1.0",
+    "publish-please": "^5.5.2",
     "sass-loader": "^11.0.1",
     "style-loader": "^2.0.0",
     "ts-jest": "^26.5.3",
