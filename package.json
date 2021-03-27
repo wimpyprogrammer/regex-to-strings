@@ -15,7 +15,9 @@
   "main": "lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
-    "lib/"
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "lib/**/*.d.ts"
   ],
   "sideEffects": [
     "demo/**/polyfills.ts",
@@ -26,9 +28,8 @@
   },
   "scripts": {
     "build": "run-s build:*",
-    "build:src": "babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.js','**/*.spec.ts' --delete-dir-on-start",
+    "build:src": "tsc -b --clean && tsc -b",
     "build:demo": "wp --config demo/webpack.config.js",
-    "build:types": "tsc --noEmit false --emitDeclarationOnly",
     "format": "prettier --write '{src,demo/src}/**'",
     "lint": "tsc -b ./tsconfig.lint.json && eslint . --report-unused-disable-directives",
     "precommit": "pretty-quick --staged",
