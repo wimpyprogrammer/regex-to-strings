@@ -40,7 +40,6 @@
     "test": "jest --coverage"
   },
   "devDependencies": {
-    "@types/escape-string-regexp": "^2.0.1",
     "@types/history": "^4.7.3",
     "@types/jest": "^26.0.10",
     "@types/jest-when": "^2.4.1",
