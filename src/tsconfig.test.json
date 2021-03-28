@@ -7,9 +7,11 @@
 			"es2016.array.include",
 			"es2017.string"
 		],
+		"noEmit": true,
+		"outDir": "../lib",
 		"types": ["jest", "regexp-tree", "./types/regexp-tree"]
 	},
 	"extends": "../tsconfig.json",
-	"include": ["./**/*.spec.ts", "../**/*.config.js"],
+	"include": ["./**/*.spec.ts", "../jest.config.js"],
 	"references": [{ "path": "./" }]
 }

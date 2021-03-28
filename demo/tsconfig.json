@@ -6,9 +6,11 @@
 			"es2015.core",
 			"es2015.iterable",
 			"es2016.array.include"
-		]
+		],
+		"noEmit": true,
+		"outDir": "./lib"
 	},
 	"extends": "../tsconfig.json",
-	"include": ["src"],
+	"include": ["src", "webpack.config.js"],
 	"references": [{ "path": "../src" }]
 }

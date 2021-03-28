@@ -5,6 +5,9 @@
     "type": "git",
     "url": "git+https://github.com/wimpyprogrammer/regex-to-strings.git"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "bugs": {
     "url": "https://github.com/wimpyprogrammer/regex-to-strings/issues"
   },
@@ -15,7 +18,9 @@
   "main": "lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
-    "lib/"
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "lib/**/*.d.ts"
   ],
   "sideEffects": [
     "demo/**/polyfills.ts",
@@ -26,24 +31,15 @@
   },
   "scripts": {
     "build": "run-s build:*",
-    "build:src": "babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.js','**/*.spec.ts' --delete-dir-on-start",
+    "build:src": "tsc -b --clean && tsc -b",
     "build:demo": "wp --config demo/webpack.config.js",
-    "build:types": "tsc --noEmit false --emitDeclarationOnly",
     "format": "prettier --write '{src,demo/src}/**'",
-    "lint": "tsc -b && eslint . --report-unused-disable-directives",
+    "lint": "tsc -b ./tsconfig.lint.json && eslint . --report-unused-disable-directives",
     "precommit": "pretty-quick --staged",
-    "prepublish": "npx publish-please guard",
-    "publish-please": "npx publish-please",
-    "publish-please-prereqs": "npm run lint && npm run test && npm run build",
+    "release": "npx release-it",
     "test": "jest --coverage"
   },
   "devDependencies": {
-    "@babel/cli": "^7.13.10",
-    "@babel/core": "^7.13.10",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/preset-env": "^7.13.10",
-    "@babel/preset-typescript": "^7.13.0",
-    "@types/escape-string-regexp": "^2.0.1",
     "@types/history": "^4.7.3",
     "@types/jest": "^26.0.10",
     "@types/jest-when": "^2.4.1",
