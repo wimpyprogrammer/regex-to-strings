@@ -1,13 +1,6 @@
 import { count, expand, expandAll, expandN } from '.';
 
 describe('count end-to-end', () => {
-	it('includes typings', () => {
-		expect(() => {
-			// @ts-expect-error Accepts string | RegExp
-			count(123);
-		}).toThrow();
-	});
-
 	it('returns a count of potential strings that match pattern', () => {
 		const numStrings = count(/[a-z]{5}/i);
 
@@ -17,13 +10,6 @@ describe('count end-to-end', () => {
 
 describe('expand end-to-end', () => {
 	const phoneNumberPattern = /((\(555\) ?)|(555-))?\d{3}-\d{4}/;
-
-	it('includes typings', () => {
-		expect(() => {
-			// @ts-expect-error Accepts string | RegExp
-			expand(123);
-		}).toThrow();
-	});
 
 	it('returns a count of potential strings that match pattern', () => {
 		const phoneNumberExpander = expand(phoneNumberPattern);
@@ -43,13 +29,6 @@ describe('expand end-to-end', () => {
 });
 
 describe('expandAll end-to-end', () => {
-	it('includes typings', () => {
-		expect(() => {
-			// @ts-expect-error Accepts string | RegExp
-			expandAll(123);
-		}).toThrow();
-	});
-
 	it('returns all strings that match pattern', () => {
 		const strings = expandAll(/\d/);
 
@@ -61,13 +40,6 @@ describe('expandAll end-to-end', () => {
 });
 
 describe('expandN end-to-end', () => {
-	it('includes typings', () => {
-		expect(() => {
-			// @ts-expect-error Accepts string | RegExp
-			expandN(123, 10);
-		}).toThrow();
-	});
-
 	it('returns no more than N strings that match pattern', () => {
 		const pattern = /\d{3,5}/;
 		const strings = expandN(pattern, 5);
