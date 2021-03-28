@@ -36,8 +36,7 @@
     "lint": "tsc -b ./tsconfig.lint.json && eslint . --report-unused-disable-directives",
     "precommit": "pretty-quick --staged",
     "release": "npx release-it",
-    "test": "jest --coverage",
-    "test-package": "tsc -b ./tsconfig.lint.json && jest --coverage"
+    "test": "jest --coverage"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.10",
