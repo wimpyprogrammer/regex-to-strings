@@ -43,6 +43,7 @@ jobs:
           fail_ci_if_error: true
 
       - name: Run Snyk to check for vulnerabilities
+        if: ${{ github.actor != 'dependabot[bot]' }}
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
