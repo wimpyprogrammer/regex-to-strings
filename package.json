@@ -71,7 +71,7 @@
     "worker-loader": "^3.0.8"
   },
   "dependencies": {
-    "escape-string-regexp": "^4.0.0",
+    "escape-string-regexp": "^5.0.0",
     "pandemonium": "^2.0.0",
     "regexp-tree": "^0.1.23"
   },
