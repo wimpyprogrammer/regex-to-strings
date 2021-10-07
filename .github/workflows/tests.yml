@@ -42,6 +42,15 @@ jobs:
         with:
           fail_ci_if_error: true
 
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+        id: snyk
+        with:
+          snyk-version: latest
+
+      - name: Snyk version
+        run: echo "${{ steps.snyk.outputs.version }}"
+
       - name: Run Snyk to check for vulnerabilities
         if: ${{ github.actor != 'dependabot[bot]' }}
         uses: snyk/actions/node@master
