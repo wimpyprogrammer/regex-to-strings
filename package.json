@@ -27,7 +27,7 @@
     "*.scss"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "scripts": {
     "build": "run-s build:*",
