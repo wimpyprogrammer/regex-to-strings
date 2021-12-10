@@ -62,7 +62,7 @@ describe('count', () => {
 	});
 
 	it.each<[RegExp | string, number]>([
-		[new RegExp(''), 1],
+		[new RegExp(''), 1], // eslint-disable-line prefer-regex-literals
 		[/abc/, 1],
 		[/\d/, 10],
 		[/ab?/, 2],
