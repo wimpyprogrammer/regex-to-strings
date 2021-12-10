@@ -62,7 +62,7 @@ describe('count', () => {
 	});
 
 	it.each<[RegExp | string, number]>([
-		[new RegExp(''), 1],
+		[new RegExp(''), 1], // eslint-disable-line prefer-regex-literals
 		[/abc/, 1],
 		[/\d/, 10],
 		[/ab?/, 2],
@@ -1384,12 +1384,6 @@ describe('expand', () => {
 			'Halfwidth_and_Fullwidth_Forms',
 			'Specials',
 		].forEach((unicodeBlock) => {
-			function testUnicodeBlock(_: string, input: string) {
-				const result = expandAll(input);
-				expect(result).toHaveLength(1);
-				expect(result[0]).toMatch(/^p{/);
-			}
-
 			it.each([
 				['', `\p{${unicodeBlock}}`],
 				['', `\p{Is${unicodeBlock}}`],
@@ -1397,7 +1391,11 @@ describe('expand', () => {
 				['lowercase', `\p{In${unicodeBlock.toLowerCase()}}`],
 			])(
 				`does not recognize RegEx syntax: ${unicodeBlock} Unicode block %s /%s/`,
-				testUnicodeBlock
+				(_, input) => {
+					const result = expandAll(input);
+					expect(result).toHaveLength(1);
+					expect(result[0]).toMatch(/^p{/);
+				}
 			);
 
 			if (unicodeBlock.includes('_')) {
@@ -1407,7 +1405,11 @@ describe('expand', () => {
 					['spaces for underscores', `\p{${unicodeBlock.replace('_', ' ')}}`],
 				])(
 					`does not recognize RegEx syntax: ${unicodeBlock} Unicode block %s /%s/`,
-					testUnicodeBlock
+					(_, input) => {
+						const result = expandAll(input);
+						expect(result).toHaveLength(1);
+						expect(result[0]).toMatch(/^p{/);
+					}
 				);
 			}
 
@@ -1418,7 +1420,11 @@ describe('expand', () => {
 					['spaces for hyphens', `\p{${unicodeBlock.replace('-', ' ')}}`],
 				])(
 					`does not recognize RegEx syntax: ${unicodeBlock} Unicode block %s /%s/`,
-					testUnicodeBlock
+					(_, input) => {
+						const result = expandAll(input);
+						expect(result).toHaveLength(1);
+						expect(result[0]).toMatch(/^p{/);
+					}
 				);
 			}
 		});

@@ -12,11 +12,13 @@ export default class Expansion {
 	/**
 	 * A single blank string Expansion
 	 */
+	// eslint-disable-next-line no-use-before-define
 	public static Blank: Expansion = new Expansion([''], 1);
 
 	/**
 	 * Zero string expansions
 	 */
+	// eslint-disable-next-line no-use-before-define
 	public static Empty: Expansion = new Expansion([], 0);
 
 	/**
