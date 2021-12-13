@@ -7,7 +7,6 @@
 		"changelog": false,
 		"commit": false,
 		"requireBranch": "main",
-		"requireCommits": true,
 		"tagName": "${version}"
 	}
 }
