@@ -1,0 +1,8 @@
+{
+	"commitLimit": false,
+	"ignoreCommitPattern": "Bump .* version|Merge tag .+ into develop",
+	"package": true,
+	"sortCommits": "date-desc",
+	"startingVersion": "1.1.0",
+	"template": "keepachangelog"
+}

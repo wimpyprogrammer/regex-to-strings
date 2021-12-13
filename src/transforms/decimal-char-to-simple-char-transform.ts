@@ -1,6 +1,6 @@
+import escapeStringRegexp from 'escape-string-regexp';
 import type { TransformHandlers } from 'regexp-tree';
 import type { Char } from 'regexp-tree/ast';
-import escapeStringRegexp from 'escape-string-regexp';
 
 /**
  * Interpret \#, \##, and \### escape sequences as Octal, not Decimal.

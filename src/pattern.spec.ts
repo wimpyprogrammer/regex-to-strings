@@ -62,7 +62,7 @@ describe('count', () => {
 	});
 
 	it.each<[RegExp | string, number]>([
-		[new RegExp(''), 1],
+		[new RegExp(''), 1], // eslint-disable-line prefer-regex-literals
 		[/abc/, 1],
 		[/\d/, 10],
 		[/ab?/, 2],
@@ -1142,13 +1142,16 @@ describe('expand', () => {
 
 		it.each<[string, RegExp]>([
 			// From https://www.regular-expressions.info/refcharclass.html
-			['Character class subtraction', /[c-m-[j-z]]/],
-			['Character class intersection', /[a-i&&c-z]/],
-			['Character class nested intersection', /[a-i&&[c-z]]/],
-		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandAll(input);
-			expect(result).not.toEqual(['c', 'd', 'e', 'f', 'g', 'h', 'i']);
-		});
+			['subtraction', /[c-m-[j-z]]/],
+			['intersection', /[a-i&&c-z]/],
+			['nested intersection', /[a-i&&[c-z]]/],
+		])(
+			'does not recognize RegEx syntax: character class %s %p',
+			(_: string, input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).not.toEqual(['c', 'd', 'e', 'f', 'g', 'h', 'i']);
+			}
+		);
 
 		[
 			// From https://www.regular-expressions.info/posixbrackets.html#class
@@ -1177,10 +1180,10 @@ describe('expand', () => {
 			'V', // vertical whitespace
 		].forEach((posixClass) => {
 			it.each([
-				['POSIX class', `[[:${posixClass}:]]`],
-				['negative POSIX class', `[[:^${posixClass}:]]`],
+				['', `[[:${posixClass}:]]`],
+				['negative', `[[:^${posixClass}:]]`],
 			])(
-				'does not recognize RegEx syntax: %s /%s/',
+				'does not recognize RegEx syntax: %s POSIX class /%s/',
 				(_: string, input: string) => {
 					const result = expandAll(input);
 					expect(result.pop()).toEqual(':]');
@@ -1205,12 +1208,9 @@ describe('expand', () => {
 			'Word',
 			'XDigit',
 		].forEach((javaPosixClass) => {
-			it.each([
-				['Java POSIX class', `\p{${javaPosixClass}}`],
-				['Java POSIX class', `\p{Is${javaPosixClass}}`],
-			])(
-				'does not recognize RegEx syntax: %s /%s/',
-				(_: string, input: string) => {
+			it.each([`\p{${javaPosixClass}}`, `\p{Is${javaPosixClass}}`])(
+				`does not recognize RegEx syntax: Java ${javaPosixClass} POSIX class /%s/`,
+				(input: string) => {
 					const result = expandAll(input);
 					expect(result).toHaveLength(1);
 					expect(result[0]).toMatch(/^p{/);
@@ -1384,20 +1384,18 @@ describe('expand', () => {
 			'Halfwidth_and_Fullwidth_Forms',
 			'Specials',
 		].forEach((unicodeBlock) => {
-			function testUnicodeBlock(_: string, input: string) {
-				const result = expandAll(input);
-				expect(result).toHaveLength(1);
-				expect(result[0]).toMatch(/^p{/);
-			}
-
 			it.each([
 				['', `\p{${unicodeBlock}}`],
 				['', `\p{Is${unicodeBlock}}`],
 				['', `\p{In${unicodeBlock}}`],
 				['lowercase', `\p{In${unicodeBlock.toLowerCase()}}`],
 			])(
-				'does not recognize RegEx syntax: Unicode block %s /%s/',
-				testUnicodeBlock
+				`does not recognize RegEx syntax: ${unicodeBlock} Unicode block %s /%s/`,
+				(_, input) => {
+					const result = expandAll(input);
+					expect(result).toHaveLength(1);
+					expect(result[0]).toMatch(/^p{/);
+				}
 			);
 
 			if (unicodeBlock.includes('_')) {
@@ -1406,8 +1404,12 @@ describe('expand', () => {
 					['hyphens for underscores', `\p{${unicodeBlock.replace('_', '-')}}`],
 					['spaces for underscores', `\p{${unicodeBlock.replace('_', ' ')}}`],
 				])(
-					'does not recognize RegEx syntax: Unicode block %s /%s/',
-					testUnicodeBlock
+					`does not recognize RegEx syntax: ${unicodeBlock} Unicode block %s /%s/`,
+					(_, input) => {
+						const result = expandAll(input);
+						expect(result).toHaveLength(1);
+						expect(result[0]).toMatch(/^p{/);
+					}
 				);
 			}
 
@@ -1417,8 +1419,12 @@ describe('expand', () => {
 					['underscores for hyphens', `\p{${unicodeBlock.replace('-', '_')}}`],
 					['spaces for hyphens', `\p{${unicodeBlock.replace('-', ' ')}}`],
 				])(
-					'does not recognize RegEx syntax: Unicode block %s /%s/',
-					testUnicodeBlock
+					`does not recognize RegEx syntax: ${unicodeBlock} Unicode block %s /%s/`,
+					(_, input) => {
+						const result = expandAll(input);
+						expect(result).toHaveLength(1);
+						expect(result[0]).toMatch(/^p{/);
+					}
 				);
 			}
 		});
@@ -1507,7 +1513,7 @@ describe('expand', () => {
 				['Longhand format', `\p{Is${unicodeCategory}}`],
 				['Longhand negative format', `\p{^${unicodeCategory}}`],
 			])(
-				'does not recognize RegEx syntax: Unicode category %s /%s/',
+				`does not recognize RegEx syntax: ${unicodeCategory} Unicode category %s /%s/`,
 				(_: string, input: string) => {
 					const result = expandAll(input);
 					expect(result).toHaveLength(1);
@@ -1519,7 +1525,7 @@ describe('expand', () => {
 				['Longhand negative format', `\P{${unicodeCategory}}`],
 				['Longhand double negative format', `\P{^${unicodeCategory}}`],
 			])(
-				'does not recognize RegEx syntax: Unicode category %s /%s/',
+				`does not recognize RegEx syntax: ${unicodeCategory} Unicode category %s /%s/`,
 				(_: string, input: string) => {
 					const result = expandAll(input);
 					expect(result).toHaveLength(1);
@@ -1530,18 +1536,18 @@ describe('expand', () => {
 
 		// From https://www.regular-expressions.info/unicode.html#category
 		['L', 'M', 'Z', 'S', 'N', 'P', 'C'].forEach((unicodeCategory) => {
-			it.each([['Shorthand format', `\p${unicodeCategory}`]])(
-				'does not recognize RegEx syntax: Unicode category %s /%s/',
-				(_: string, input: string) => {
+			it.each([`\p${unicodeCategory}`])(
+				'does not recognize RegEx syntax: Unicode category shorthand format /%s/',
+				(input: string) => {
 					const result = expandAll(input);
 					expect(result).toHaveLength(1);
 					expect(result[0]).toMatch(/^p/);
 				}
 			);
 
-			it.each([['Shorthand negative format', `\P${unicodeCategory}`]])(
-				'does not recognize RegEx syntax: Unicode category %s /%s/',
-				(_: string, input: string) => {
+			it.each([`\P${unicodeCategory}`])(
+				'does not recognize RegEx syntax: Unicode category shorthand negative format /%s/',
+				(input: string) => {
 					const result = expandAll(input);
 					expect(result).toHaveLength(1);
 					expect(result[0]).toMatch(/^P/);
@@ -1560,7 +1566,7 @@ describe('expand', () => {
 			expect(result).toEqual(['X']);
 		});
 
-		it.each<[string, RegExp]>([
+		it.each<[string, RegExp | string]>([
 			// From https://www.regular-expressions.info/refcharacters.html
 			['Escape sequence', /Qab abE/],
 			['Octal escape sequence', /\o{141}\o{142} \o{141}\o{142}/],
@@ -1586,12 +1592,7 @@ describe('expand', () => {
 			// From https://www.regular-expressions.info/refadv.html
 			['backreference in lookbehind', /(ab) (?<=\1)/],
 			['marker to ignore preceeding text', /ignore this \Kab ab/],
-		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandAll(input);
-			expect(result).not.toEqual(['ab ab']);
-		});
 
-		it.each([
 			// From https://www.regular-expressions.info/refext.html
 			['numbered backreference before group', '\\1 (ab)'],
 			['named backreference before group', '\\k<x> (?<x>ab)'],
@@ -1599,46 +1600,46 @@ describe('expand', () => {
 			['backreference', '(?<x>ab) \\k{x}'],
 			['backreference', '(?<x>ab) \\g{x}'],
 			['failed backreference', '(?<x>ab)? \\k<x>'],
-		])(
-			'does not recognize RegEx syntax: %s /%s/',
-			(_: string, input: string) => {
-				const result = expandAll(input);
-				expect(result).not.toEqual(['ab ab']);
-			}
-		);
+		])('does not recognize RegEx syntax: %s %p', (_, input) => {
+			const result = expandAll(input);
+			expect(result).not.toEqual(['ab ab']);
+		});
 
-		it.each<[string, RegExp]>([
+		it.each<RegExp>([
 			// From https://www.regular-expressions.info/refrecurse.html
-			['recursion', /a\g<0>?z/],
-			['recursion', /ag'0'?z/],
-		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
+			/a\g<0>?z/,
+			/ag'0'?z/,
+		])('does not recognize RegEx syntax: recursion %p', (input: RegExp) => {
 			const result = expandN(input, 3);
 			expect(result).not.toEqual(['az', 'aazz', 'aaazzz']);
 		});
 
 		it.each([
 			// From https://www.regular-expressions.info/refrecurse.html
-			['subroutine call', 'a(b\\g<1>?y)z'],
-			['subroutine call', "a(b\\g'1'?y)z"],
-			['relative subroutine call', 'a(b\\g<-1>?y)z'],
-			['relative subroutine call', "a(b\\g'-1'?y)z"],
-			['named subroutine call', 'a(?<x>b\\g<x>?y)z'],
+			['', 'a(b\\g<1>?y)z'],
+			['', "a(b\\g'1'?y)z"],
+			['relative', 'a(b\\g<-1>?y)z'],
+			['relative', "a(b\\g'-1'?y)z"],
+			['named', 'a(?<x>b\\g<x>?y)z'],
 		])(
-			'does not recognize RegEx syntax: %s /%s/',
+			'does not recognize RegEx syntax: %s subroutine call /%s/',
 			(_: string, input: string) => {
 				const result = expandN(input, 3);
 				expect(result).not.toEqual(['abyz', 'abbyyz', 'abbbyyyz']);
 			}
 		);
 
-		it.each<[string, RegExp]>([
+		it.each<RegExp>([
 			// From https://www.regular-expressions.info/refrecurse.html
-			['forward subroutine call', /\g<+1>x([ab])/],
-			['forward subroutine call', /\g'+1'x([ab])/],
-		])('does not recognize RegEx syntax: %s %p', (_: string, input: RegExp) => {
-			const result = expandAll(input);
-			expect(result).not.toEqual(['axa', 'axb', 'bxa', 'bxb']);
-		});
+			/\g<+1>x([ab])/,
+			/\g'+1'x([ab])/,
+		])(
+			'does not recognize RegEx syntax: forward subroutine call %p',
+			(input: RegExp) => {
+				const result = expandAll(input);
+				expect(result).not.toEqual(['axa', 'axb', 'bxa', 'bxb']);
+			}
+		);
 	});
 });
 
