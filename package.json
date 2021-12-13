@@ -36,7 +36,7 @@
     "changelog": "npx auto-changelog",
     "format": "prettier --write '{src,demo/src}/**'",
     "lint": "tsc -b ./tsconfig.lint.json && eslint . --report-unused-disable-directives",
-    "release": "npx release-it",
+    "release": "npx release-it --no-increment",
     "test": "jest --coverage"
   },
   "devDependencies": {
