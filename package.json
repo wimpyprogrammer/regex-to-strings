@@ -33,6 +33,7 @@
     "build": "run-s build:*",
     "build:src": "tsc -b --clean && tsc -b",
     "build:demo": "wp --config demo/webpack.config.js",
+    "changelog": "npx auto-changelog",
     "format": "prettier --write '{src,demo/src}/**'",
     "lint": "tsc -b ./tsconfig.lint.json && eslint . --report-unused-disable-directives",
     "release": "npx release-it",
