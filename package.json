@@ -40,7 +40,7 @@
     "test": "jest --coverage"
   },
   "devDependencies": {
-    "@types/history": "^4.7.3",
+    "@types/history": "^5.0.0",
     "@types/jest": "^27.0.1",
     "@types/jest-when": "^3.5.0",
     "@types/lodash": "^4.14.140",
