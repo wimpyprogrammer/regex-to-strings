@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"lib": ["es5", "es2015.core", "es2015.iterable", "es2016.array.include"],
+		"outDir": "lib",
+		"rootDir": "src"
+	},
+	"extends": "../../tsconfig.json",
+	"exclude": ["**/*.spec.ts", "**/*.config.js"],
+	"include": ["src"]
+}

@@ -8,10 +8,10 @@
 			"es2017.string"
 		],
 		"noEmit": true,
-		"outDir": "../lib",
-		"types": ["jest", "regexp-tree", "./types/regexp-tree"]
+		"outDir": "lib",
+		"types": ["jest", "regexp-tree", "./src/types/regexp-tree"]
 	},
-	"extends": "../tsconfig.json",
-	"include": ["./**/*.spec.ts", "../jest.config.js"],
+	"extends": "../../tsconfig.json",
+	"include": ["src/**/*.spec.ts", "jest.config.js"],
 	"references": [{ "path": "./" }]
 }

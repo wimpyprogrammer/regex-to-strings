@@ -23,7 +23,7 @@
 	"files": [],
 	"references": [
 		{ "path": "./demo" },
-		{ "path": "./src" },
-		{ "path": "./src/tsconfig.test.json" }
+		{ "path": "./packages/regex-to-strings" },
+		{ "path": "./packages/regex-to-strings/tsconfig.test.json" }
 	]
 }

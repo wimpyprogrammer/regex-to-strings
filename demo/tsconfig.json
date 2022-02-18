@@ -8,9 +8,9 @@
 			"es2016.array.include"
 		],
 		"noEmit": true,
-		"outDir": "./lib"
+		"outDir": "lib"
 	},
 	"extends": "../tsconfig.json",
 	"include": ["src", "webpack.config.js"],
-	"references": [{ "path": "../src" }]
+	"references": [{ "path": "../packages/regex-to-strings" }]
 }
