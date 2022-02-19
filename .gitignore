@@ -2,6 +2,5 @@ package-lock.json
 *.tsbuildinfo
 
 coverage/
-demo/lib/
 node_modules/
 lib/

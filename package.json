@@ -1,77 +1,24 @@
 {
-  "name": "regex-to-strings",
-  "version": "2.1.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wimpyprogrammer/regex-to-strings.git"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
-  "bugs": {
-    "url": "https://github.com/wimpyprogrammer/regex-to-strings/issues"
-  },
-  "homepage": "https://github.com/wimpyprogrammer/regex-to-strings#readme",
-  "description": "Expand a regular expression pattern into a set of words",
-  "author": "Drew Keller <drew@wimpyprogrammer.com>",
-  "license": "MIT",
-  "main": "lib/index.js",
-  "types": "./lib/index.d.ts",
-  "files": [
-    "lib/**/*.js",
-    "lib/**/*.js.map",
-    "lib/**/*.d.ts"
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "demo"
   ],
-  "sideEffects": [
-    "demo/**/polyfills.ts",
-    "*.scss"
-  ],
-  "engines": {
-    "node": ">=12"
-  },
   "scripts": {
-    "build": "run-s build:*",
-    "build:src": "tsc -b --clean && tsc -b",
-    "build:demo": "wp --config demo/webpack.config.js",
-    "changelog": "npx auto-changelog",
-    "format": "prettier --write '{src,demo/src}/**'",
+    "build": "yarn workspaces run build",
+    "format": "prettier --write .",
     "lint": "tsc -b ./tsconfig.lint.json && eslint . --report-unused-disable-directives",
-    "release": "npx release-it --no-increment",
-    "test": "jest --coverage"
+    "test": "yarn workspaces run test"
   },
   "devDependencies": {
-    "@types/history": "^4.7.3",
-    "@types/jest": "^27.0.1",
-    "@types/jest-when": "^3.5.0",
-    "@types/lodash": "^4.14.140",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
-    "clean-webpack-plugin": "^4.0.0",
-    "css-loader": "^6.1.0",
     "eslint": "^8.4.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jest": "^26.0.0",
-    "jest": "^27.0.1",
-    "jest-when": "^3.2.1",
-    "node-sass": "^7.0.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "2.2.1",
-    "sass-loader": "^12.0.0",
-    "style-loader": "^3.0.0",
-    "ts-jest": "^27.0.1",
-    "ts-loader": "^9.1.2",
-    "typescript": "^4.2.3",
-    "webpack": "^5.26.0",
-    "webpack-nano": "^1.1.1",
-    "worker-loader": "^3.0.8"
-  },
-  "dependencies": {
-    "escape-string-regexp": "^4.0.0",
-    "pandemonium": "^2.0.0",
-    "regexp-tree": "^0.1.23"
-  },
-  "snyk": true
+    "prettier": "2.2.1"
+  }
 }

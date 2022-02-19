@@ -1,0 +1,49 @@
+{
+  "name": "regex-to-strings",
+  "version": "2.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wimpyprogrammer/regex-to-strings.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bugs": {
+    "url": "https://github.com/wimpyprogrammer/regex-to-strings/issues"
+  },
+  "homepage": "https://github.com/wimpyprogrammer/regex-to-strings#readme",
+  "description": "Expand a regular expression pattern into a set of words",
+  "author": "Drew Keller <drew@wimpyprogrammer.com>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "lib/**/*.d.ts"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "build": "tsc -b --clean && tsc -b",
+    "changelog": "npx auto-changelog",
+    "release": "npx release-it --no-increment",
+    "test": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@types/jest-when": "^3.5.0",
+    "jest": "^27.0.1",
+    "jest-when": "^3.2.1",
+    "ts-jest": "^27.0.1",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "escape-string-regexp": "^4.0.0",
+    "pandemonium": "^2.0.0",
+    "regexp-tree": "^0.1.23"
+  },
+  "snyk": true
+}

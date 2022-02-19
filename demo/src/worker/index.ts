@@ -1,5 +1,6 @@
 import './polyfills';
 
+import { expand, toRegExp } from 'regex-to-strings';
 import { optimize } from 'regexp-tree';
 import {
 	CountResult,
@@ -9,7 +10,6 @@ import {
 	isExpandRequest,
 	OptimizeResult,
 } from './messages';
-import { expand, toRegExp } from '../../../src';
 
 function assertNeverRequest(x: never): never {
 	throw new TypeError(`Unexpected message: ${x}`);

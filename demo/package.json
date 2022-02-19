@@ -1,0 +1,26 @@
+{
+  "name": "regex-to-strings-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "wp --config webpack.config.js",
+    "test": "exit 0"
+  },
+  "devDependencies": {
+    "@types/history": "^4.7.3",
+    "@types/lodash": "^4.14.140",
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.1.0",
+    "node-sass": "^7.0.0",
+    "sass-loader": "^12.0.0",
+    "style-loader": "^3.0.0",
+    "ts-loader": "^9.1.2",
+    "webpack": "^5.26.0",
+    "webpack-nano": "^1.1.1",
+    "worker-loader": "^3.0.8"
+  },
+  "dependencies": {
+    "regex-to-strings": "*",
+    "regexp-tree": "^0.1.23"
+  }
+}
