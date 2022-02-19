@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file, no-useless-constructor */
-import { expand } from '../../../src';
+import { expand } from 'regex-to-strings';
 
 interface WorkerMessage {
 	readonly kind: string;
