@@ -37,7 +37,7 @@ jobs:
       - run: yarn run lint
       - run: yarn run test
 
-      - run: npx testpack-cli --verbose --keep=@types/*,ts-jest,typescript jest.config.js tsconfig.test.json src/e2e.spec.ts
+      - run: npx testpack-cli --verbose --test-folder=../regex-to-strings-testpack --keep=@types/*,ts-jest,typescript jest.config.js tsconfig.test.json src/e2e.spec.ts
         working-directory: packages/regex-to-strings
 
       - name: Upload test coverage report to Codecov
