@@ -18,7 +18,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.14.1, 17.8.0, 17.x]
+        node-version: [12.x]
+        require-successful-testpack: [true]
+        include:
+          - node-version: 16.x
+            require-successful-testpack: false
+          - node-version: lts/*
+            require-successful-testpack: false
 
     steps:
       - name: Checkout repository
@@ -37,8 +43,10 @@ jobs:
       - run: yarn run lint
       - run: yarn run test
 
-      - run: npx testpack-cli --test-folder=${{ github.workspace }}/packages/regex-to-strings-testpack --keep=@types/*,ts-jest,typescript jest.config.js tsconfig.test.json src/e2e.spec.ts
-        working-directory: ${{ github.workspace }}/packages/regex-to-strings
+      - run: npx testpack-cli --keep=@types/*,ts-jest,typescript jest.config.js tsconfig.test.json src/e2e.spec.ts
+        working-directory: ./packages/regex-to-strings
+        # Workaround for #66
+        continue-on-error: ${{ !matrix.require-successful-testpack }}
 
       - name: Upload test coverage report to Codecov
         uses: codecov/codecov-action@v2.1.0
