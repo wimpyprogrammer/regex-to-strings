@@ -49,9 +49,11 @@ jobs:
         continue-on-error: ${{ !matrix.require-successful-testpack }}
 
       - name: Upload test coverage report to Codecov
-        uses: codecov/codecov-action@v3.1.5
+        uses: codecov/codecov-action@v4.1.0
         with:
           fail_ci_if_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Setup Snyk
         uses: snyk/actions/setup@master
