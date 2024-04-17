@@ -24,7 +24,7 @@
   ],
   "sideEffects": false,
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "scripts": {
     "build": "tsc -b --clean && tsc -b",

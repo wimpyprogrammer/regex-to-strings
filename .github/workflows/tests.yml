@@ -18,10 +18,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [14.x]
+        node-version: [18.x]
         require-successful-testpack: [true]
         include:
-          - node-version: 16.x
+          - node-version: 20.x
             require-successful-testpack: false
           - node-version: lts/*
             require-successful-testpack: false
