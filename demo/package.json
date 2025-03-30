@@ -7,7 +7,6 @@
     "test": "exit 0"
   },
   "devDependencies": {
-    "@types/history": "^4.7.3",
     "@types/lodash": "^4.14.140",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^7.1.1",
@@ -20,6 +19,7 @@
     "worker-loader": "^3.0.8"
   },
   "dependencies": {
+    "@types/history": "^4.7.3",
     "regex-to-strings": "*",
     "regexp-tree": "^0.1.23"
   }
