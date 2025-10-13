@@ -13,8 +13,8 @@ on:
   workflow_dispatch:
 
 defaults:
- run:
-  working-directory: ./packages/regex-to-strings
+  run:
+    working-directory: ./packages/regex-to-strings
 
 jobs:
   test:
