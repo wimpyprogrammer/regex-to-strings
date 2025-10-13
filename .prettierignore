@@ -1,3 +1,5 @@
+.pnp.cjs
+.pnp.loader.mjs
 package-lock.json
 package.json
 
