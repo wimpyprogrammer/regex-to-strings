@@ -46,7 +46,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: yarn workspace focus
+      - run: yarn workspaces focus
       - run: npx prettier --check .
       - run: yarn run build
       - run: yarn run lint
