@@ -49,7 +49,7 @@ jobs:
       - run: yarn workspaces focus
       - run: npx prettier --check .
         working-directory: ./
-      - run: yarn run build
+      - run: yarn run -T build
       - run: yarn run -T lint
       - run: yarn run test
 
