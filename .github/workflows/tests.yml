@@ -19,12 +19,9 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [18.x]
-        require-successful-testpack: [true]
         include:
           - node-version: 20.x
-            require-successful-testpack: false
           - node-version: lts/*
-            require-successful-testpack: false
 
     steps:
       - name: Checkout repository
@@ -49,8 +46,6 @@ jobs:
 
       - run: npx testpack-cli --keep=@types/*,ts-jest,typescript jest.config.js tsconfig.test.json src/e2e.spec.ts
         working-directory: ./packages/regex-to-strings
-        # Workaround for #66
-        continue-on-error: ${{ !matrix.require-successful-testpack }}
 
       - name: Upload test coverage report to Codecov
         uses: codecov/codecov-action@v5.4.0
