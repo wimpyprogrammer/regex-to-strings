@@ -3,18 +3,12 @@ name: Tests
 on:
   push:
     branches: [main, develop]
-    paths-ignore:
-      - 'demo/**'
   pull_request:
     branches: [main, develop]
   schedule:
     # 00:00 on Saturdays
     - cron: '0 0 * * SAT'
   workflow_dispatch:
-
-defaults:
-  run:
-    working-directory: ./packages/regex-to-strings
 
 jobs:
   test:
@@ -46,14 +40,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: yarn workspaces focus
+      - run: yarn
       - run: npx prettier --check .
         working-directory: ./
-      - run: yarn run -T build
-      - run: yarn run -T lint
+      - run: yarn run build
+      - run: yarn run lint
       - run: yarn run test
 
       - run: npx testpack-cli --keep=@types/*,ts-jest,typescript jest.config.js tsconfig.test.json src/e2e.spec.ts
+        working-directory: ./packages/regex-to-strings
         # Workaround for #66
         continue-on-error: ${{ !matrix.require-successful-testpack }}
 
