@@ -1,0 +1,24 @@
+{
+	"extends": ["plugin:jest/recommended"],
+	"rules": {
+		"import/no-cycle": "off",
+		"import/no-extraneous-dependencies": [
+			"error",
+			{
+				"devDependencies": ["**/*.spec.{js,ts}", "**/*.config.js"]
+			}
+		],
+		"import/no-unresolved": [
+			"error",
+			{
+				"ignore": [
+					// Workaround for alexgorbatchev/eslint-import-resolver-typescript#17
+					"regexp-tree/ast"
+				]
+			}
+		],
+		"no-else-return": "off",
+		// This rule excludes too many escape sequences we need, like \p
+		"no-useless-escape": "off"
+	}
+}

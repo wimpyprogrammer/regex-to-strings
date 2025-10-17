@@ -1,8 +1,8 @@
 {
+	"root": true,
 	"parser": "@typescript-eslint/parser",
 	"extends": [
 		"airbnb-base",
-		"plugin:jest/recommended",
 		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended",
 		"prettier"
@@ -11,6 +11,7 @@
 		"ecmaVersion": 2018,
 		"project": ["./**/tsconfig.json", "./**/tsconfig.test.json"]
 	},
+	"ignorePatterns": ["coverage/", "lib/"],
 	"rules": {
 		"import/extensions": [
 			"error",
@@ -18,40 +19,17 @@
 				"ts": "never"
 			}
 		],
-		"import/no-cycle": "off",
-		"import/no-extraneous-dependencies": [
-			"error",
-			{
-				"devDependencies": ["**/*.spec.{js,ts}", "**/*.config.js"]
-			}
-		],
-		"import/no-unresolved": [
-			"error",
-			{
-				"ignore": [
-					"history",
-					"lodash",
-					// Workaround for alexgorbatchev/eslint-import-resolver-typescript#17
-					"regexp-tree/ast",
-					"RegexColorizer"
-				]
-			}
-		],
 		"import/prefer-default-export": "off",
-		"no-else-return": "off",
 		"no-plusplus": "off",
-		// This rule excludes too many escape sequences we need, like \p
-		"no-useless-escape": "off",
 		// Allow ForOfStatement, preserve the rest of Airbnb's restrictions
 		"no-restricted-syntax": [
 			"error",
 			"ForInStatement",
 			"LabeledStatement",
 			"WithStatement"
-		],
-		"@typescript-eslint/explicit-function-return-type": "off",
-		"@typescript-eslint/explicit-module-boundary-types": "off"
+		]
 	},
+	"reportUnusedDisableDirectives": true,
 	"settings": {
 		"import/parsers": {
 			"@typescript-eslint/parser": [".ts"]

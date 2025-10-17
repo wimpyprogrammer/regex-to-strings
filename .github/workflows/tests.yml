@@ -50,7 +50,7 @@ jobs:
       - run: npx prettier --check .
         working-directory: ./
       - run: yarn run build
-      - run: yarn run lint
+      - run: yarn run -T lint
       - run: yarn run test
 
       - run: npx testpack-cli --keep=@types/*,ts-jest,typescript jest.config.js tsconfig.test.json src/e2e.spec.ts
