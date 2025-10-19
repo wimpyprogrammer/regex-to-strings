@@ -1,4 +1,4 @@
-/* eslint-disable max-classes-per-file, no-useless-constructor */
+/* eslint-disable max-classes-per-file, no-empty-function, no-useless-constructor */
 import { expand } from 'regex-to-strings';
 
 interface WorkerMessage {

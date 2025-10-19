@@ -27,9 +27,9 @@ export default class DemoForm {
 	protected $errorContainer: HTMLDivElement;
 	protected $errorMessage: HTMLPreElement;
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function, class-methods-use-this
+	// eslint-disable-next-line class-methods-use-this
 	public onSubmit: () => void = () => {};
-	// eslint-disable-next-line @typescript-eslint/no-empty-function, class-methods-use-this
+	// eslint-disable-next-line class-methods-use-this
 	public onCancel: () => void = () => {};
 
 	private onInputKeydown(event: KeyboardEvent): boolean {
@@ -102,7 +102,7 @@ export default class DemoForm {
 	public validate(): boolean {
 		try {
 			return this.$form.reportValidity();
-		} catch (ex) {
+		} catch {
 			// Ignore browsers that don't support reportValidity()
 			return true;
 		}
