@@ -1,5 +1,5 @@
 /// <reference types="node" />;
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { resolve } = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
