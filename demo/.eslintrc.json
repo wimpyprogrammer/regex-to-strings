@@ -1,0 +1,16 @@
+{
+	"rules": {
+		"import/no-extraneous-dependencies": [
+			"error",
+			{
+				"devDependencies": ["**/*.config.js"]
+			}
+		],
+		"import/no-unresolved": [
+			"error",
+			{
+				"ignore": ["history", "lodash", "RegexColorizer"]
+			}
+		]
+	}
+}

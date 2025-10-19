@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "build": "wp --config webpack.config.js",
+    "lint": "tsc -b ./tsconfig.lint.json && eslint .",
     "test": "exit 0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.140",
+    "@types/node": "^24.8.1",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^7.1.1",
     "node-sass": "^9.0.0",

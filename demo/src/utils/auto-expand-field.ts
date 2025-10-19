@@ -10,10 +10,10 @@ type anyFn = (...args: unknown[]) => void;
 function debounce<F extends anyFn>(func: F, wait: number): F {
 	let timeoutID: number;
 
-	return (function debounced(this: any, ...args: any[]) {
+	return function debounced(this: any, ...args: any[]) {
 		clearTimeout(timeoutID);
 		timeoutID = window.setTimeout(() => func.apply(this, args), wait);
-	} as any) as F;
+	} as any as F;
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 

@@ -52,12 +52,12 @@ describe('count', () => {
 	});
 
 	it('counts null as zero patterns', () => {
-		const result = count((null as unknown) as string);
+		const result = count(null as unknown as string);
 		expect(result).toBe(0);
 	});
 
 	it('counts undefined as one pattern', () => {
-		const result = count((undefined as unknown) as string);
+		const result = count(undefined as unknown as string);
 		expect(result).toBe(1);
 	});
 
@@ -122,11 +122,11 @@ describe('expand', () => {
 	});
 
 	it('returns an empty list for null', () => {
-		const result = expandAll((null as unknown) as string);
+		const result = expandAll(null as unknown as string);
 		expect(result).toEqual([]);
 
 		// Mirror this JavaScript behavior
-		const nativeRegex = new RegExp((null as unknown) as string);
+		const nativeRegex = new RegExp(null as unknown as string);
 		expect(nativeRegex.test('')).toBe(false);
 	});
 

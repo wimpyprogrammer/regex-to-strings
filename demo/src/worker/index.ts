@@ -31,7 +31,7 @@ function takeNIterations(
 }
 
 // eslint-disable-next-line no-restricted-globals
-const ctx: Worker = (self as unknown) as Worker;
+const ctx: Worker = self as unknown as Worker;
 
 function* processRequest(
 	message: MessageEvent
