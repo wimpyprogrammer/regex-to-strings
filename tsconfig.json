@@ -1,15 +1,14 @@
 {
 	"compilerOptions": {
 		"allowJs": true,
-		"baseUrl": ".",
 		"checkJs": true,
 		"composite": true,
 		"declaration": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
-		"module": "CommonJS",
-		"downlevelIteration": true,
-		"moduleResolution": "node",
+		"isolatedModules": true,
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
