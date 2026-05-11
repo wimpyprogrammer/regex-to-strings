@@ -4,10 +4,8 @@ module.exports = {
 		'!**/src/**/?*.d.ts',
 		'!**/demo/src/**/?*.ts',
 	],
-	globals: {
-		'ts-jest': {
-			tsconfig: 'tsconfig.test.json',
-		},
+	transform: {
+		'^.+\\.ts$': ['ts-jest', { tsconfig: 'tsconfig.test.json' }],
 	},
 	preset: 'ts-jest',
 	restoreMocks: true,
