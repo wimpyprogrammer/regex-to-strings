@@ -42,7 +42,7 @@
     "ts-jest": "^29.2.5"
   },
   "dependencies": {
-    "escape-string-regexp": "^4.0.0",
+    "escape-string-regexp": "^5.0.0",
     "eslint-plugin-jest": "^27.0.4",
     "pandemonium": "^2.0.0",
     "regexp-tree": "^0.1.23"
