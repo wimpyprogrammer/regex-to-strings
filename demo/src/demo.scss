@@ -1,10 +1,10 @@
-@import './_variables';
+@use '_variables';
 
 body {
-	@include md-only {
+	@include variables.md-only {
 		font-size: 1em;
 	}
-	@include lg-up {
+	@include variables.lg-up {
 		font-size: 1.1em;
 	}
 }
