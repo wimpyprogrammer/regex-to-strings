@@ -1,5 +1,3 @@
-import './polyfills';
-
 import { expand, toRegExp } from 'regex-to-strings';
 import { optimize } from 'regexp-tree';
 import {
