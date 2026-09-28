@@ -1,4 +1,4 @@
-@import '../_variables';
+@use '../_variables';
 
 #pattern {
 	font-size: 140%;
@@ -13,7 +13,7 @@
 input:invalid,
 textarea:invalid,
 select:invalid {
-	border: 2px solid $danger;
+	border: 2px solid variables.$danger;
 }
 
 .alert pre {
@@ -30,7 +30,7 @@ label + select,
 label + input {
 	margin: 0 auto;
 
-	@media (min-width: $breakpoint-sm) {
+	@media (min-width: variables.$breakpoint-sm) {
 		margin-left: 0.5em;
 	}
 }
@@ -38,19 +38,19 @@ label + input {
 .form-inline {
 	flex-direction: column;
 
-	@media (min-width: $breakpoint-lg) {
+	@media (min-width: variables.$breakpoint-lg) {
 		flex-direction: row;
 	}
 }
 
 .form-group {
-	@media (max-width: $breakpoint-lg) {
+	@media (max-width: variables.$breakpoint-lg) {
 		&:not(:first-of-type) {
 			margin-top: 1em;
 		}
 	}
 
-	@media (min-width: $breakpoint-lg) {
+	@media (min-width: variables.$breakpoint-lg) {
 		&:not(:first-of-type) {
 			margin-left: auto;
 		}

@@ -1,7 +1,7 @@
-@import '../_variables';
+@use '../_variables';
 
 span[title] {
-	border-bottom: 1px dotted $gray;
+	border-bottom: 1px dotted variables.$gray;
 	cursor: help;
 }
 
@@ -18,7 +18,7 @@ span[title] {
 	line-height: 1.6rem;
 
 	&.plaintext-output {
-		border: 1px $primary dotted;
+		border: 1px variables.$primary dotted;
 		max-height: 30em;
 		padding: 0.5em;
 	}
@@ -43,15 +43,15 @@ span[title] {
 	}
 
 	& > :nth-child(odd) {
-		color: $blue;
+		color: variables.$blue;
 	}
 
 	& > :nth-child(even) {
-		color: $green;
+		color: variables.$green;
 	}
 }
 
-@media (min-width: $breakpoint-md) {
+@media (min-width: variables.$breakpoint-md) {
 	.count {
 		float: right;
 	}
