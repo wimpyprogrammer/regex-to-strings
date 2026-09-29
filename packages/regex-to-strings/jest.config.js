@@ -5,7 +5,7 @@ module.exports = {
 		'!**/demo/src/**/?*.ts',
 	],
 	transform: {
-		'^.+\\.ts$': ['ts-jest', { tsconfig: 'tsconfig.test.json' }],
+		'^.+\\.[tj]s$': ['ts-jest', { tsconfig: 'tsconfig.test.json' }],
 	},
 	transformIgnorePatterns: ['/node_modules/(?!escape-string-regexp/)'],
 	preset: 'ts-jest',
